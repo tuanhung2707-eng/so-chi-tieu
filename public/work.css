@@ -1,0 +1,139 @@
+/* =====================================================================
+   work.css – giao diện của mục "Công việc" (Linh kiện · Mật khẩu máy · Lịch năm)
+   Dùng lại màu và kiểu nút của index.html. Mọi lớp mới đều bắt đầu bằng "wm-".
+   ===================================================================== */
+
+/* ---------- Chuyển giữa "Sổ chi tiêu" và "Công việc" ngay trên header ---------- */
+.mainTabs { margin-inline:auto; flex:none; }
+.mainTabs button { padding:8px 16px; font-size:13.5px; }
+@media (max-width:680px) {
+  .top { flex-wrap:wrap; row-gap:10px; }
+  .mainTabs { order:3; width:100%; margin:0; display:flex; }
+  .mainTabs button { flex:1; padding:9px 8px; }
+}
+
+/* ---------- Khung chung ---------- */
+#work { padding-bottom:30px; }
+.wm-tabs { display:flex; width:100%; margin-bottom:16px; }
+.wm-tabs button { flex:1; padding:10px 8px; font-size:14px; }
+.wm-bar { display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+.wm-search { flex:1 1 220px; min-width:0; }
+.wm-search input { background:#fff; }
+.wm-bar .btn { white-space:nowrap; }
+.wm-tags { margin:0 0 14px; }
+.wm-tags .chip.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+.wm-tags .chip small { opacity:.7; font-weight:700; margin-left:2px; }
+.wm-empty { text-align:center; color:var(--muted); padding:34px 10px; font-size:14px; line-height:1.7; background:rgba(255,255,255,.6); border:1px dashed #cfe3f3; border-radius:18px; }
+.wm-ib { border:0; background:#eef6fd; color:#4b7798; width:34px; height:34px; border-radius:50%; font-size:15px; line-height:1; flex:none; }
+.wm-ib:hover { background:#dff1ff; }
+.wm-ib.bad { color:var(--bad); background:#fff1f4; } .wm-ib.bad:hover { background:#ffe3e9; }
+.wm-card { background:var(--card); border:1px solid rgba(220,234,246,.95); border-radius:18px; box-shadow:var(--shadow); }
+.wm-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media (max-width:480px) { .wm-two { grid-template-columns:1fr; gap:0; } }
+select { font:inherit; font-size:16px; padding:12px 14px; border-radius:13px; border:1px solid var(--line); background:#f8fbff; color:var(--text); width:100%; outline:none; }
+select:focus { border-color:var(--accent); box-shadow:var(--focus); background:#fff; }
+
+/* ---------- Hộp thoại ---------- */
+.wm-modal .sheet.wm-wide { max-width:640px; }
+.wm-modal { z-index:30; }
+.wm-askm { z-index:40; align-items:center; }
+.wm-asksheet { border-radius:22px; max-width:380px; margin:0 16px; }
+.wm-ask-t { font-size:15px; line-height:1.6; font-weight:650; }
+@media (min-width:700px) { .wm-modal { align-items:center; } .wm-modal .sheet { border-radius:25px; } }
+.wm-dh h2 { margin:6px 0 4px; font-size:20px; line-height:1.3; }
+.wm-grp { display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:.2px; color:var(--accent-deep); background:#e4f2fd; padding:3px 10px; border-radius:99px; }
+.wm-code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12.5px; color:#3d6785; margin-top:4px; word-break:break-word; }
+.wm-code-big { font-size:15px; font-weight:700; }
+.wm-sec { margin-top:16px; }
+.wm-sec h4 { margin:0 0 6px; font-size:12.5px; letter-spacing:.3px; text-transform:uppercase; color:var(--muted); }
+.wm-txt { font-size:15px; line-height:1.65; word-break:break-word; }
+.wm-dsb { display:flex; gap:8px; flex-wrap:wrap; }
+
+/* ---------- Linh kiện ---------- */
+.wm-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+@media (max-width:520px) { .wm-grid { grid-template-columns:1fr 1fr; gap:10px; } }
+.wm-part { overflow:hidden; cursor:pointer; transition:transform .18s, box-shadow .18s; outline:none; }
+.wm-part:hover, .wm-part:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow-hover); }
+.wm-part:active { transform:scale(.99); }
+.wm-cover { position:relative; aspect-ratio:4/3; background:linear-gradient(135deg,#eaf5fd,#f6fbff); display:grid; place-items:center; overflow:hidden; }
+.wm-cover img { width:100%; height:100%; object-fit:cover; display:block; }
+.wm-noimg { color:#9cc3e0; }
+.wm-count, .wm-ds { position:absolute; font-style:normal; font-size:11px; font-weight:800; padding:3px 8px; border-radius:99px; background:rgba(255,255,255,.92); color:var(--accent-deep); box-shadow:0 2px 6px rgba(40,90,130,.15); }
+.wm-count { right:8px; bottom:8px; } .wm-ds { left:8px; bottom:8px; background:var(--accent); color:#fff; }
+.wm-card-b { padding:12px 13px 14px; }
+.wm-card-b h3 { margin:7px 0 2px; font-size:15px; line-height:1.3; }
+.wm-card-b p { margin:6px 0 0; font-size:12.5px; color:var(--muted); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word; }
+.wm-gal { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin-top:14px; }
+.wm-gal button { border:0; padding:0; background:#eaf5fd; border-radius:12px; overflow:hidden; aspect-ratio:1; cursor:zoom-in; }
+.wm-gal img { width:100%; height:100%; object-fit:cover; display:block; }
+.wm-photos { display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px; }
+.wm-ph { position:relative; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#eaf5fd; }
+.wm-ph img { width:100%; height:100%; object-fit:cover; display:block; }
+.wm-ph button { position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; border:0; background:rgba(255,255,255,.95); color:var(--bad); font-size:12px; box-shadow:0 2px 6px rgba(0,0,0,.2); }
+.wm-addph { aspect-ratio:1; border:2px dashed #bcd9ee; background:#f5faff; color:var(--accent-deep); border-radius:12px; font-size:12px; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+.wm-addph span { font-size:22px; line-height:1; } .wm-addph:hover { background:#e9f4fd; }
+.wm-dsrow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.wm-dsname { font-size:13.5px; font-weight:650; word-break:break-all; }
+
+/* xem ảnh lớn */
+.wm-light { position:fixed; inset:0; z-index:50; background:rgba(18,36,52,.92); display:none; align-items:center; justify-content:center; }
+.wm-light.on { display:flex; }
+.wm-light img { max-width:94vw; max-height:88vh; object-fit:contain; border-radius:10px; background:#fff; }
+.wm-lx, .wm-ln { position:absolute; border:0; background:rgba(255,255,255,.16); color:#fff; width:44px; height:44px; border-radius:50%; font-size:22px; }
+.wm-lx { top:16px; right:16px; } .wm-lp { left:14px; } .wm-lnx { right:14px; }
+.wm-lx:hover, .wm-ln:hover { background:rgba(255,255,255,.28); }
+
+/* ---------- Mật khẩu máy ---------- */
+.wm-pwlist { display:flex; flex-direction:column; gap:12px; }
+.wm-pwcard { padding:15px 16px 16px; }
+.wm-ph2 { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.wm-ph2 h3 { margin:0; font-size:17px; } .wm-ph2 h3 small { font-size:11.5px; font-weight:700; color:var(--muted); margin-left:6px; }
+.wm-va { display:flex; gap:6px; flex:none; }
+.wm-pl { margin:12px 0 6px; font-size:12px; font-weight:800; color:var(--accent-deep); }
+.wm-pws { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.wm-pl + .wm-pws { margin-top:0; }
+.wm-pwc { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:15px; font-weight:700; letter-spacing:.3px; border:1px solid #d3e8f7; background:#f1f8fe; color:#24506f; padding:9px 13px; border-radius:11px; min-height:42px; transition:background .15s, transform .12s, border-color .15s; }
+.wm-pwc:hover { background:#e1f1fd; border-color:#b7d9f0; } .wm-pwc:active { transform:scale(.96); }
+.wm-pwc.ok { background:var(--ok); border-color:var(--ok); color:#fff; }
+.wm-more { margin-top:12px; }
+.wm-prs { display:flex; flex-direction:column; gap:8px; max-height:42vh; overflow:auto; padding-right:2px; }
+.wm-pr { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) auto; gap:8px; align-items:center; }
+@media (max-width:480px) { .wm-pr { grid-template-columns:minmax(0,1fr) auto; } .wm-pr .wl { grid-column:1 / -1; } .wm-pr .wv { grid-column:1; } }
+.wm-addrow { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.wm-pastebox { margin-top:10px; padding:12px; background:#f4f9fe; border:1px solid #e0eefa; border-radius:14px; }
+
+/* ---------- Lịch năm ---------- */
+.wm-calbar { justify-content:space-between; }
+.wm-yr { display:flex; align-items:center; gap:10px; } .wm-yr b { font-size:22px; min-width:64px; text-align:center; letter-spacing:-.3px; }
+.wm-legend { display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:12.5px; font-weight:650; color:#4a6c88; margin:0 2px 14px; }
+.wm-legend span { display:inline-flex; align-items:center; gap:6px; } .wm-legend em { font-style:normal; font-weight:500; color:var(--muted); margin-left:auto; }
+.wm-legend b, .wm-ui b, .wm-cols b { width:11px; height:11px; border-radius:50%; display:inline-block; flex:none; }
+.c-red { --mc:#e0708a; --mb:#fde3e8; } .c-blue { --mc:#5aa4e3; --mb:#dcecfb; } .c-green { --mc:#3fae93; --mb:#d9f2ea; }
+.c-amber { --mc:#e0a93a; --mb:#fdf0cf; } .c-purple { --mc:#8b73d9; --mb:#e8e1fb; } .c-none { --mc:#c9d9e6; --mb:#eef4f9; }
+.wm-legend b, .wm-ui b, .wm-cols b { background:var(--mc); } .wm-legend span { --mc:inherit; }
+.wm-legend .c-red, .wm-legend .c-blue, .wm-legend .c-green, .wm-legend .c-amber, .wm-legend .c-purple { background:var(--mc); }
+.wm-months { display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:14px; }
+.wm-mon { background:rgba(255,255,255,.88); border:1px solid rgba(220,234,246,.95); border-radius:18px; padding:12px 12px 10px; box-shadow:var(--shadow); }
+.wm-mon.now { border-color:#a9d7f5; box-shadow:0 0 0 1px rgba(130,196,236,.25), var(--shadow); }
+.wm-mon h4 { margin:0 0 8px; font-size:14px; color:var(--accent-deep); }
+.wm-wd, .wm-dg { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.wm-wd i { font-style:normal; font-size:10.5px; font-weight:800; color:#8aa4ba; text-align:center; padding-bottom:3px; } .wm-wd i.sun { color:#d98296; }
+.wm-d { position:relative; border:0; background:transparent; border-radius:9px; aspect-ratio:1; font-size:12.5px; font-weight:650; color:var(--text); padding:0; display:grid; place-items:center; transition:background .15s, transform .12s; }
+.wm-d:hover { background:#e6f3fd; } .wm-d:active { transform:scale(.92); }
+.wm-d.sun span { color:#d98296; }
+.wm-d.today { outline:2px solid var(--accent); outline-offset:-2px; font-weight:800; }
+.wm-d.has::after { content:""; position:absolute; bottom:3px; left:50%; width:5px; height:5px; margin-left:-2.5px; border-radius:50%; background:var(--accent-deep); opacity:.75; }
+.wm-d[class*="m-"] { background:var(--mb); }
+.wm-d.m-red { --mb:#fde3e8; --mc:#e0708a; } .wm-d.m-blue { --mb:#dcecfb; --mc:#5aa4e3; } .wm-d.m-green { --mb:#d9f2ea; --mc:#3fae93; }
+.wm-d.m-amber { --mb:#fdf0cf; --mc:#e0a93a; } .wm-d.m-purple { --mb:#e8e1fb; --mc:#8b73d9; }
+.wm-d[class*="m-"] span { color:#2c4a63; font-weight:800; }
+.wm-d[class*="m-"]:hover { filter:brightness(.97); }
+.wm-up { margin-top:16px; padding:16px; }
+.wm-up h4 { margin:0 0 10px; font-size:14px; } .wm-up h4 span { font-size:12px; color:var(--muted); font-weight:700; margin-left:6px; }
+.wm-ui { display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:0; background:transparent; padding:10px 6px; border-bottom:1px solid #edf3f9; border-radius:10px; font:inherit; color:var(--text); }
+.wm-ui:last-of-type { border-bottom:0; } .wm-ui:hover { background:#f1f8fe; }
+.wm-ud { font-size:12.5px; font-weight:800; color:var(--accent-deep); white-space:nowrap; min-width:104px; }
+.wm-ut { flex:1; min-width:0; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .wm-ut i { color:var(--muted); font-style:normal; }
+.wm-cols { display:flex; flex-wrap:wrap; gap:8px; }
+.wm-cols button { display:inline-flex; align-items:center; gap:7px; border:2px solid transparent; background:var(--mb); color:#2c4a63; padding:9px 13px; border-radius:12px; font-size:13px; font-weight:700; }
+.wm-cols button.on { border-color:var(--mc); box-shadow:0 2px 8px rgba(40,90,130,.15); } .wm-cols button:hover { filter:brightness(.97); }
