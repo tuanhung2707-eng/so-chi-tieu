@@ -7,9 +7,13 @@ so-chi-tieu/
 ├── public/
 │   ├── index.html        ← giao diện, bố cục và logic
 │   ├── animations.css    ← hoạt ảnh và họa tiết trang trí (cảnh đồng cỏ, nút sáng, nền…)
+│   ├── work.js           ← mục "Công việc" (Linh kiện · Mật khẩu máy · Lịch năm)
+│   ├── work.css          ← giao diện của mục Công việc
 │   └── config.js         ← 2 giá trị Supabase (bạn điền)
 ├── supabase/
-│   └── schema.sql        ← tạo bảng, bảo mật, hàm tự chuyển kỳ
+│   ├── schema.sql        ← Sổ chi tiêu: bảng, bảo mật, hàm tự chuyển kỳ
+│   ├── work_schema.sql   ← Công việc: bảng, bảo mật, kho chứa ảnh/datasheet
+│   └── seed_tu_excel.sql ← nhập sẵn dữ liệu từ file Excel của bạn (chạy 1 lần)
 ├── wrangler.jsonc        ← cấu hình Cloudflare
 ├── .gitignore
 └── README.md
@@ -75,6 +79,21 @@ Từ đó, mỗi lần bạn **commit lên GitHub**, Cloudflare tự build và c
 Dòng chữ nhỏ cuối trang cho biết phiên bản và hoạt ảnh đang bật hay tắt.
 
 ---
+
+## Mục "Công việc"
+
+Trên header có hai nút **Sổ chi tiêu | Công việc**. Mục Công việc có 3 phần:
+
+- **Linh kiện:** nhóm, tên, mã, hình ảnh (nhiều ảnh, tự thu nhỏ), datasheet (tải file PDF lên và/hoặc dán link), chức năng, ghi chú cách sửa. Có tìm kiếm và lọc theo nhóm.
+- **Mật khẩu máy:** mỗi máy một thẻ, mỗi thẻ nhiều mật khẩu (có thể gắn nhãn như "Cài đặt", "Hiệu chỉnh"). Bấm vào mật khẩu để chép. Nút **Dán nhiều mật khẩu** để thêm cả loạt (mỗi dòng một mật khẩu). Mật khẩu lưu thẳng, không mã hóa; chỉ người đã đăng nhập mới xem được.
+- **Lịch năm:** 12 tháng một lượt; bấm một ngày để chọn màu đánh dấu và viết ghi chú. Dưới lịch có danh sách các ngày đã đánh dấu hoặc ghi chú.
+
+**Cài đặt lần đầu (làm một lần):**
+1. Supabase → SQL Editor → chạy `supabase/work_schema.sql` (tạo bảng và kho chứa ảnh/datasheet).
+2. Muốn có sẵn dữ liệu từ file Excel của bạn: chạy thêm `supabase/seed_tu_excel.sql` **đúng một lần** (chạy lại sẽ bị nhân đôi).
+3. Đưa `work.js`, `work.css` và `index.html` mới lên GitHub như các file khác.
+
+Ảnh và datasheet nằm trong kho riêng tư `work-files` (mỗi file tối đa 50 MB, gói miễn phí tổng 1 GB), chỉ tài khoản của bạn mở được.
 
 ## Cách app tính tiền
 
