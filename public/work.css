@@ -138,3 +138,30 @@ select:focus { border-color:var(--accent); box-shadow:var(--focus); background:#
 .wm-cols { display:flex; flex-wrap:wrap; gap:8px; }
 .wm-cols button { display:inline-flex; align-items:center; gap:7px; border:2px solid transparent; background:var(--mb); color:#2c4a63; padding:9px 13px; border-radius:12px; font-size:13px; font-weight:700; }
 .wm-cols button.on { border-color:var(--mc); box-shadow:0 2px 8px rgba(40,90,130,.15); } .wm-cols button:hover { filter:brightness(.97); }
+
+/* ---------- Thanh nút luôn hiện ở đáy hộp thoại (nội dung dài vẫn thấy Lưu / Sửa / Xóa) ---------- */
+.wm-modal .sheet { --px:20px; --pb:22px; max-height:90vh; max-height:90dvh; }
+@media (max-width:600px) { .wm-modal .sheet { --px:16px; --pb:18px; } }
+.wm-modal .sheet > .twin:last-child {
+  position:sticky; bottom:0; z-index:3; margin:16px calc(var(--px) * -1) calc(var(--pb) * -1);
+  padding:12px var(--px) calc(var(--pb) + env(safe-area-inset-bottom)); background:linear-gradient(180deg,rgba(255,255,255,0),#fff 30%);
+}
+.wm-modal .wm-asksheet > .twin:last-child { position:static; margin:14px 0 0; padding:0; background:none; }
+.wm-modal .sheet .wm-nostick { position:static; margin:10px 0 0; padding:0; background:none; }
+
+/* nút Sửa / Xóa ở đầu hộp thoại chi tiết */
+.wm-dtop { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.wm-dtop .wm-va { padding-top:4px; }
+
+/* nút Sửa / Xóa nhanh ngay trên thẻ linh kiện */
+.wm-cact { position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:2; }
+.wm-cact button { width:32px; height:32px; border-radius:50%; border:0; background:rgba(255,255,255,.96); color:#3d6785; font-size:14px; line-height:1; box-shadow:0 2px 8px rgba(40,90,130,.22); transition:transform .12s, background .15s; }
+.wm-cact button:hover { background:#e6f3fd; } .wm-cact button:active { transform:scale(.92); }
+.wm-cact .bad { color:var(--bad); }
+@media (hover:hover) { .wm-cact { opacity:0; transition:opacity .15s; } .wm-part:hover .wm-cact, .wm-part:focus-within .wm-cact { opacity:1; } }
+
+/* thêm nhanh ghi chú / ảnh vào linh kiện đã có */
+.wm-quick { margin-top:18px; padding:12px 13px 13px; background:#f4f9fe; border:1px solid #e0eefa; border-radius:15px; }
+.wm-qh { font-size:12.5px; font-weight:800; color:var(--accent-deep); margin-bottom:8px; }
+.wm-qb { display:flex; gap:8px; flex-wrap:wrap; }
+.wm-qbox { margin-top:10px; }

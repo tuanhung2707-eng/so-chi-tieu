@@ -20,6 +20,7 @@ const pad2 = (n) => (n < 10 ? '0' : '') + n;
 const ymd = (d) => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
 const todayStr = () => ymd(new Date());
 const dmy = (s) => { const p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+const fmtDate = (iso) => { const d = new Date(iso); return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear(); };
 const multiline = (t) => esc(t).replace(/\n/g, '<br>');
 const DOW_LONG = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 
@@ -222,8 +223,13 @@ function initParts() {
   $('pQ').addEventListener('input', () => { P.q = $('pQ').value.trim().toLowerCase(); renderParts(); });
   $('pAdd').onclick = () => editPart(null);
   $('pGrps').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (!b) return; P.grp = P.grp === b.getAttribute('data-g') ? '' : b.getAttribute('data-g'); renderParts(); });
-  $('pGrid').addEventListener('click', (e) => { const c = e.target.closest('[data-id]'); if (c) viewPart(c.getAttribute('data-id')); });
-  $('pGrid').addEventListener('keydown', (e) => { if (e.key === 'Enter') { const c = e.target.closest('[data-id]'); if (c) viewPart(c.getAttribute('data-id')); } });
+  $('pGrid').addEventListener('click', (e) => {
+    const c = e.target.closest('[data-id]'); if (!c) return;
+    const id = c.getAttribute('data-id'), act = e.target.closest('[data-act]');
+    if (act) { const r = P.rows.find((x) => x.id === id); if (!r) return; if (act.getAttribute('data-act') === 'edit') editPart(id); else deletePart(r); return; }
+    viewPart(id);
+  });
+  $('pGrid').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.target.closest('[data-act]')) { const c = e.target.closest('[data-id]'); if (c) viewPart(c.getAttribute('data-id')); } });
 }
 async function loadParts() {
   if (P.loaded) { renderParts(); return; }
@@ -250,12 +256,56 @@ function renderParts() {
     return '<article class="wm-card wm-part" data-id="' + esc(r.id) + '" tabindex="0">' +
       '<div class="wm-cover' + (cover ? '' : ' noimg') + '">' + (cover ? '<img data-p="' + esc(cover.t || cover.p) + '" alt="" loading="lazy">' : '<span class="wm-noimg">' + GEAR + '</span>') +
       ((r.images || []).length > 1 ? '<i class="wm-count">' + r.images.length + ' ảnh</i>' : '') +
-      ((r.datasheet_path || r.datasheet_url) ? '<i class="wm-ds">Datasheet</i>' : '') + '</div>' +
+      ((r.datasheet_path || r.datasheet_url) ? '<i class="wm-ds">Datasheet</i>' : '') +
+      '<div class="wm-cact"><button type="button" data-act="edit" aria-label="Sửa" title="Sửa">✎</button><button type="button" class="bad" data-act="del" aria-label="Xóa" title="Xóa">✕</button></div></div>' +
       '<div class="wm-card-b"><span class="wm-grp">' + esc(r.grp) + '</span><h3>' + esc(r.name) + '</h3>' +
       (r.code ? '<div class="wm-code">' + esc(r.code) + '</div>' : '') +
       (r.function_text ? '<p>' + esc(r.function_text) + '</p>' : '') + '</div></article>';
   }).join('');
   fillImgs($('pGrid'));
+}
+
+function replaceRow(saved) { const i = P.rows.findIndex((x) => x.id === saved.id); if (i >= 0) P.rows[i] = saved; else P.rows.push(saved); }
+
+async function deletePart(r) {
+  const imgs = r.images || [];
+  if (!(await askConfirm('Xóa linh kiện "' + r.name + '" cùng ảnh và datasheet? Không thể hoàn tác.'))) return;
+  try {
+    await track(async () => {
+      await removeFiles(imgs.reduce((a, im) => a.concat([im.p, im.t]), []).concat([r.datasheet_path]));
+      must(await C.sb.from('components').delete().eq('id', r.id));
+    });
+    P.rows = P.rows.filter((x) => x.id !== r.id); closeDlg(); renderParts(); C.toast('Đã xóa');
+  } catch (er) { fail(er); }
+}
+// thêm nhanh một đoạn ghi chú (có ghi ngày) vào "Ghi chú cách sửa" mà không phải mở form sửa
+async function quickNote(r, txt) {
+  const stamp = dmy(todayStr());
+  const next = (r.repair_text ? r.repair_text + '\n\n' : '') + '[' + stamp + '] ' + txt;
+  try {
+    const saved = must(await track(async () => C.sb.from('components').update({ repair_text: next, updated_at: new Date().toISOString() }).eq('id', r.id).select().single()));
+    replaceRow(saved); renderParts(); viewPart(r.id); C.toast('Đã thêm ghi chú');
+  } catch (e) { fail(e); }
+}
+// thêm nhanh ảnh vào linh kiện đã có
+async function quickPhotos(r, files) {
+  const uploaded = [];
+  C.toast('Đang tải ảnh…');
+  try {
+    const saved = await track(async () => {
+      const imgs = (r.images || []).slice();
+      for (const f of files) {
+        if (!/^image\//.test(f.type)) { C.toast('"' + f.name + '" không phải ảnh', true); continue; }
+        const im = await prepImage(f);
+        const base = user().id + '/parts/' + r.id + '/' + uid(), pth = base + '.jpg', th = base + '_t.jpg';
+        const r1 = await C.sb.storage.from(BUCKET).upload(pth, im.full, { contentType: 'image/jpeg', upsert: false }); if (r1.error) throw r1.error; uploaded.push(pth);
+        const r2 = await C.sb.storage.from(BUCKET).upload(th, im.thumb, { contentType: 'image/jpeg', upsert: false }); if (r2.error) throw r2.error; uploaded.push(th);
+        URL.revokeObjectURL(im.preview); imgs.push({ p: pth, t: th });
+      }
+      return must(await C.sb.from('components').update({ images: imgs, updated_at: new Date().toISOString() }).eq('id', r.id).select().single());
+    });
+    replaceRow(saved); renderParts(); viewPart(r.id); C.toast('Đã thêm ảnh');
+  } catch (e) { await removeFiles(uploaded); fail(e); }
 }
 
 function viewPart(id) {
@@ -264,14 +314,21 @@ function viewPart(id) {
   const ds = [];
   if (r.datasheet_path) ds.push('<button class="btn" data-ds="file" type="button">Mở datasheet' + (r.datasheet_name ? ' (' + esc(r.datasheet_name) + ')' : '') + '</button>');
   if (r.datasheet_url) ds.push('<button class="btn" data-ds="url" type="button">Mở link datasheet</button>');
-  openDlg('<div class="wm-dh"><span class="wm-grp">' + esc(r.grp) + '</span><h2>' + esc(r.name) + '</h2>' + (r.code ? '<div class="wm-code wm-code-big">' + esc(r.code) + '</div>' : '') + '</div>' +
+  openDlg('<div class="wm-dtop"><div class="wm-dh"><span class="wm-grp">' + esc(r.grp) + '</span><h2>' + esc(r.name) + '</h2>' + (r.code ? '<div class="wm-code wm-code-big">' + esc(r.code) + '</div>' : '') + '</div>' +
+    '<div class="wm-va"><button class="wm-ib" data-edit type="button" aria-label="Sửa" title="Sửa">✎</button><button class="wm-ib bad" data-del type="button" aria-label="Xóa" title="Xóa">✕</button></div></div>' +
     (imgs.length ? '<div class="wm-gal">' + imgs.map((im, i) => '<button type="button" data-i="' + i + '"><img data-p="' + esc(im.t || im.p) + '" alt=""></button>').join('') + '</div>' : '') +
     '<div class="wm-sec"><h4>Chức năng</h4><div class="wm-txt">' + (r.function_text ? multiline(r.function_text) : '<span class="muted">Chưa ghi.</span>') + '</div></div>' +
     '<div class="wm-sec"><h4>Ghi chú cách sửa</h4><div class="wm-txt">' + (r.repair_text ? multiline(r.repair_text) : '<span class="muted">Chưa ghi.</span>') + '</div></div>' +
     '<div class="wm-sec"><h4>Datasheet</h4>' + (ds.length ? '<div class="wm-dsb">' + ds.join('') + '</div>' : '<span class="muted">Chưa có.</span>') + '</div>' +
+    '<div class="wm-quick"><div class="wm-qh">Thêm nhanh vào linh kiện này</div><div class="wm-qb"><button class="chip" data-q="note" type="button">＋ Thêm ghi chú</button><button class="chip" data-q="photo" type="button">＋ Thêm ảnh</button></div>' +
+    '<input type="file" id="qPhoto" accept="image/*" multiple hidden>' +
+    '<div class="wm-qbox hidden" id="qBox"><textarea id="qTxt" rows="3" placeholder="Ghi thêm lỗi gặp phải, cách xử lý… (tự ghi kèm ngày hôm nay)"></textarea>' +
+    '<div class="twin wm-nostick"><button class="btn" data-q="cancel" type="button">Hủy</button><button class="btn primary" data-q="save" type="button">Lưu ghi chú</button></div></div></div>' +
+    '<div class="hint">Cập nhật ' + fmtDate(r.updated_at) + '</div>' +
     '<div class="twin"><button class="btn danger" data-del type="button">Xóa</button><button class="btn" data-edit type="button">Sửa</button><button class="btn primary" data-close type="button">Đóng</button></div>', { wide: true });
   const sh = $('wmDlg').querySelector('.sheet');
   fillImgs(sh);
+  $('qPhoto').onchange = () => { const f = Array.prototype.slice.call($('qPhoto').files); $('qPhoto').value = ''; if (f.length) quickPhotos(r, f); };
   sh.onclick = async (e) => {
     const g = e.target.closest('.wm-gal button');
     if (g) { openLight(imgs, Number(g.getAttribute('data-i'))); return; }
@@ -283,18 +340,18 @@ function viewPart(id) {
       } catch (er) { fail(er); }
       return;
     }
+    const q = e.target.closest('[data-q]');
+    if (q) {
+      const a = q.getAttribute('data-q');
+      if (a === 'note') { $('qBox').classList.remove('hidden'); $('qTxt').focus(); }
+      else if (a === 'photo') $('qPhoto').click();
+      else if (a === 'cancel') { $('qTxt').value = ''; $('qBox').classList.add('hidden'); }
+      else if (a === 'save') { const t = $('qTxt').value.trim(); if (!t) { $('qTxt').focus(); return; } q.disabled = true; q.textContent = 'Đang lưu…'; quickNote(r, t); }
+      return;
+    }
     if (e.target.closest('[data-close]')) closeDlg();
     else if (e.target.closest('[data-edit]')) editPart(r.id);
-    else if (e.target.closest('[data-del]')) {
-      if (!(await askConfirm('Xóa linh kiện "' + r.name + '" cùng ảnh và datasheet? Không thể hoàn tác.'))) return;
-      try {
-        await track(async () => {
-          await removeFiles(imgs.reduce((a, im) => a.concat([im.p, im.t]), []).concat([r.datasheet_path]));
-          must(await C.sb.from('components').delete().eq('id', r.id));
-        });
-        P.rows = P.rows.filter((x) => x.id !== r.id); closeDlg(); renderParts(); C.toast('Đã xóa');
-      } catch (er) { fail(er); }
-    }
+    else if (e.target.closest('[data-del]')) deletePart(r);
   };
 }
 
