@@ -29,12 +29,21 @@ async function track(fn) {
   try { return await fn(); } finally { C.setStatus('ok'); }
 }
 function fail(e) {
+  console.error('[Công việc]', e);
   let msg = (e && e.message) ? e.message : String(e);
   if (/relation .* does not exist|schema cache|Could not find the table/i.test(msg)) msg = 'Chưa tạo bảng dữ liệu. Hãy chạy file supabase/work_schema.sql trong Supabase.';
   else if (/Bucket not found/i.test(msg)) msg = 'Chưa có kho chứa file. Hãy chạy file supabase/work_schema.sql trong Supabase.';
-  else if (/row-level security|permission denied|not authorized|violates row/i.test(msg)) msg = 'Không có quyền ghi. Hãy chắc là đã chạy file supabase/work_schema.sql.';
+  else if (/row-level security|permission denied|not authorized|violates row/i.test(msg)) msg = 'Không có quyền ghi. Hãy chắc là đã chạy file supabase/work_schema.sql và bạn đang đăng nhập đúng tài khoản.';
+  else if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg = 'Mất kết nối mạng. Hãy thử lại.';
+  if (e && e.code && String(msg).indexOf(e.code) < 0) msg += ' (mã lỗi ' + e.code + ')';
   C.toast(msg, true);
+  const box = document.querySelector('#wmDlg.on .wm-err');             // hiện luôn trong hộp thoại đang mở
+  if (box) { box.textContent = msg; const sh = box.closest('.sheet'); if (sh) sh.scrollTop = sh.scrollHeight; }   // ô lỗi nằm sát thanh nút ở đáy nên cuộn xuống cuối là thấy
 }
+// Supabase chặn quyền sửa/xóa thường KHÔNG báo lỗi mà chỉ trả về 0 dòng -> kiểm tra rõ ràng để không báo "Đã xóa" oan
+const NO_ROW = 'Không thực hiện được: mục này không còn tồn tại hoặc không thuộc tài khoản bạn đang đăng nhập. Hãy tải lại trang (Ctrl+Shift+R) rồi thử lại.';
+function gotRow(data) { if (!data) throw new Error(NO_ROW); return data; }
+function gotRows(data) { if (!data || !data.length) throw new Error(NO_ROW); return data; }
 
 /* ---------------------------------------------------------------------
    Hộp thoại dùng chung, xác nhận xóa, chép vào bộ nhớ tạm
@@ -48,7 +57,8 @@ function openDlg(html, opts) {
   m.classList.add('on'); document.body.classList.add('lock');
   dlgClose = (opts && opts.onClose) || null;
   const first = sh.querySelector('[data-autofocus]');
-  if (first && window.innerWidth > 700) setTimeout(() => first.focus(), 80);
+  // tự đặt con trỏ vào ô đầu tiên, trừ khi bạn đã bấm vào một ô khác trong hộp thoại
+  if (first && window.innerWidth > 700) setTimeout(() => { if (!sh.contains(document.activeElement)) first.focus(); }, 80);
 }
 function closeDlg() {
   const m = $('wmDlg');
@@ -273,7 +283,7 @@ async function deletePart(r) {
   try {
     await track(async () => {
       await removeFiles(imgs.reduce((a, im) => a.concat([im.p, im.t]), []).concat([r.datasheet_path]));
-      must(await C.sb.from('components').delete().eq('id', r.id));
+      gotRows(must(await C.sb.from('components').delete().eq('id', r.id).select('id')));
     });
     P.rows = P.rows.filter((x) => x.id !== r.id); closeDlg(); renderParts(); C.toast('Đã xóa');
   } catch (er) { fail(er); }
@@ -283,8 +293,8 @@ async function quickNote(r, txt) {
   const stamp = dmy(todayStr());
   const next = (r.repair_text ? r.repair_text + '\n\n' : '') + '[' + stamp + '] ' + txt;
   try {
-    const saved = must(await track(async () => C.sb.from('components').update({ repair_text: next, updated_at: new Date().toISOString() }).eq('id', r.id).select().single()));
-    replaceRow(saved); renderParts(); viewPart(r.id); C.toast('Đã thêm ghi chú');
+    const saved = must(await track(async () => C.sb.from('components').update({ repair_text: next, updated_at: new Date().toISOString() }).eq('id', r.id).select().maybeSingle()));
+    replaceRow(gotRow(saved)); renderParts(); viewPart(r.id); C.toast('Đã thêm ghi chú');
   } catch (e) { fail(e); }
 }
 // thêm nhanh ảnh vào linh kiện đã có
@@ -302,7 +312,7 @@ async function quickPhotos(r, files) {
         const r2 = await C.sb.storage.from(BUCKET).upload(th, im.thumb, { contentType: 'image/jpeg', upsert: false }); if (r2.error) throw r2.error; uploaded.push(th);
         URL.revokeObjectURL(im.preview); imgs.push({ p: pth, t: th });
       }
-      return must(await C.sb.from('components').update({ images: imgs, updated_at: new Date().toISOString() }).eq('id', r.id).select().single());
+      return gotRow(must(await C.sb.from('components').update({ images: imgs, updated_at: new Date().toISOString() }).eq('id', r.id).select().maybeSingle()));
     });
     replaceRow(saved); renderParts(); viewPart(r.id); C.toast('Đã thêm ảnh');
   } catch (e) { await removeFiles(uploaded); fail(e); }
@@ -324,7 +334,7 @@ function viewPart(id) {
     '<input type="file" id="qPhoto" accept="image/*" multiple hidden>' +
     '<div class="wm-qbox hidden" id="qBox"><textarea id="qTxt" rows="3" placeholder="Ghi thêm lỗi gặp phải, cách xử lý… (tự ghi kèm ngày hôm nay)"></textarea>' +
     '<div class="twin wm-nostick"><button class="btn" data-q="cancel" type="button">Hủy</button><button class="btn primary" data-q="save" type="button">Lưu ghi chú</button></div></div></div>' +
-    '<div class="hint">Cập nhật ' + fmtDate(r.updated_at) + '</div>' +
+    '<div class="prev bad wm-err"></div><div class="hint">Cập nhật ' + fmtDate(r.updated_at) + '</div>' +
     '<div class="twin"><button class="btn danger" data-del type="button">Xóa</button><button class="btn" data-edit type="button">Sửa</button><button class="btn primary" data-close type="button">Đóng</button></div>', { wide: true });
   const sh = $('wmDlg').querySelector('.sheet');
   fillImgs(sh);
@@ -370,7 +380,7 @@ function editPart(id) {
     '<input id="pDsUrl" type="url" inputmode="url" maxlength="1000" placeholder="hoặc dán đường link datasheet (https://…)" style="margin-top:8px"></div>' +
     '<div class="field"><label for="pFn">Chức năng</label><textarea id="pFn" rows="3" placeholder="Linh kiện này dùng để làm gì…"></textarea></div>' +
     '<div class="field"><label for="pRepair">Ghi chú cách sửa</label><textarea id="pRepair" rows="5" placeholder="Cách kiểm tra, lỗi thường gặp, cách xử lý…"></textarea></div>' +
-    '<div class="prev bad" id="pErr"></div>' +
+    '<div class="prev bad wm-err" id="pErr"></div>' +
     '<div class="twin"><button class="btn" data-cancel type="button">Hủy</button><button class="btn primary" data-save type="button">Lưu</button></div>',
     { wide: true, onClose: () => { if (E) E.images.forEach((im) => { if (im.isNew) URL.revokeObjectURL(im.preview); }); E = null; } });
   $('pName').value = r ? r.name : ''; $('pCode').value = r ? r.code : ''; $('pGrp').value = r ? r.grp : (P.grp || GROUPS[0]);
@@ -437,7 +447,7 @@ async function savePart(old) {
       }
       const row = { grp: $('pGrp').value || 'Khác', name, code: $('pCode').value.trim(), images: imgs, datasheet_path: dsPath, datasheet_name: dsName,
                     datasheet_url: $('pDsUrl').value.trim(), function_text: $('pFn').value.trim(), repair_text: $('pRepair').value.trim(), updated_at: new Date().toISOString() };
-      const saved = old ? must(await C.sb.from('components').update(row).eq('id', id).select().single())
+      const saved = old ? gotRow(must(await C.sb.from('components').update(row).eq('id', id).select().maybeSingle()))
                         : must(await C.sb.from('components').insert(Object.assign({ id }, row)).select().single());
       await removeFiles(E.removed.concat([E.dsRemoved]));
       const i = P.rows.findIndex((x) => x.id === id); if (i >= 0) P.rows.splice(i, 1);
@@ -477,7 +487,7 @@ function initPw() {
     else if (a === 'edit') editPw(r.id);
     else if (a === 'del') {
       if (!(await askConfirm('Xóa máy "' + r.name + '" cùng toàn bộ mật khẩu? Không thể hoàn tác.'))) return;
-      try { await track(async () => must(await C.sb.from('machine_passwords').delete().eq('id', r.id))); W.rows = W.rows.filter((x) => x.id !== r.id); renderPw(); C.toast('Đã xóa'); }
+      try { await track(async () => gotRows(must(await C.sb.from('machine_passwords').delete().eq('id', r.id).select('id')))); W.rows = W.rows.filter((x) => x.id !== r.id); renderPw(); C.toast('Đã xóa'); }
       catch (er) { fail(er); }
     }
   });
@@ -515,7 +525,7 @@ function editPw(id) {
     '<div class="wm-pastebox hidden" id="wPaste"><textarea id="wPasteTxt" rows="4" placeholder="Mỗi dòng một mật khẩu"></textarea>' +
     '<input id="wPasteLbl" maxlength="80" placeholder="Nhãn chung cho các mật khẩu này (không bắt buộc)" style="margin-top:8px">' +
     '<button class="btn block" data-pasteok type="button">Thêm vào danh sách</button></div></div>' +
-    '<div class="prev bad" id="wErr"></div><div class="twin"><button class="btn" data-cancel type="button">Hủy</button><button class="btn primary" data-save type="button">Lưu</button></div>', { wide: true });
+    '<div class="prev bad wm-err" id="wErr"></div><div class="twin"><button class="btn" data-cancel type="button">Hủy</button><button class="btn primary" data-save type="button">Lưu</button></div>', { wide: true });
   $('wName').value = r ? r.name : '';
   const rows = $('wRows');
   const pws = r ? (r.passwords || []) : [];
@@ -542,8 +552,9 @@ function editPw(id) {
     b.disabled = true; b.textContent = 'Đang lưu…';
     try {
       const row = { name, passwords: out, updated_at: new Date().toISOString() };
-      const saved = must(await track(async () => (r ? C.sb.from('machine_passwords').update(row).eq('id', r.id).select().single()
+      const saved = must(await track(async () => (r ? C.sb.from('machine_passwords').update(row).eq('id', r.id).select().maybeSingle()
                                                    : C.sb.from('machine_passwords').insert(row).select().single())));
+      gotRow(saved);
       const i = W.rows.findIndex((x) => x.id === saved.id); if (i >= 0) W.rows.splice(i, 1);
       W.rows.push(saved); W.rows.sort((a, b2) => a.name.localeCompare(b2.name, 'vi'));
       closeDlg(); renderPw(); C.toast('Đã lưu');
@@ -614,7 +625,7 @@ function openDay(day) {
   openDlg('<h2>' + DOW_LONG[dt.getDay()] + ', ' + dmy(day) + '</h2>' +
     '<div class="field"><label>Đánh dấu</label><div class="wm-cols" id="kCols">' + MARKS.map((m) => '<button type="button" class="c-' + m[0] + (mark === m[0] ? ' on' : '') + '" data-col="' + m[0] + '"><b></b>' + m[1] + '</button>').join('') + '</div></div>' +
     '<div class="field"><label for="kNote">Ghi chú</label><textarea id="kNote" rows="5" data-autofocus placeholder="Việc cần làm, cuộc hẹn, nhắc nhở…"></textarea></div>' +
-    '<div class="twin">' + (K.days[day] ? '<button class="btn danger" data-k="del" type="button">Xóa</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
+    '<div class="prev bad wm-err"></div><div class="twin">' + (K.days[day] ? '<button class="btn danger" data-k="del" type="button">Xóa</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
   $('kNote').value = cur.note || '';
   $('wmDlg').querySelector('.sheet').onclick = async (e) => {
     const col = e.target.closest('[data-col]');
@@ -626,7 +637,7 @@ function openDay(day) {
     try {
       const note = $('kNote').value.trim();
       if (a === 'del' || (!mark && !note)) {
-        if (K.days[day]) await track(async () => must(await C.sb.from('cal_days').delete().eq('day', day)));
+        if (K.days[day]) await track(async () => gotRows(must(await C.sb.from('cal_days').delete().eq('day', day).select('day'))));
         delete K.days[day];
       } else {
         const saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark, note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
