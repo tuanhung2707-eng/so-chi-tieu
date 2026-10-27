@@ -170,3 +170,12 @@ select:focus { border-color:var(--accent); box-shadow:var(--focus); background:#
 .toast { z-index:90 !important; max-width:min(92vw,520px); }
 .wm-err { font-size:13.5px; line-height:1.5; font-weight:650; scroll-margin-bottom:110px; }
 .wm-err:not(:empty) { margin:12px 0 0; padding:10px 12px; background:#fff1f4; border:1px solid #f6c9d3; border-radius:12px; }
+
+/* ---------- chân trang + kiểm tra kết nối ---------- */
+.wm-foot { margin-top:22px; padding:10px 4px 0; font-size:12.5px; color:var(--muted); text-align:center; }
+.wm-chk { display:flex; flex-direction:column; gap:6px; margin:12px 0 4px; max-height:52vh; overflow:auto; }
+.wm-ck { display:flex; gap:10px; align-items:flex-start; padding:9px 12px; border-radius:12px; background:#f4f9fe; font-size:13.5px; line-height:1.5; word-break:break-word; }
+.wm-ck b { flex:none; width:18px; text-align:center; }
+.wm-ck.ok { background:#eefaf5; } .wm-ck.ok b { color:var(--ok); }
+.wm-ck.bad { background:#fff1f4; } .wm-ck.bad b { color:var(--bad); }
+.wm-ck small { display:block; margin-top:2px; color:#5b7a93; font-size:12.5px; }
