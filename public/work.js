@@ -7,6 +7,7 @@ const BUCKET = 'work-files';
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['green', 'Nghỉ'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác']];
+const WORK_VERSION = 'v4 · 15/10/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -138,7 +139,8 @@ let activeTab = 'parts';
 function build() {
   $('work').innerHTML =
     '<div class="wm-tabs seg" id="wmTabs">' + TABS.map((t) => '<button type="button" data-t="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>' +
-    TABS.map((t) => '<section class="wm-panel hidden" id="wm-' + t[0] + '"></section>').join('');
+    TABS.map((t) => '<section class="wm-panel hidden" id="wm-' + t[0] + '"></section>').join('') +
+    '<div class="wm-foot">Mục Công việc <b>' + WORK_VERSION + '</b> · <button class="chip" id="wmCheck" type="button">Kiểm tra kết nối &amp; quyền</button></div>';
   if (!$('wmDlg')) {
     document.body.insertAdjacentHTML('beforeend',
       '<div class="modal wm-modal" id="wmDlg"><div class="sheet"></div></div>' +
@@ -154,6 +156,10 @@ function build() {
     });
   }
   $('wmTabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) switchTab(b.getAttribute('data-t')); });
+  $('wmCheck').onclick = runCheck;
+  // lỗi chương trình bất ngờ cũng được báo ra thay vì im lặng
+  window.addEventListener('error', (e) => { if (/work\.js/.test(e.filename || '')) C.toast('Lỗi chương trình: ' + e.message, true); });
+  window.addEventListener('unhandledrejection', (e) => { const m = e.reason && e.reason.message ? e.reason.message : String(e.reason); if (/work|components|supabase|storage/i.test(m)) C.toast('Lỗi: ' + m, true); });
   initParts(); initPw(); initCal();
   built = true;
 }
@@ -646,4 +652,77 @@ function openDay(day) {
       closeDlg(); renderCal(); C.toast('Đã lưu');
     } catch (er) { fail(er); b.disabled = false; }
   };
+}
+
+/* =====================================================================
+   KIỂM TRA KẾT NỐI & QUYỀN: thử đọc / thêm / sửa / xóa thật trên Supabase và nói rõ chỗ nào bị chặn
+===================================================================== */
+async function runCheck() {
+  const lines = [];
+  openDlg('<h2>Kiểm tra kết nối &amp; quyền</h2><p class="hint" style="margin-top:2px">Web sẽ thử đọc, thêm, sửa, xóa một dòng thử và kiểm tra kho ảnh. Dữ liệu thật của bạn không bị xóa.</p><div class="wm-chk" id="chkList"><div class="muted">Đang kiểm tra…</div></div>' +
+    '<div class="twin"><button class="btn" data-ck="copy" type="button">Chép kết quả</button><button class="btn primary" data-ck="close" type="button">Đóng</button></div>', { wide: true });
+  const draw = () => {
+    $('chkList').innerHTML = lines.map((l) => '<div class="wm-ck ' + (l.ok === true ? 'ok' : l.ok === false ? 'bad' : '') + '"><b>' + (l.ok === true ? '✔' : l.ok === false ? '✘' : '•') + '</b><div>' + esc(l.text) +
+      (l.hint ? '<small>' + esc(l.hint) + '</small>' : '') + '</div></div>').join('') + (lines.done ? '' : '<div class="muted" style="padding:6px 2px">Đang kiểm tra…</div>');
+  };
+  const add = (ok, text, hint) => { lines.push({ ok, text, hint }); draw(); };
+  const et = (e) => (e && e.message ? e.message : String(e)) + (e && e.code ? ' [' + e.code + ']' : '');
+  $('wmDlg').querySelector('.sheet').onclick = (e) => {
+    const b = e.target.closest('[data-ck]'); if (!b) return;
+    if (b.getAttribute('data-ck') === 'close') closeDlg();
+    else copyText('Mục Công việc ' + WORK_VERSION + '\n' + lines.map((l) => (l.ok === true ? '[OK] ' : l.ok === false ? '[LỖI] ' : '- ') + l.text + (l.hint ? ' → ' + l.hint : '')).join('\n')).then(() => C.toast('Đã chép kết quả, hãy dán gửi cho người hỗ trợ'), () => C.toast('Không chép được', true));
+  };
+  try {
+    add(null, 'Phiên bản mục Công việc đang chạy: ' + WORK_VERSION);
+    const ur = await C.sb.auth.getUser(), me = ur.data && ur.data.user;
+    if (!me) { add(false, 'Chưa đăng nhập hoặc phiên đã hết hạn', 'Đăng xuất rồi đăng nhập lại.'); lines.done = true; draw(); return; }
+    add(true, 'Đang đăng nhập bằng: ' + me.email + ' (mã ' + me.id.slice(0, 8) + '…)');
+
+    const rows = await C.sb.from('components').select('id,name,user_id').limit(500);
+    let mineRows = [];
+    if (rows.error) add(false, 'Không đọc được bảng linh kiện: ' + et(rows.error), 'Chạy lại toàn bộ file supabase/work_schema.sql trong Supabase → SQL Editor.');
+    else {
+      mineRows = rows.data.filter((r) => r.user_id === me.id);
+      add(true, 'Đọc được ' + rows.data.length + ' linh kiện (' + mineRows.length + ' thuộc tài khoản này)');
+      if (rows.data.length > mineRows.length) add(false, (rows.data.length - mineRows.length) + ' linh kiện thuộc TÀI KHOẢN KHÁC nên không sửa/xóa được', 'Thường do chạy file seed_tu_excel.sql khi có nhiều tài khoản. Cần chuyển các dòng này sang tài khoản của bạn bằng SQL.');
+    }
+
+    // thử thêm -> sửa -> xóa một dòng tạm
+    let tid = null;
+    const ins = await C.sb.from('components').insert({ name: '__kiem_tra__' }).select('id').maybeSingle();
+    if (ins.error || !ins.data) add(false, 'Thêm dòng thử: THẤT BẠI ' + (ins.error ? et(ins.error) : ''), 'Bảng thiếu quyền ghi hoặc chính sách bảo mật (RLS) chưa đúng. Chạy lại supabase/work_schema.sql.');
+    else {
+      tid = ins.data.id; add(true, 'Thêm dòng thử: được');
+      const up = await C.sb.from('components').update({ name: '__kiem_tra_sua__' }).eq('id', tid).select('id');
+      if (up.error || !up.data || !up.data.length) add(false, 'Sửa dòng thử: THẤT BẠI ' + (up.error ? et(up.error) : '(server không báo lỗi nhưng không sửa dòng nào)'), 'Thiếu quyền UPDATE. Chạy lại supabase/work_schema.sql.');
+      else add(true, 'Sửa dòng thử: được');
+      const de = await C.sb.from('components').delete().eq('id', tid).select('id');
+      if (de.error || !de.data || !de.data.length) add(false, 'Xóa dòng thử: THẤT BẠI ' + (de.error ? et(de.error) : '(server không báo lỗi nhưng không xóa dòng nào)'), 'Thiếu quyền DELETE. Chạy lại supabase/work_schema.sql. Nếu còn sót dòng tên "__kiem_tra__", hãy xóa tay trong Table Editor.');
+      else add(true, 'Xóa dòng thử: được');
+    }
+    // thử sửa nhẹ (chỉ đổi giờ cập nhật) một linh kiện thật của bạn
+    if (mineRows.length) {
+      const r0 = mineRows[0], up2 = await C.sb.from('components').update({ updated_at: new Date().toISOString() }).eq('id', r0.id).select('id');
+      if (up2.error || !up2.data || !up2.data.length) add(false, 'Sửa linh kiện thật "' + r0.name + '": THẤT BẠI ' + (up2.error ? et(up2.error) : '(không sửa dòng nào)'), 'Dòng này có thể không thuộc tài khoản của bạn.');
+      else add(true, 'Sửa linh kiện thật "' + r0.name + '": được');
+    }
+
+    // kho ảnh / datasheet
+    const path = me.id + '/_kiem_tra_' + Date.now() + '.txt';
+    const upl = await C.sb.storage.from(BUCKET).upload(path, new Blob(['ok'], { type: 'text/plain' }), { contentType: 'text/plain', upsert: false });
+    if (upl.error) add(false, 'Kho ảnh/datasheet: không tải lên được: ' + et(upl.error), 'Chưa có kho "work-files" hoặc thiếu quyền. Chạy lại supabase/work_schema.sql (mục 5).');
+    else {
+      const sg = await C.sb.storage.from(BUCKET).createSignedUrl(path, 60);
+      await C.sb.storage.from(BUCKET).remove([path]);
+      add(!sg.error, sg.error ? 'Kho ảnh/datasheet: tải lên được nhưng không tạo được đường dẫn xem: ' + et(sg.error) : 'Kho ảnh/datasheet: tải lên, xem và xóa đều được');
+    }
+    // các bảng còn lại
+    for (const t of ['machine_passwords', 'cal_days']) {
+      const r = await C.sb.from(t).select('*', { count: 'exact', head: true });
+      add(!r.error, r.error ? 'Bảng ' + t + ': lỗi ' + et(r.error) : 'Bảng ' + t + ': đọc được (' + (r.count || 0) + ' dòng)', r.error ? 'Chạy lại supabase/work_schema.sql.' : '');
+    }
+    const bad = lines.filter((l) => l.ok === false).length;
+    add(bad === 0, bad === 0 ? 'KẾT LUẬN: mọi thứ đều hoạt động. Nếu nút Sửa/Xóa vẫn không chạy thì lỗi nằm ở trình duyệt, hãy tải lại bằng Ctrl+Shift+R và kiểm tra dòng phiên bản ở trên.' : 'KẾT LUẬN: có ' + bad + ' mục lỗi (đánh dấu ✘ ở trên). Hãy bấm "Chép kết quả" và gửi cho người hỗ trợ.');
+  } catch (e) { add(false, 'Lỗi khi kiểm tra: ' + et(e)); }
+  lines.done = true; draw();
 }
