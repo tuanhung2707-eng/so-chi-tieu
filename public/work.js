@@ -7,7 +7,6 @@ const BUCKET = 'work-files';
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['green', 'Nghỉ'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác']];
-const WORK_VERSION = 'v5 · 15/10/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -21,7 +20,6 @@ const pad2 = (n) => (n < 10 ? '0' : '') + n;
 const ymd = (d) => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
 const todayStr = () => ymd(new Date());
 const dmy = (s) => { const p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
-const fmtDate = (iso) => { const d = new Date(iso); return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear(); };
 const multiline = (t) => esc(t).replace(/\n/g, '<br>');
 const DOW_LONG = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 
@@ -30,21 +28,12 @@ async function track(fn) {
   try { return await fn(); } finally { C.setStatus('ok'); }
 }
 function fail(e) {
-  console.error('[Công việc]', e);
   let msg = (e && e.message) ? e.message : String(e);
   if (/relation .* does not exist|schema cache|Could not find the table/i.test(msg)) msg = 'Chưa tạo bảng dữ liệu. Hãy chạy file supabase/work_schema.sql trong Supabase.';
   else if (/Bucket not found/i.test(msg)) msg = 'Chưa có kho chứa file. Hãy chạy file supabase/work_schema.sql trong Supabase.';
-  else if (/row-level security|permission denied|not authorized|violates row/i.test(msg)) msg = 'Không có quyền ghi. Hãy chắc là đã chạy file supabase/work_schema.sql và bạn đang đăng nhập đúng tài khoản.';
-  else if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg = 'Mất kết nối mạng. Hãy thử lại.';
-  if (e && e.code && String(msg).indexOf(e.code) < 0) msg += ' (mã lỗi ' + e.code + ')';
+  else if (/row-level security|permission denied|not authorized|violates row/i.test(msg)) msg = 'Không có quyền ghi. Hãy chắc là đã chạy file supabase/work_schema.sql.';
   C.toast(msg, true);
-  const box = document.querySelector('#wmDlg.on .wm-err');             // hiện luôn trong hộp thoại đang mở
-  if (box) { box.textContent = msg; const sh = box.closest('.sheet'); if (sh) sh.scrollTop = sh.scrollHeight; }   // ô lỗi nằm sát thanh nút ở đáy nên cuộn xuống cuối là thấy
 }
-// Supabase chặn quyền sửa/xóa thường KHÔNG báo lỗi mà chỉ trả về 0 dòng -> kiểm tra rõ ràng để không báo "Đã xóa" oan
-const NO_ROW = 'Không thực hiện được: mục này không còn tồn tại hoặc không thuộc tài khoản bạn đang đăng nhập. Hãy tải lại trang (Ctrl+Shift+R) rồi thử lại.';
-function gotRow(data) { if (!data) throw new Error(NO_ROW); return data; }
-function gotRows(data) { if (!data || !data.length) throw new Error(NO_ROW); return data; }
 
 /* ---------------------------------------------------------------------
    Hộp thoại dùng chung, xác nhận xóa, chép vào bộ nhớ tạm
@@ -58,8 +47,7 @@ function openDlg(html, opts) {
   m.classList.add('on'); document.body.classList.add('lock');
   dlgClose = (opts && opts.onClose) || null;
   const first = sh.querySelector('[data-autofocus]');
-  // tự đặt con trỏ vào ô đầu tiên, trừ khi bạn đã bấm vào một ô khác trong hộp thoại
-  if (first && window.innerWidth > 700) setTimeout(() => { if (!sh.contains(document.activeElement)) first.focus(); }, 80);
+  if (first && window.innerWidth > 700) setTimeout(() => first.focus(), 80);
 }
 function closeDlg() {
   const m = $('wmDlg');
@@ -139,8 +127,7 @@ let activeTab = 'parts';
 function build() {
   $('work').innerHTML =
     '<div class="wm-tabs seg" id="wmTabs">' + TABS.map((t) => '<button type="button" data-t="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>' +
-    TABS.map((t) => '<section class="wm-panel hidden" id="wm-' + t[0] + '"></section>').join('') +
-    '<div class="wm-foot">Mục Công việc <b>' + WORK_VERSION + '</b> · <button class="chip" id="wmCheck" type="button">Kiểm tra kết nối &amp; quyền</button></div>';
+    TABS.map((t) => '<section class="wm-panel hidden" id="wm-' + t[0] + '"></section>').join('');
   if (!$('wmDlg')) {
     document.body.insertAdjacentHTML('beforeend',
       '<div class="modal wm-modal" id="wmDlg"><div class="sheet"></div></div>' +
@@ -156,10 +143,6 @@ function build() {
     });
   }
   $('wmTabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) switchTab(b.getAttribute('data-t')); });
-  $('wmCheck').onclick = runCheck;
-  // lỗi chương trình bất ngờ cũng được báo ra thay vì im lặng
-  window.addEventListener('error', (e) => { if (/work\.js/.test(e.filename || '')) C.toast('Lỗi chương trình: ' + e.message, true); });
-  window.addEventListener('unhandledrejection', (e) => { const m = e.reason && e.reason.message ? e.reason.message : String(e.reason); if (/work|components|supabase|storage/i.test(m)) C.toast('Lỗi: ' + m, true); });
   initParts(); initPw(); initCal();
   built = true;
 }
@@ -239,13 +222,8 @@ function initParts() {
   $('pQ').addEventListener('input', () => { P.q = $('pQ').value.trim().toLowerCase(); renderParts(); });
   $('pAdd').onclick = () => editPart(null);
   $('pGrps').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (!b) return; P.grp = P.grp === b.getAttribute('data-g') ? '' : b.getAttribute('data-g'); renderParts(); });
-  $('pGrid').addEventListener('click', (e) => {
-    const c = e.target.closest('[data-id]'); if (!c) return;
-    const id = c.getAttribute('data-id'), act = e.target.closest('[data-act]');
-    if (act) { const r = P.rows.find((x) => x.id === id); if (!r) return; if (act.getAttribute('data-act') === 'edit') editPart(id); else deletePart(r); return; }
-    viewPart(id);
-  });
-  $('pGrid').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.target.closest('[data-act]')) { const c = e.target.closest('[data-id]'); if (c) viewPart(c.getAttribute('data-id')); } });
+  $('pGrid').addEventListener('click', (e) => { const c = e.target.closest('[data-id]'); if (c) viewPart(c.getAttribute('data-id')); });
+  $('pGrid').addEventListener('keydown', (e) => { if (e.key === 'Enter') { const c = e.target.closest('[data-id]'); if (c) viewPart(c.getAttribute('data-id')); } });
 }
 async function loadParts() {
   if (P.loaded) { renderParts(); return; }
@@ -272,56 +250,12 @@ function renderParts() {
     return '<article class="wm-card wm-part" data-id="' + esc(r.id) + '" tabindex="0">' +
       '<div class="wm-cover' + (cover ? '' : ' noimg') + '">' + (cover ? '<img data-p="' + esc(cover.t || cover.p) + '" alt="" loading="lazy">' : '<span class="wm-noimg">' + GEAR + '</span>') +
       ((r.images || []).length > 1 ? '<i class="wm-count">' + r.images.length + ' ảnh</i>' : '') +
-      ((r.datasheet_path || r.datasheet_url) ? '<i class="wm-ds">Datasheet</i>' : '') +
-      '<div class="wm-cact"><button type="button" data-act="edit" aria-label="Sửa" title="Sửa">✎</button><button type="button" class="bad" data-act="del" aria-label="Xóa" title="Xóa">✕</button></div></div>' +
+      ((r.datasheet_path || r.datasheet_url) ? '<i class="wm-ds">Datasheet</i>' : '') + '</div>' +
       '<div class="wm-card-b"><span class="wm-grp">' + esc(r.grp) + '</span><h3>' + esc(r.name) + '</h3>' +
       (r.code ? '<div class="wm-code">' + esc(r.code) + '</div>' : '') +
       (r.function_text ? '<p>' + esc(r.function_text) + '</p>' : '') + '</div></article>';
   }).join('');
   fillImgs($('pGrid'));
-}
-
-function replaceRow(saved) { const i = P.rows.findIndex((x) => x.id === saved.id); if (i >= 0) P.rows[i] = saved; else P.rows.push(saved); }
-
-async function deletePart(r) {
-  const imgs = r.images || [];
-  if (!(await askConfirm('Xóa linh kiện "' + r.name + '" cùng ảnh và datasheet? Không thể hoàn tác.'))) return;
-  try {
-    await track(async () => {
-      await removeFiles(imgs.reduce((a, im) => a.concat([im.p, im.t]), []).concat([r.datasheet_path]));
-      gotRows(must(await C.sb.from('components').delete().eq('id', r.id).select('id')));
-    });
-    P.rows = P.rows.filter((x) => x.id !== r.id); closeDlg(); renderParts(); C.toast('Đã xóa');
-  } catch (er) { fail(er); }
-}
-// thêm nhanh một đoạn ghi chú (có ghi ngày) vào "Ghi chú cách sửa" mà không phải mở form sửa
-async function quickNote(r, txt) {
-  const stamp = dmy(todayStr());
-  const next = (r.repair_text ? r.repair_text + '\n\n' : '') + '[' + stamp + '] ' + txt;
-  try {
-    const saved = must(await track(async () => C.sb.from('components').update({ repair_text: next, updated_at: new Date().toISOString() }).eq('id', r.id).select().maybeSingle()));
-    replaceRow(gotRow(saved)); renderParts(); viewPart(r.id); C.toast('Đã thêm ghi chú');
-  } catch (e) { fail(e); }
-}
-// thêm nhanh ảnh vào linh kiện đã có
-async function quickPhotos(r, files) {
-  const uploaded = [];
-  C.toast('Đang tải ảnh…');
-  try {
-    const saved = await track(async () => {
-      const imgs = (r.images || []).slice();
-      for (const f of files) {
-        if (!/^image\//.test(f.type)) { C.toast('"' + f.name + '" không phải ảnh', true); continue; }
-        const im = await prepImage(f);
-        const base = user().id + '/parts/' + r.id + '/' + uid(), pth = base + '.jpg', th = base + '_t.jpg';
-        const r1 = await C.sb.storage.from(BUCKET).upload(pth, im.full, { contentType: 'image/jpeg', upsert: false }); if (r1.error) throw r1.error; uploaded.push(pth);
-        const r2 = await C.sb.storage.from(BUCKET).upload(th, im.thumb, { contentType: 'image/jpeg', upsert: false }); if (r2.error) throw r2.error; uploaded.push(th);
-        URL.revokeObjectURL(im.preview); imgs.push({ p: pth, t: th });
-      }
-      return gotRow(must(await C.sb.from('components').update({ images: imgs, updated_at: new Date().toISOString() }).eq('id', r.id).select().maybeSingle()));
-    });
-    replaceRow(saved); renderParts(); viewPart(r.id); C.toast('Đã thêm ảnh');
-  } catch (e) { await removeFiles(uploaded); fail(e); }
 }
 
 function viewPart(id) {
@@ -330,21 +264,14 @@ function viewPart(id) {
   const ds = [];
   if (r.datasheet_path) ds.push('<button class="btn" data-ds="file" type="button">Mở datasheet' + (r.datasheet_name ? ' (' + esc(r.datasheet_name) + ')' : '') + '</button>');
   if (r.datasheet_url) ds.push('<button class="btn" data-ds="url" type="button">Mở link datasheet</button>');
-  openDlg('<div class="wm-dtop"><div class="wm-dh"><span class="wm-grp">' + esc(r.grp) + '</span><h2>' + esc(r.name) + '</h2>' + (r.code ? '<div class="wm-code wm-code-big">' + esc(r.code) + '</div>' : '') + '</div>' +
-    '<div class="wm-va"><button class="wm-ib" data-edit type="button" aria-label="Sửa" title="Sửa">✎</button><button class="wm-ib bad" data-del type="button" aria-label="Xóa" title="Xóa">✕</button></div></div>' +
+  openDlg('<div class="wm-dh"><span class="wm-grp">' + esc(r.grp) + '</span><h2>' + esc(r.name) + '</h2>' + (r.code ? '<div class="wm-code wm-code-big">' + esc(r.code) + '</div>' : '') + '</div>' +
     (imgs.length ? '<div class="wm-gal">' + imgs.map((im, i) => '<button type="button" data-i="' + i + '"><img data-p="' + esc(im.t || im.p) + '" alt=""></button>').join('') + '</div>' : '') +
     '<div class="wm-sec"><h4>Chức năng</h4><div class="wm-txt">' + (r.function_text ? multiline(r.function_text) : '<span class="muted">Chưa ghi.</span>') + '</div></div>' +
     '<div class="wm-sec"><h4>Ghi chú cách sửa</h4><div class="wm-txt">' + (r.repair_text ? multiline(r.repair_text) : '<span class="muted">Chưa ghi.</span>') + '</div></div>' +
     '<div class="wm-sec"><h4>Datasheet</h4>' + (ds.length ? '<div class="wm-dsb">' + ds.join('') + '</div>' : '<span class="muted">Chưa có.</span>') + '</div>' +
-    '<div class="wm-quick"><div class="wm-qh">Thêm nhanh vào linh kiện này</div><div class="wm-qb"><button class="chip" data-q="note" type="button">＋ Thêm ghi chú</button><button class="chip" data-q="photo" type="button">＋ Thêm ảnh</button></div>' +
-    '<input type="file" id="qPhoto" accept="image/*" multiple hidden>' +
-    '<div class="wm-qbox hidden" id="qBox"><textarea id="qTxt" rows="3" placeholder="Ghi thêm lỗi gặp phải, cách xử lý… (tự ghi kèm ngày hôm nay)"></textarea>' +
-    '<div class="twin wm-nostick"><button class="btn" data-q="cancel" type="button">Hủy</button><button class="btn primary" data-q="save" type="button">Lưu ghi chú</button></div></div></div>' +
-    '<div class="prev bad wm-err"></div><div class="hint">Cập nhật ' + fmtDate(r.updated_at) + '</div>' +
     '<div class="twin"><button class="btn danger" data-del type="button">Xóa</button><button class="btn" data-edit type="button">Sửa</button><button class="btn primary" data-close type="button">Đóng</button></div>', { wide: true });
   const sh = $('wmDlg').querySelector('.sheet');
   fillImgs(sh);
-  $('qPhoto').onchange = () => { const f = Array.prototype.slice.call($('qPhoto').files); $('qPhoto').value = ''; if (f.length) quickPhotos(r, f); };
   sh.onclick = async (e) => {
     const g = e.target.closest('.wm-gal button');
     if (g) { openLight(imgs, Number(g.getAttribute('data-i'))); return; }
@@ -356,18 +283,18 @@ function viewPart(id) {
       } catch (er) { fail(er); }
       return;
     }
-    const q = e.target.closest('[data-q]');
-    if (q) {
-      const a = q.getAttribute('data-q');
-      if (a === 'note') { $('qBox').classList.remove('hidden'); $('qTxt').focus(); }
-      else if (a === 'photo') $('qPhoto').click();
-      else if (a === 'cancel') { $('qTxt').value = ''; $('qBox').classList.add('hidden'); }
-      else if (a === 'save') { const t = $('qTxt').value.trim(); if (!t) { $('qTxt').focus(); return; } q.disabled = true; q.textContent = 'Đang lưu…'; quickNote(r, t); }
-      return;
-    }
     if (e.target.closest('[data-close]')) closeDlg();
     else if (e.target.closest('[data-edit]')) editPart(r.id);
-    else if (e.target.closest('[data-del]')) deletePart(r);
+    else if (e.target.closest('[data-del]')) {
+      if (!(await askConfirm('Xóa linh kiện "' + r.name + '" cùng ảnh và datasheet? Không thể hoàn tác.'))) return;
+      try {
+        await track(async () => {
+          await removeFiles(imgs.reduce((a, im) => a.concat([im.p, im.t]), []).concat([r.datasheet_path]));
+          must(await C.sb.from('components').delete().eq('id', r.id));
+        });
+        P.rows = P.rows.filter((x) => x.id !== r.id); closeDlg(); renderParts(); C.toast('Đã xóa');
+      } catch (er) { fail(er); }
+    }
   };
 }
 
@@ -386,7 +313,7 @@ function editPart(id) {
     '<input id="pDsUrl" type="url" inputmode="url" maxlength="1000" placeholder="hoặc dán đường link datasheet (https://…)" style="margin-top:8px"></div>' +
     '<div class="field"><label for="pFn">Chức năng</label><textarea id="pFn" rows="3" placeholder="Linh kiện này dùng để làm gì…"></textarea></div>' +
     '<div class="field"><label for="pRepair">Ghi chú cách sửa</label><textarea id="pRepair" rows="5" placeholder="Cách kiểm tra, lỗi thường gặp, cách xử lý…"></textarea></div>' +
-    '<div class="prev bad wm-err" id="pErr"></div>' +
+    '<div class="prev bad" id="pErr"></div>' +
     '<div class="twin"><button class="btn" data-cancel type="button">Hủy</button><button class="btn primary" data-save type="button">Lưu</button></div>',
     { wide: true, onClose: () => { if (E) E.images.forEach((im) => { if (im.isNew) URL.revokeObjectURL(im.preview); }); E = null; } });
   $('pName').value = r ? r.name : ''; $('pCode').value = r ? r.code : ''; $('pGrp').value = r ? r.grp : (P.grp || GROUPS[0]);
@@ -453,7 +380,7 @@ async function savePart(old) {
       }
       const row = { grp: $('pGrp').value || 'Khác', name, code: $('pCode').value.trim(), images: imgs, datasheet_path: dsPath, datasheet_name: dsName,
                     datasheet_url: $('pDsUrl').value.trim(), function_text: $('pFn').value.trim(), repair_text: $('pRepair').value.trim(), updated_at: new Date().toISOString() };
-      const saved = old ? gotRow(must(await C.sb.from('components').update(row).eq('id', id).select().maybeSingle()))
+      const saved = old ? must(await C.sb.from('components').update(row).eq('id', id).select().single())
                         : must(await C.sb.from('components').insert(Object.assign({ id }, row)).select().single());
       await removeFiles(E.removed.concat([E.dsRemoved]));
       const i = P.rows.findIndex((x) => x.id === id); if (i >= 0) P.rows.splice(i, 1);
@@ -493,7 +420,7 @@ function initPw() {
     else if (a === 'edit') editPw(r.id);
     else if (a === 'del') {
       if (!(await askConfirm('Xóa máy "' + r.name + '" cùng toàn bộ mật khẩu? Không thể hoàn tác.'))) return;
-      try { await track(async () => gotRows(must(await C.sb.from('machine_passwords').delete().eq('id', r.id).select('id')))); W.rows = W.rows.filter((x) => x.id !== r.id); renderPw(); C.toast('Đã xóa'); }
+      try { await track(async () => must(await C.sb.from('machine_passwords').delete().eq('id', r.id))); W.rows = W.rows.filter((x) => x.id !== r.id); renderPw(); C.toast('Đã xóa'); }
       catch (er) { fail(er); }
     }
   });
@@ -531,7 +458,7 @@ function editPw(id) {
     '<div class="wm-pastebox hidden" id="wPaste"><textarea id="wPasteTxt" rows="4" placeholder="Mỗi dòng một mật khẩu"></textarea>' +
     '<input id="wPasteLbl" maxlength="80" placeholder="Nhãn chung cho các mật khẩu này (không bắt buộc)" style="margin-top:8px">' +
     '<button class="btn block" data-pasteok type="button">Thêm vào danh sách</button></div></div>' +
-    '<div class="prev bad wm-err" id="wErr"></div><div class="twin"><button class="btn" data-cancel type="button">Hủy</button><button class="btn primary" data-save type="button">Lưu</button></div>', { wide: true });
+    '<div class="prev bad" id="wErr"></div><div class="twin"><button class="btn" data-cancel type="button">Hủy</button><button class="btn primary" data-save type="button">Lưu</button></div>', { wide: true });
   $('wName').value = r ? r.name : '';
   const rows = $('wRows');
   const pws = r ? (r.passwords || []) : [];
@@ -558,9 +485,8 @@ function editPw(id) {
     b.disabled = true; b.textContent = 'Đang lưu…';
     try {
       const row = { name, passwords: out, updated_at: new Date().toISOString() };
-      const saved = must(await track(async () => (r ? C.sb.from('machine_passwords').update(row).eq('id', r.id).select().maybeSingle()
+      const saved = must(await track(async () => (r ? C.sb.from('machine_passwords').update(row).eq('id', r.id).select().single()
                                                    : C.sb.from('machine_passwords').insert(row).select().single())));
-      gotRow(saved);
       const i = W.rows.findIndex((x) => x.id === saved.id); if (i >= 0) W.rows.splice(i, 1);
       W.rows.push(saved); W.rows.sort((a, b2) => a.name.localeCompare(b2.name, 'vi'));
       closeDlg(); renderPw(); C.toast('Đã lưu');
@@ -631,7 +557,7 @@ function openDay(day) {
   openDlg('<h2>' + DOW_LONG[dt.getDay()] + ', ' + dmy(day) + '</h2>' +
     '<div class="field"><label>Đánh dấu</label><div class="wm-cols" id="kCols">' + MARKS.map((m) => '<button type="button" class="c-' + m[0] + (mark === m[0] ? ' on' : '') + '" data-col="' + m[0] + '"><b></b>' + m[1] + '</button>').join('') + '</div></div>' +
     '<div class="field"><label for="kNote">Ghi chú</label><textarea id="kNote" rows="5" data-autofocus placeholder="Việc cần làm, cuộc hẹn, nhắc nhở…"></textarea></div>' +
-    '<div class="prev bad wm-err"></div><div class="twin">' + (K.days[day] ? '<button class="btn danger" data-k="del" type="button">Xóa</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
+    '<div class="twin">' + (K.days[day] ? '<button class="btn danger" data-k="del" type="button">Xóa</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
   $('kNote').value = cur.note || '';
   $('wmDlg').querySelector('.sheet').onclick = async (e) => {
     const col = e.target.closest('[data-col]');
@@ -643,7 +569,7 @@ function openDay(day) {
     try {
       const note = $('kNote').value.trim();
       if (a === 'del' || (!mark && !note)) {
-        if (K.days[day]) await track(async () => gotRows(must(await C.sb.from('cal_days').delete().eq('day', day).select('day'))));
+        if (K.days[day]) await track(async () => must(await C.sb.from('cal_days').delete().eq('day', day)));
         delete K.days[day];
       } else {
         const saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark, note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
@@ -652,84 +578,4 @@ function openDay(day) {
       closeDlg(); renderCal(); C.toast('Đã lưu');
     } catch (er) { fail(er); b.disabled = false; }
   };
-}
-
-/* =====================================================================
-   KIỂM TRA KẾT NỐI & QUYỀN: thử đọc / thêm / sửa / xóa thật trên Supabase và nói rõ chỗ nào bị chặn
-===================================================================== */
-async function runCheck() {
-  const lines = [];
-  openDlg('<h2>Kiểm tra kết nối &amp; quyền</h2><p class="hint" style="margin-top:2px">Web sẽ thử đọc, thêm, sửa, xóa một dòng thử và kiểm tra kho ảnh. Dữ liệu thật của bạn không bị xóa.</p><div class="wm-chk" id="chkList"><div class="muted">Đang kiểm tra…</div></div>' +
-    '<div class="twin"><button class="btn" data-ck="copy" type="button">Chép kết quả</button><button class="btn primary" data-ck="close" type="button">Đóng</button></div>', { wide: true });
-  const draw = () => {
-    $('chkList').innerHTML = lines.map((l) => '<div class="wm-ck ' + (l.ok === true ? 'ok' : l.ok === false ? 'bad' : '') + '"><b>' + (l.ok === true ? '✔' : l.ok === false ? '✘' : '•') + '</b><div>' + esc(l.text) +
-      (l.hint ? '<small>' + esc(l.hint) + '</small>' : '') + '</div></div>').join('') + (lines.done ? '' : '<div class="muted" style="padding:6px 2px">Đang kiểm tra…</div>');
-  };
-  const add = (ok, text, hint) => { lines.push({ ok, text, hint }); draw(); };
-  const et = (e) => (e && e.message ? e.message : String(e)) + (e && e.code ? ' [' + e.code + ']' : '');
-  $('wmDlg').querySelector('.sheet').onclick = (e) => {
-    const b = e.target.closest('[data-ck]'); if (!b) return;
-    if (b.getAttribute('data-ck') === 'close') closeDlg();
-    else copyText('Mục Công việc ' + WORK_VERSION + '\n' + lines.map((l) => (l.ok === true ? '[OK] ' : l.ok === false ? '[LỖI] ' : '- ') + l.text + (l.hint ? ' → ' + l.hint : '')).join('\n')).then(() => C.toast('Đã chép kết quả, hãy dán gửi cho người hỗ trợ'), () => C.toast('Không chép được', true));
-  };
-  try {
-    add(null, 'Phiên bản mục Công việc đang chạy: ' + WORK_VERSION);
-    const ur = await C.sb.auth.getUser(), me = ur.data && ur.data.user;
-    if (!me) { add(false, 'Chưa đăng nhập hoặc phiên đã hết hạn', 'Đăng xuất rồi đăng nhập lại.'); lines.done = true; draw(); return; }
-    add(true, 'Đang đăng nhập bằng: ' + me.email + ' (mã ' + me.id.slice(0, 8) + '…)');
-
-    const rows = await C.sb.from('components').select('id,name,user_id').limit(500);
-    let mineRows = [];
-    if (rows.error) add(false, 'Không đọc được bảng linh kiện: ' + et(rows.error), 'Chạy lại toàn bộ file supabase/work_schema.sql trong Supabase → SQL Editor.');
-    else {
-      mineRows = rows.data.filter((r) => r.user_id === me.id);
-      add(true, 'Đọc được ' + rows.data.length + ' linh kiện (' + mineRows.length + ' thuộc tài khoản này)');
-      if (rows.data.length > mineRows.length) add(false, (rows.data.length - mineRows.length) + ' linh kiện thuộc TÀI KHOẢN KHÁC nên không sửa/xóa được', 'Thường do chạy file seed_tu_excel.sql khi có nhiều tài khoản. Cần chuyển các dòng này sang tài khoản của bạn bằng SQL.');
-    }
-
-    // thử thêm -> sửa -> xóa một dòng tạm
-    let tid = null;
-    const ins = await C.sb.from('components').insert({ name: '__kiem_tra__' }).select('id').maybeSingle();
-    if (ins.error || !ins.data) add(false, 'Thêm dòng thử: THẤT BẠI ' + (ins.error ? et(ins.error) : ''), 'Quy tắc bảo mật (RLS) của bảng bị lệch. Hãy chạy file supabase/work_repair.sql trong Supabase → SQL Editor, rồi kiểm tra lại.');
-    else {
-      tid = ins.data.id; add(true, 'Thêm dòng thử: được');
-      const up = await C.sb.from('components').update({ name: '__kiem_tra_sua__' }).eq('id', tid).select('id');
-      if (up.error || !up.data || !up.data.length) add(false, 'Sửa dòng thử: THẤT BẠI ' + (up.error ? et(up.error) : '(server không báo lỗi nhưng không sửa dòng nào)'), 'Thiếu quyền UPDATE. Hãy chạy file supabase/work_repair.sql.');
-      else add(true, 'Sửa dòng thử: được');
-      const de = await C.sb.from('components').delete().eq('id', tid).select('id');
-      if (de.error || !de.data || !de.data.length) add(false, 'Xóa dòng thử: THẤT BẠI ' + (de.error ? et(de.error) : '(server không báo lỗi nhưng không xóa dòng nào)'), 'Thiếu quyền DELETE. Hãy chạy file supabase/work_repair.sql. Nếu còn sót dòng tên "__kiem_tra__", hãy xóa tay trong Table Editor.');
-      else add(true, 'Xóa dòng thử: được');
-    }
-    // thử đúng thao tác "Lưu" thật của web (ghi lại đủ mọi cột với giá trị hiện có) trên một linh kiện thật của bạn
-    if (mineRows.length) {
-      const r0 = mineRows[0], fr = await C.sb.from('components').select('*').eq('id', r0.id).maybeSingle();
-      if (fr.error || !fr.data) add(false, 'Không đọc được chi tiết linh kiện "' + r0.name + '": ' + (fr.error ? et(fr.error) : ''), 'Chạy file supabase/work_repair.sql.');
-      else {
-        const d = fr.data, payload = { grp: d.grp, name: d.name, code: d.code, images: d.images, datasheet_path: d.datasheet_path, datasheet_name: d.datasheet_name,
-          datasheet_url: d.datasheet_url, function_text: d.function_text, repair_text: d.repair_text, updated_at: new Date().toISOString() };
-        const up2 = await C.sb.from('components').update(payload).eq('id', r0.id).select('id');
-        if (up2.error || !up2.data || !up2.data.length) add(false, 'Lưu thử linh kiện thật "' + r0.name + '": THẤT BẠI ' + (up2.error ? et(up2.error) : '(không sửa dòng nào)'),
-          up2.error && /column|schema cache/i.test(up2.error.message || '') ? 'Bảng thiếu cột. Hãy chạy file supabase/work_repair.sql.' : 'Dòng này có thể không thuộc tài khoản của bạn, hoặc thiếu quyền. Hãy chạy supabase/work_repair.sql.');
-        else add(true, 'Lưu thử linh kiện thật "' + r0.name + '" (đủ mọi cột): được');
-      }
-    }
-
-    // kho ảnh / datasheet
-    const path = me.id + '/_kiem_tra_' + Date.now() + '.txt';
-    const upl = await C.sb.storage.from(BUCKET).upload(path, new Blob(['ok'], { type: 'text/plain' }), { contentType: 'text/plain', upsert: false });
-    if (upl.error) add(false, 'Kho ảnh/datasheet: không tải lên được: ' + et(upl.error), 'Chưa có kho "work-files" hoặc thiếu quyền. Chạy lại supabase/work_schema.sql (mục 5).');
-    else {
-      const sg = await C.sb.storage.from(BUCKET).createSignedUrl(path, 60);
-      await C.sb.storage.from(BUCKET).remove([path]);
-      add(!sg.error, sg.error ? 'Kho ảnh/datasheet: tải lên được nhưng không tạo được đường dẫn xem: ' + et(sg.error) : 'Kho ảnh/datasheet: tải lên, xem và xóa đều được');
-    }
-    // các bảng còn lại
-    for (const t of ['machine_passwords', 'cal_days']) {
-      const r = await C.sb.from(t).select('*', { count: 'exact', head: true });
-      add(!r.error, r.error ? 'Bảng ' + t + ': lỗi ' + et(r.error) : 'Bảng ' + t + ': đọc được (' + (r.count || 0) + ' dòng)', r.error ? 'Chạy lại supabase/work_schema.sql.' : '');
-    }
-    const bad = lines.filter((l) => l.ok === false).length;
-    add(bad === 0, bad === 0 ? 'KẾT LUẬN: mọi thứ đều hoạt động. Nếu nút Sửa/Xóa vẫn không chạy thì lỗi nằm ở trình duyệt, hãy tải lại bằng Ctrl+Shift+R và kiểm tra dòng phiên bản ở trên.' : 'KẾT LUẬN: có ' + bad + ' mục lỗi (đánh dấu ✘ ở trên). Hãy bấm "Chép kết quả" và gửi cho người hỗ trợ.');
-  } catch (e) { add(false, 'Lỗi khi kiểm tra: ' + et(e)); }
-  lines.done = true; draw();
 }
