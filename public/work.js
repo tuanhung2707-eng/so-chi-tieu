@@ -7,7 +7,7 @@ const BUCKET = 'work-files';
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['green', 'Nghỉ'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác']];
-const WORK_VERSION = 'v4 · 15/10/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v5 · 15/10/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -690,21 +690,28 @@ async function runCheck() {
     // thử thêm -> sửa -> xóa một dòng tạm
     let tid = null;
     const ins = await C.sb.from('components').insert({ name: '__kiem_tra__' }).select('id').maybeSingle();
-    if (ins.error || !ins.data) add(false, 'Thêm dòng thử: THẤT BẠI ' + (ins.error ? et(ins.error) : ''), 'Bảng thiếu quyền ghi hoặc chính sách bảo mật (RLS) chưa đúng. Chạy lại supabase/work_schema.sql.');
+    if (ins.error || !ins.data) add(false, 'Thêm dòng thử: THẤT BẠI ' + (ins.error ? et(ins.error) : ''), 'Quy tắc bảo mật (RLS) của bảng bị lệch. Hãy chạy file supabase/work_repair.sql trong Supabase → SQL Editor, rồi kiểm tra lại.');
     else {
       tid = ins.data.id; add(true, 'Thêm dòng thử: được');
       const up = await C.sb.from('components').update({ name: '__kiem_tra_sua__' }).eq('id', tid).select('id');
-      if (up.error || !up.data || !up.data.length) add(false, 'Sửa dòng thử: THẤT BẠI ' + (up.error ? et(up.error) : '(server không báo lỗi nhưng không sửa dòng nào)'), 'Thiếu quyền UPDATE. Chạy lại supabase/work_schema.sql.');
+      if (up.error || !up.data || !up.data.length) add(false, 'Sửa dòng thử: THẤT BẠI ' + (up.error ? et(up.error) : '(server không báo lỗi nhưng không sửa dòng nào)'), 'Thiếu quyền UPDATE. Hãy chạy file supabase/work_repair.sql.');
       else add(true, 'Sửa dòng thử: được');
       const de = await C.sb.from('components').delete().eq('id', tid).select('id');
-      if (de.error || !de.data || !de.data.length) add(false, 'Xóa dòng thử: THẤT BẠI ' + (de.error ? et(de.error) : '(server không báo lỗi nhưng không xóa dòng nào)'), 'Thiếu quyền DELETE. Chạy lại supabase/work_schema.sql. Nếu còn sót dòng tên "__kiem_tra__", hãy xóa tay trong Table Editor.');
+      if (de.error || !de.data || !de.data.length) add(false, 'Xóa dòng thử: THẤT BẠI ' + (de.error ? et(de.error) : '(server không báo lỗi nhưng không xóa dòng nào)'), 'Thiếu quyền DELETE. Hãy chạy file supabase/work_repair.sql. Nếu còn sót dòng tên "__kiem_tra__", hãy xóa tay trong Table Editor.');
       else add(true, 'Xóa dòng thử: được');
     }
-    // thử sửa nhẹ (chỉ đổi giờ cập nhật) một linh kiện thật của bạn
+    // thử đúng thao tác "Lưu" thật của web (ghi lại đủ mọi cột với giá trị hiện có) trên một linh kiện thật của bạn
     if (mineRows.length) {
-      const r0 = mineRows[0], up2 = await C.sb.from('components').update({ updated_at: new Date().toISOString() }).eq('id', r0.id).select('id');
-      if (up2.error || !up2.data || !up2.data.length) add(false, 'Sửa linh kiện thật "' + r0.name + '": THẤT BẠI ' + (up2.error ? et(up2.error) : '(không sửa dòng nào)'), 'Dòng này có thể không thuộc tài khoản của bạn.');
-      else add(true, 'Sửa linh kiện thật "' + r0.name + '": được');
+      const r0 = mineRows[0], fr = await C.sb.from('components').select('*').eq('id', r0.id).maybeSingle();
+      if (fr.error || !fr.data) add(false, 'Không đọc được chi tiết linh kiện "' + r0.name + '": ' + (fr.error ? et(fr.error) : ''), 'Chạy file supabase/work_repair.sql.');
+      else {
+        const d = fr.data, payload = { grp: d.grp, name: d.name, code: d.code, images: d.images, datasheet_path: d.datasheet_path, datasheet_name: d.datasheet_name,
+          datasheet_url: d.datasheet_url, function_text: d.function_text, repair_text: d.repair_text, updated_at: new Date().toISOString() };
+        const up2 = await C.sb.from('components').update(payload).eq('id', r0.id).select('id');
+        if (up2.error || !up2.data || !up2.data.length) add(false, 'Lưu thử linh kiện thật "' + r0.name + '": THẤT BẠI ' + (up2.error ? et(up2.error) : '(không sửa dòng nào)'),
+          up2.error && /column|schema cache/i.test(up2.error.message || '') ? 'Bảng thiếu cột. Hãy chạy file supabase/work_repair.sql.' : 'Dòng này có thể không thuộc tài khoản của bạn, hoặc thiếu quyền. Hãy chạy supabase/work_repair.sql.');
+        else add(true, 'Lưu thử linh kiện thật "' + r0.name + '" (đủ mọi cột): được');
+      }
     }
 
     // kho ảnh / datasheet
