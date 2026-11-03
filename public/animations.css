@@ -744,39 +744,41 @@ body {
       );
   }
 
-  /* ---------- MỎM ĐÁ ---------- */
+ /* ---------- MỎM ĐÁ MỞ RỘNG ---------- */
 
-  .rock-b {
-    left: -5%;
-    bottom: -3px;
-    width: clamp(55px, calc(var(--gw) * .46), 105px);
-    opacity: .55;
-  }
+.rock-b {
+  left: -12%;
+  bottom: -5px;
+  width: clamp(85px, calc(var(--gw) * .72), 165px);
+  opacity: .62;
+}
 
-  .rock-a {
-    left: 22%;
-    bottom: -3px;
-    width: clamp(65px, calc(var(--gw) * .58), 125px);
-    opacity: .68;
-  }
+.rock-a {
+  left: 12%;
+  bottom: -5px;
+  width: clamp(100px, calc(var(--gw) * .88), 195px);
+  opacity: .72;
+}
 
-  .sea-r .rock-b {
-    left: auto;
-    right: -5%;
-    transform: scaleX(-1);
-  }
+/* Đảo chiều bên phải */
+.sea-r .rock-b {
+  left: auto;
+  right: -12%;
+  transform: scaleX(-1);
+}
 
-  .sea-r .rock-a {
-    left: auto;
-    right: 22%;
-    transform: scaleX(-1);
-  }
+.sea-r .rock-a {
+  left: auto;
+  right: 12%;
+  transform: scaleX(-1);
+}
 
-  .pebbles {
-    bottom: 3px;
-    width: clamp(40px, calc(var(--gw) * .28), 70px);
-    opacity: .65;
-  }
+/* Sỏi đá */
+.pebbles {
+  bottom: 3px;
+  width: clamp(60px, calc(var(--gw) * .42), 95px);
+  opacity: .72;
+}
 
   /* ---------- RONG BIỂN ---------- */
 
