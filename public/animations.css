@@ -527,45 +527,74 @@ body {
   }
 }
 
-
-/* ---------- 10. Biển cả hai bên trang (rong biển, cá, cua, rùa, mỏm đá) – đơn sắc ---------- */
+/* ---------- 10. Biển cả hai bên trang (rong biển, cá, cua, rùa, mỏm đá, sao biển) ---------- */
 /* Chỉ hiện khi hai bên trang còn đủ chỗ trống (màn hình rộng từ ~1140px). Điện thoại/máy tính bảng thì ẩn.
-   Mọi kích thước đều tính theo bề rộng chỗ trống (--gw) nên cảnh tự to ra trên màn hình lớn. */
+   Cả cảnh dùng MỘT màu (--sea-ink) với độ đậm nhạt khác nhau; mọi kích thước tính theo bề rộng chỗ trống (--gw). */
+:root { --sea-ink:#2c76ac; }
 .sea-defs { position:absolute; width:0; height:0; overflow:hidden; }
 .sea { display:none; }
 @media (min-width:1140px) {
   .sea {
     --gw: calc((110vw - 980px) / 2);                 /* bề rộng chỗ trống mỗi bên */
-    --sea-ink: rgba(44,118,172,.62);                 /* màu duy nhất của cả cảnh: sửa ở đây để đổi màu */
-    display:block; position:fixed; top:0; bottom:0; width:var(--gw); z-index:0; overflow:hidden; pointer-events:none;
-    color:var(--sea-ink);
+    display:block; position:fixed; top:0; bottom:0; width:var(--gw); z-index:0; overflow:hidden; pointer-events:none; color:var(--sea-ink);
   }
-  .sea-l { left:0; } .sea-r { right:0; }
+  .sea-l { left:0; -webkit-mask-image:linear-gradient(90deg,#000 76%,transparent); mask-image:linear-gradient(90deg,#000 76%,transparent); }
+  .sea-r { right:0; -webkit-mask-image:linear-gradient(270deg,#000 76%,transparent); mask-image:linear-gradient(270deg,#000 76%,transparent); }
   .sea svg { display:block; width:100%; height:auto; overflow:visible; }
   .sea .it { position:absolute; }
-  /* đáy biển */
-  .sea::after {
-    content:""; position:absolute; left:-10%; right:-10%; bottom:-14px; height:56px; border-radius:50% 50% 0 0 / 70% 70% 0 0;
-    background:currentColor; opacity:.15;
-  }
+
+  /* chùm sáng từ mặt nước chiếu xuống, nhấp nhô rất chậm */
+  .sea .rays { position:absolute; inset:0 0 35% 0; pointer-events:none;
+    background:
+      linear-gradient(104deg, transparent 8%, rgba(255,255,255,.34) 15%, transparent 24%),
+      linear-gradient(104deg, transparent 38%, rgba(255,255,255,.26) 46%, transparent 55%),
+      linear-gradient(104deg, transparent 64%, rgba(255,255,255,.3) 71%, transparent 81%);
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent); mask-image:linear-gradient(180deg,#000,transparent);
+    animation:raySway 14s ease-in-out infinite alternate; }
+  .sea-r .rays { transform:scaleX(-1); animation-name:raySwayR; }
+  @keyframes raySway { from { transform:translateX(-14px); opacity:.55; } to { transform:translateX(18px); opacity:1; } }
+  @keyframes raySwayR { from { transform:scaleX(-1) translateX(-14px); opacity:1; } to { transform:scaleX(-1) translateX(18px); opacity:.55; } }
+
+  /* hạt li ti trôi lên */
+  .sea .dust { position:absolute; bottom:-10px; width:var(--s); height:var(--s); border-radius:50%; background:#fff; opacity:0;
+    box-shadow:0 0 6px rgba(255,255,255,.9); animation:dustUp var(--t) linear var(--dl) infinite; }
+  @keyframes dustUp { 0% { transform:translate(0,0); opacity:0; } 12% { opacity:.55; } 50% { transform:translate(10px,-48vh); } 88% { opacity:.35; } 100% { transform:translate(-6px,-100vh); opacity:0; } }
+
+  /* đáy cát gợn sóng */
+  .sea::after { content:""; position:absolute; left:-10%; right:-10%; bottom:-16px; height:70px; border-radius:50% 50% 0 0 / 80% 80% 0 0;
+    background:
+      repeating-linear-gradient(172deg, rgba(255,255,255,.12) 0 2px, transparent 2px 11px),
+      linear-gradient(180deg, rgba(44,118,172,.34), rgba(44,118,172,.12)); }
 
   /* mỏm đá */
-  .rock-tall { left:-3%; bottom:-2px; width:max(60px,calc(var(--gw) * .52)); opacity:.55; }
-  .rock-low  { left:36%; bottom:-2px; width:max(70px,calc(var(--gw) * .68)); opacity:.5; }
-  .sea-r .rock-tall { left:auto; right:-3%; transform:scaleX(-1); }
-  .sea-r .rock-low  { left:auto; right:34%; transform:scaleX(-1); }
-  .starfish { bottom:7px; width:max(16px,calc(var(--gw) * .09)); opacity:.6; }
+  .rock-b { left:-3%; bottom:-2px; width:max(60px,calc(var(--gw) * .5)); opacity:.62; }
+  .rock-a { left:22%; bottom:-2px; width:max(70px,calc(var(--gw) * .64)); opacity:.58; }
+  .sea-r .rock-b { left:auto; right:-3%; transform:scaleX(-1); }
+  .sea-r .rock-a { left:auto; right:20%; transform:scaleX(-1); }
+  .pebbles { bottom:2px; width:max(46px,calc(var(--gw) * .3)); opacity:.7; }
 
-  /* rong biển lay chậm */
-  .weed { bottom:-2px; width:max(16px,calc(var(--gw) * .11)); opacity:.55; transform-origin:50% 100%;
-          animation:weedSway var(--t,7s) ease-in-out var(--dl,0s) infinite alternate; }
-  .weed.tall { width:max(20px,calc(var(--gw) * .14)); opacity:.48; }
-  @keyframes weedSway { from { transform:rotate(-4deg) skewX(-3deg); } to { transform:rotate(4.5deg) skewX(3deg); } }
+  /* rong biển lay chậm (gốc cố định, ngọn đung đưa) */
+  .kelp { bottom:-4px; width:max(18px,calc(var(--gw) * .12)); transform-origin:50% 100%; animation:kelpSway var(--t,8s) ease-in-out var(--dl,0s) infinite alternate; }
+  .kelp svg { height:auto; transform:scaleY(var(--h,1)); transform-origin:50% 100%; }
+  .kelp.far { opacity:.34; width:max(22px,calc(var(--gw) * .15)); }
+  .kelp.mid { opacity:.72; }
+  @keyframes kelpSway { from { transform:rotate(-5deg) skewX(-3deg); } to { transform:rotate(6deg) skewX(4deg); } }
+  .grass { bottom:-3px; width:max(14px,calc(var(--gw) * .09)); opacity:.7; transform-origin:50% 100%; animation:grassSway var(--t,5s) ease-in-out var(--dl,0s) infinite alternate; }
+  @keyframes grassSway { from { transform:rotate(-6deg); } to { transform:rotate(7deg); } }
 
-  /* cá bơi ngang rồi quay đầu ở hai mép; cả đàn bơi cùng nhịp */
-  .fish { left:7px; --wd:max(13px,calc(var(--gw) * var(--f,.15))); width:var(--wd); opacity:.55;
-          --sx: max(0px, calc(var(--gw) - var(--wd) - 14px)); animation:swim var(--t,30s) linear var(--dl,0s) infinite; }
-  .fish svg { animation:fishBob 3.2s ease-in-out infinite alternate; }
+  /* sao biển hít thở nhẹ */
+  .star { bottom:5px; transform-origin:50% 50%; animation:starBreath 6s ease-in-out infinite alternate; }
+  .star.s1 { width:max(18px,calc(var(--gw) * .1)); opacity:.78; transform:rotate(-14deg); }
+  .star.s2 { width:max(13px,calc(var(--gw) * .07)); opacity:.66; bottom:9px; animation-delay:-3s; }
+  @keyframes starBreath { from { scale:1; } to { scale:1.06; } }
+
+  /* cá bơi ngang rồi quay đầu ở hai mép; đuôi vẫy; cả đàn bơi cùng nhịp */
+  .fish { left:7px; --wd:max(16px,calc(var(--gw) * var(--f,.15))); width:var(--wd); opacity:.78;
+          --sx:max(0px,calc(var(--gw) - var(--wd) - 14px)); animation:swim var(--t,30s) linear var(--dl,0s) infinite; }
+  .fish.small { opacity:.62; }
+  .fish svg { animation:fishBob 3.4s ease-in-out infinite alternate; }
+  .fish .tail { transform-origin:24px 25px; animation:tailWag .9s ease-in-out infinite alternate; }
+  .fish.slim .tail { transform-origin:28px 18px; } .fish.small .tail { transform-origin:14px 12px; animation-duration:.55s; }
   @keyframes swim {
     0%   { transform:translateX(0) scaleX(1); }
     46%  { transform:translateX(var(--sx)) scaleX(1); }
@@ -573,29 +602,31 @@ body {
     96%  { transform:translateX(0) scaleX(-1); }
     100% { transform:translateX(0) scaleX(1); }
   }
-  @keyframes fishBob { from { transform:translateY(-3px) rotate(-3deg); } to { transform:translateY(3px) rotate(3deg); } }
+  @keyframes fishBob { from { transform:translateY(-3px) rotate(-2.5deg); } to { transform:translateY(3px) rotate(2.5deg); } }
+  @keyframes tailWag { from { transform:rotate(-13deg); } to { transform:rotate(13deg); } }
 
-  /* cua đi ngang trên đáy biển, càng cua vẫy */
-  .crab { left:6%; bottom:5px; --cw:max(50px,calc(var(--gw) * .3)); width:var(--cw); opacity:.62;
+  /* cua đi ngang trên đáy cát, càng cua đóng mở, chân nhấp nhô */
+  .crab { left:6%; bottom:6px; --cw:max(56px,calc(var(--gw) * .34)); width:var(--cw); opacity:.78;
           --walk:max(0px,calc(var(--gw) - var(--cw) - 40px)); animation:crabWalk var(--t,32s) ease-in-out var(--dl,0s) infinite alternate; }
-  .crab svg { animation:crabBob .9s ease-in-out infinite alternate; }
-  .claw { transform-box:view-box; }
-  .claw-l { transform-origin:18px 30px; animation:clawL 2.4s ease-in-out infinite alternate; }
-  .claw-r { transform-origin:78px 30px; animation:clawR 2.4s ease-in-out .5s infinite alternate; }
+  .crab.small { --cw:max(38px,calc(var(--gw) * .2)); left:auto; right:12%; opacity:.66; animation-direction:alternate-reverse; }
+  .crab svg { animation:crabBob .8s ease-in-out infinite alternate; }
+  .crab .claw { transform-box:view-box; }
+  .crab .cl-l, .crab .cl-r { transform-origin:12px 30px; animation:clawLift 2.6s ease-in-out infinite alternate; }
+  .crab .cl-r { animation-delay:-1.3s; }
+  .crab .jaw { transform-box:view-box; transform-origin:12px 24px; animation:jawSnap 1.7s ease-in-out infinite; }
+  .crab .legs { transform-box:view-box; transform-origin:64px 60px; animation:legsScuttle .5s ease-in-out infinite alternate; }
   @keyframes crabWalk { from { transform:translateX(0); } to { transform:translateX(var(--walk)); } }
-  @keyframes crabBob { from { transform:translateY(0); } to { transform:translateY(-1.5px); } }
-  @keyframes clawL { from { transform:rotate(-9deg); } to { transform:rotate(7deg); } }
-  @keyframes clawR { from { transform:rotate(9deg); } to { transform:rotate(-7deg); } }
-  .crab.small { --cw:max(36px,calc(var(--gw) * .2)); left:auto; right:12%; opacity:.5; }
-  .crab.small { animation-direction:alternate-reverse; }
+  @keyframes crabBob { from { transform:translateY(0); } to { transform:translateY(-1.6px); } }
+  @keyframes clawLift { from { transform:rotate(-7deg); } to { transform:rotate(7deg); } }
+  @keyframes jawSnap { 0%,55%,100% { transform:rotate(0); } 70% { transform:rotate(-16deg); } 82% { transform:rotate(2deg); } }
+  @keyframes legsScuttle { from { transform:scaleY(.97); } to { transform:scaleY(1.03); } }
 
-  /* rùa lướt chậm, chân chèo vỗ nhẹ */
-  .turtle { left:7px; --wd:max(66px,calc(var(--gw) * .5)); width:var(--wd); opacity:.6;
-            --sx:max(0px,calc(var(--gw) - var(--wd) - 14px)); animation:swim 78s linear -20s infinite; }
-  .turtle svg { animation:turtleBob 6s ease-in-out infinite alternate; }
-  .fl { transform-box:view-box; animation:flipper 2.6s ease-in-out infinite alternate; }
-  .fl-f { transform-origin:72px 40px; }
-  .fl-r { transform-origin:26px 40px; animation-delay:-1.3s; }
-  @keyframes turtleBob { from { transform:translateY(-8px) rotate(-2deg); } to { transform:translateY(8px) rotate(2deg); } }
-  @keyframes flipper { from { transform:rotate(-14deg); } to { transform:rotate(12deg); } }
+  /* rùa lướt chậm, chân chèo vỗ nhịp nhàng */
+  .turtle { left:7px; --wd:max(78px,calc(var(--gw) * .58)); width:var(--wd); opacity:.82;
+            --sx:max(0px,calc(var(--gw) - var(--wd) - 14px)); animation:swim 86s linear -22s infinite; }
+  .turtle svg { animation:turtleBob 6.4s ease-in-out infinite alternate; }
+  .turtle .fl { transform-box:view-box; animation:flipper 2.8s ease-in-out infinite alternate; }
+  .turtle .fl-n { transform-origin:88px 58px; } .turtle .fl-b { transform-origin:98px 52px; animation-delay:-1.4s; } .turtle .fl-r { transform-origin:36px 52px; animation-delay:-.7s; }
+  @keyframes turtleBob { from { transform:translateY(-9px) rotate(-2.5deg); } to { transform:translateY(9px) rotate(2deg); } }
+  @keyframes flipper { from { transform:rotate(-16deg); } to { transform:rotate(14deg); } }
 }
