@@ -634,74 +634,57 @@ body {
     );
   }
 
-  /* ---------- ÁNH SÁNG DƯỚI BIỂN ---------- */
+  /* Ánh sáng mặt nước chuyển động rất chậm */
+.bg::before {
+  content: "";
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  min-width: 420px;
+  min-height: 420px;
+  top: -35vw;
+  left: -15vw;
+  border-radius: 50%;
 
-  .sea .rays {
-    position: absolute;
-    inset: 0 0 25%;
-    pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(116, 205, 245, .15) 0%,
+    rgba(164, 224, 249, .07) 42%,
+    transparent 70%
+  );
 
-    background:
-      linear-gradient(
-        105deg,
-        transparent 10%,
-        rgba(255,255,255,.4) 19%,
-        transparent 29%
-      ),
-      linear-gradient(
-        105deg,
-        transparent 39%,
-        rgba(255,255,255,.3) 48%,
-        transparent 58%
-      ),
-      linear-gradient(
-        105deg,
-        transparent 68%,
-        rgba(255,255,255,.35) 76%,
-        transparent 86%
-      );
+  animation: oceanLight 18s ease-in-out infinite alternate;
+}
 
-    opacity: .65;
-    -webkit-mask-image: linear-gradient(
-      180deg,
-      #000,
-      transparent 90%
-    );
-    mask-image: linear-gradient(
-      180deg,
-      #000,
-      transparent 90%
-    );
+.bg::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  min-width: 360px;
+  min-height: 360px;
+  right: -25vw;
+  bottom: -35vw;
+  border-radius: 50%;
 
-    animation: raySway 18s ease-in-out infinite alternate;
+  background: radial-gradient(
+    circle,
+    rgba(92, 184, 232, .12) 0%,
+    rgba(155, 220, 248, .06) 45%,
+    transparent 72%
+  );
+
+  animation: oceanLight 24s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes oceanLight {
+  from {
+    transform: translate3d(-12px, 0, 0) scale(1);
   }
-
-  .sea-r .rays {
-    animation-name: raySwayR;
+  to {
+    transform: translate3d(35px, 22px, 0) scale(1.12);
   }
-
-  @keyframes raySway {
-    from {
-      transform: translateX(-12px);
-      opacity: .35;
-    }
-    to {
-      transform: translateX(15px);
-      opacity: .8;
-    }
-  }
-
-  @keyframes raySwayR {
-    from {
-      transform: scaleX(-1) translateX(-12px);
-      opacity: .8;
-    }
-    to {
-      transform: scaleX(-1) translateX(15px);
-      opacity: .35;
-    }
-  }
-
+}
   /* ---------- BỤI NƯỚC / BỌT KHÍ ---------- */
 
   .sea .dust {
