@@ -7,7 +7,6 @@ so-chi-tieu/
 ├── public/
 │   ├── index.html        ← giao diện, bố cục và logic
 │   ├── animations.js     ← toàn bộ hoạt ảnh JavaScript (WAAPI, đồng cỏ, biển, pháo hoa, API điều khiển)
-│   ├── animations.css    ← họa tiết & kiểu dáng trang trí tĩnh (nền, màu sắc, bố cục)
 │   ├── work.js           ← mục "Công việc" (Linh kiện · Mật khẩu máy · Lịch năm)
 │   ├── work.css          ← giao diện của mục Công việc
 │   └── config.js         ← 2 giá trị Supabase (bạn điền)
@@ -102,7 +101,7 @@ Trên header có hai nút **Sổ chi tiêu | Công việc**. Mục Công việc 
 
 ## Chỉnh hoạt ảnh và trang trí (JavaScript Animations)
 
-Toàn bộ hoạt ảnh đã được chuyển sang file **`public/animations.js`** (dùng chuẩn Web Animations API), còn file **`public/animations.css`** chỉ giữ lại các kiểu dáng trang trí tĩnh (màu nền, gradient, bố cục).
+Toàn bộ hoạt ảnh đã được chuyển sang file **`public/animations.js`** (dùng chuẩn Web Animations API), còn các nội dung css tĩnh từ file cũ được chuyển thẳng vào cùng file chỉ giữ lại các kiểu dáng trang trí tĩnh (màu nền, gradient, bố cục).
 
 ### Các tính năng và cách điều khiển qua JavaScript:
 - **Chỉnh tốc độ hoạt ảnh toàn web:**

@@ -1,4 +1,5 @@
-/* =====================================================================
+(function() {
+  const css = `/* =====================================================================
    animations.css – toàn bộ hoạt ảnh & họa tiết trang trí của Sổ chi tiêu
    Được nạp SAU <style> trong index.html nên có thể ghi đè kiểu gốc.
    Muốn đổi tốc độ, màu, hay tắt hiệu ứng nào chỉ cần sửa file này.
@@ -1068,4 +1069,8 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
-}
+}`;
+  const style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
+})();
