@@ -6,7 +6,7 @@ Web app theo dõi chi tiêu theo ngày: ngân sách chia đều cho các ngày t
 so-chi-tieu/
 ├── public/
 │   ├── index.html        ← giao diện, bố cục và logic
-│   ├── animations.css    ← hoạt ảnh và họa tiết trang trí (cảnh đồng cỏ, nút sáng, nền…)
+│   ├── animations.js    ← hoạt ảnh và họa tiết trang trí (cảnh đồng cỏ, nút sáng, nền…)
 │   ├── work.js           ← mục "Công việc" (Linh kiện · Mật khẩu máy · Lịch năm)
 │   ├── work.css          ← giao diện của mục Công việc
 │   └── config.js         ← 2 giá trị Supabase (bạn điền)
@@ -101,9 +101,9 @@ Trên header có hai nút **Sổ chi tiêu | Công việc**. Mục Công việc 
 
 ## Chỉnh hoạt ảnh và trang trí
 
-Mọi hoạt ảnh nằm trong `public/animations.css`, được nạp sau phần CSS trong `index.html` nên ghi đè được kiểu gốc. Đầu file có mục lục. Muốn đổi tốc độ cây đung đưa, màu lá, bỏ bong bóng nền… chỉ cần sửa file này, không đụng tới `index.html`.
+Mọi hoạt ảnh nằm trong `public/animations.js`, được nạp sau phần CSS trong `index.html` nên ghi đè được kiểu gốc. Đầu file có mục lục. Muốn đổi tốc độ cây đung đưa, màu lá, bỏ bong bóng nền… chỉ cần sửa file này, không đụng tới `index.html`.
 
-Trình duyệt hay giữ bản cũ của file CSS. Sau khi sửa, đổi số ở cuối trong `index.html` (`animations.css?v=1` thành `?v=2`) để mọi thiết bị tải bản mới.
+Trình duyệt hay giữ bản cũ của file CSS. Sau khi sửa, đổi số ở cuối trong `index.html` (`animations.js?v=1` thành `?v=2`) để mọi thiết bị tải bản mới.
 
 ## Cập nhật và nhờ Claude sửa
 
