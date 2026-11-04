@@ -6,7 +6,8 @@ Web app theo dõi chi tiêu theo ngày: ngân sách chia đều cho các ngày t
 so-chi-tieu/
 ├── public/
 │   ├── index.html        ← giao diện, bố cục và logic
-│   ├── animations.css    ← hoạt ảnh và họa tiết trang trí (cảnh đồng cỏ, nút sáng, nền…)
+│   ├── animations.js     ← toàn bộ hoạt ảnh JavaScript (WAAPI, đồng cỏ, biển, pháo hoa, API điều khiển)
+│   ├── animations.css    ← họa tiết & kiểu dáng trang trí tĩnh (nền, màu sắc, bố cục)
 │   ├── work.js           ← mục "Công việc" (Linh kiện · Mật khẩu máy · Lịch năm)
 │   ├── work.css          ← giao diện của mục Công việc
 │   └── config.js         ← 2 giá trị Supabase (bạn điền)
@@ -99,11 +100,37 @@ Trên header có hai nút **Sổ chi tiêu | Công việc**. Mục Công việc 
 - **Tự chuyển kỳ:** mỗi lần mở app, hàm `ensure_current_period` kiểm tra. Nếu hôm nay đã qua ngày kết thúc kỳ mới nhất, nó tạo kỳ kế tiếp (giữ nguyên ngân sách cũ, bạn tự sửa; app hiện thông báo nhắc). "Ngày bắt đầu kỳ hằng tháng" chỉnh trong **Cài đặt**: `1` = theo tháng dương lịch, `15` = kỳ từ 15 đến 14 tháng sau.
 - Dữ liệu các kỳ cũ giữ nguyên trong database, chọn ở danh sách kỳ dưới tiêu đề để xem lại. Không cần gom hay xóa tab như bản Google Sheet.
 
-## Chỉnh hoạt ảnh và trang trí
+## Chỉnh hoạt ảnh và trang trí (JavaScript Animations)
 
-Mọi hoạt ảnh nằm trong `public/animations.css`, được nạp sau phần CSS trong `index.html` nên ghi đè được kiểu gốc. Đầu file có mục lục. Muốn đổi tốc độ cây đung đưa, màu lá, bỏ bong bóng nền… chỉ cần sửa file này, không đụng tới `index.html`.
+Toàn bộ hoạt ảnh đã được chuyển sang file **`public/animations.js`** (dùng chuẩn Web Animations API), còn file **`public/animations.css`** chỉ giữ lại các kiểu dáng trang trí tĩnh (màu nền, gradient, bố cục).
 
-Trình duyệt hay giữ bản cũ của file CSS. Sau khi sửa, đổi số ở cuối trong `index.html` (`animations.css?v=1` thành `?v=2`) để mọi thiết bị tải bản mới.
+### Các tính năng và cách điều khiển qua JavaScript:
+- **Chỉnh tốc độ hoạt ảnh toàn web:**
+  ```js
+  AppAnimations.setSpeed(0.5); // Chạy chậm một nửa (slow-motion)
+  AppAnimations.setSpeed(1.5); // Chạy nhanh hơn 1.5 lần
+  ```
+- **Tạm dừng / Tiếp tục:**
+  ```js
+  AppAnimations.pause();  // Tạm dừng mọi chuyển động
+  AppAnimations.resume(); // Tiếp tục chuyển động
+  ```
+- **Bật / tắt từng nhóm hoạt ảnh:**
+  ```js
+  AppAnimations.toggle('sea', false);    // Tắt sinh vật biển hai bên (tiết kiệm pin)
+  AppAnimations.toggle('ocean', false);  // Tắt bong bóng nổi
+  AppAnimations.toggle('meadow', false); // Tắt cây đu đưa & mây trôi
+  AppAnimations.toggle('ui', false);     // Tắt hiệu ứng nảy nút, nháy hàng
+  ```
+- **Gọi trực tiếp các hiệu ứng ở bất cứ đâu:**
+  ```js
+  AppAnimations.flash(element);             // Nháy sáng một dòng hoặc ô ngày
+  AppAnimations.nudge(element);             // Rung nhẹ thẻ ngân sách
+  AppAnimations.floatText(anchor, '+45k');  // Chữ số bay lên
+  AppAnimations.starBurst(button);          // Bắn pháo hoa sao trắng
+  AppAnimations.popIn(element);             // Phần tử nảy ra
+  ```
+- **Đổi thông số hoạt ảnh:** Mở `public/animations.js`, tìm mục `KEYFRAMES` hoặc `CONFIG` ở đầu file để sửa thời gian, tọa độ rơi của lá, tốc độ cá bơi... rất trực quan.
 
 ## Cập nhật và nhờ Claude sửa
 

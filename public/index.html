@@ -323,7 +323,7 @@
   @media (min-width:760px) { #app { grid-template-rows:auto 1fr; } }
 
 </style>
-<link rel="stylesheet" href="animations.css?v=6">
+<link rel="stylesheet" href="animations.css?v=7">
 <link rel="stylesheet" href="work.css?v=2">
 </head>
 <body>
@@ -568,6 +568,7 @@
 
 <div class="toast" id="toast"></div>
 <script src="config.js"></script>
+<script src="animations.js?v=1"></script>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/+esm';
@@ -637,6 +638,7 @@ function toast(msg, err, undo) {
   const t = $('toast');
   t.textContent = msg;
   t.className = 'toast on' + (err ? ' err' : '') + (undo ? ' act' : '');
+  if (window.AppAnimations) window.AppAnimations.toastEnter(t);
   if (undo) {
     const b = document.createElement('button');
     b.type = 'button'; b.textContent = 'Hoàn tác';
@@ -665,6 +667,7 @@ function setNum(el, to) {
   })(t0);
 }
 function floatText(anchor, text) {
+  if (window.AppAnimations) { window.AppAnimations.floatText(anchor, text); return; }
   if (REDUCE || !anchor) return;
   const r = anchor.getBoundingClientRect(), s = document.createElement('span');
   s.className = 'floaty'; s.textContent = text;
@@ -680,6 +683,7 @@ function starSvg(size) {
   return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" aria-hidden="true"><path d="' + STAR_PATH + '"/></svg>';
 }
 function starBurst(anchor) {
+  if (window.AppAnimations) { window.AppAnimations.starBurst(anchor); return; }
   if (REDUCE || !anchor || !anchor.animate) return;
   const BIG = 10, TRAIL = 3, SPARKLES = 10;            // số sao lớn, số sao nhỏ theo sau mỗi sao lớn, sao li ti thêm
   const G = 760, STEPS = 18;                            // trọng lực (px/s²) và độ mịn của đường cong
@@ -928,7 +932,11 @@ function render() {
     $('hR').textContent = 'Được tiêu ' + money(t.allowed);
     const wasOver = hero.classList.contains('over');
     hero.classList.toggle('over', over);
-    if (over && !wasOver && !REDUCE) { hero.classList.remove('nudge'); void hero.offsetWidth; hero.classList.add('nudge'); }
+    if (over && !wasOver && !REDUCE) {
+      if (window.AppAnimations) window.AppAnimations.nudge(hero);
+      else { hero.classList.remove('nudge'); void hero.offsetWidth; hero.classList.add('nudge'); }
+    }
+    if (window.AppAnimations && window.AppAnimations.meadow) window.AppAnimations.meadow.setOver(over);
   } else {
     $('hLbl').textContent = tdy < p.start_date ? 'Kỳ chi tiêu chưa bắt đầu' : 'Hôm nay không nằm trong kỳ này';
     setNum($('hBig'), s.remaining);
@@ -979,12 +987,20 @@ function render() {
     html += '</div></div>';
   });
   L.innerHTML = html || '<div class="empty">Không có ngày nào</div>';
-  if (LIST_ANIM) { LIST_ANIM = false; L.classList.add('enter'); }
+  if (LIST_ANIM) {
+    LIST_ANIM = false;
+    L.classList.add('enter');
+    if (window.AppAnimations) window.AppAnimations.enterList(L, '.day');
+  }
   if (FLASH) {
     const fr = L.querySelector('.day[data-date="' + FLASH + '"]');
-    if (fr) fr.classList.add('flash');
+    if (fr) {
+      fr.classList.add('flash');
+      if (window.AppAnimations) window.AppAnimations.flash(fr);
+    }
     FLASH = null;
   }
+  if (window.AppAnimations) window.AppAnimations.refresh();
 }
 
 /* ---------- ghi dữ liệu (cập nhật giao diện ngay, lưu ngầm) ---------- */
@@ -1047,7 +1063,7 @@ async function createPeriod(budget, start, end) {
 }
 
 /* ---------- cửa sổ ---------- */
-function openModal(id) { $(id).classList.add('on'); document.body.classList.add('lock'); }
+function openModal(id) { $(id).classList.add('on'); document.body.classList.add('lock'); if (window.AppAnimations) window.AppAnimations.sheetEnter($(id).querySelector('.sheet')); }
 function closeModal(id) {
   $(id).classList.remove('on');
   if (id === 'mDay') { EDIT = null; EDIT_EXP = null; }
@@ -1284,7 +1300,7 @@ async function start(user) {
 }
 
 async function main() {
-  $('ver').textContent = 'Sổ chi tiêu · bản Supabase v1 · ' + (REDUCE ? 'hoạt ảnh đang tắt (thiết bị bật "giảm chuyển động")' : 'hoạt ảnh đang bật');
+  $('ver').textContent = 'Sổ chi tiêu · bản Supabase v1 · ' + (REDUCE ? 'hoạt ảnh đang tắt (thiết bị bật "giảm chuyển động")' : 'hoạt ảnh JavaScript đang bật');
   bind();
   const bad = !CFG.SUPABASE_URL || !CFG.SUPABASE_KEY || /YOUR-|xxxx/i.test(CFG.SUPABASE_URL + CFG.SUPABASE_KEY);
   if (bad) { show('setup'); return; }
