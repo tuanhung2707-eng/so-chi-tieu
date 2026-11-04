@@ -860,13 +860,16 @@ function refresh() { compute(); render(); renderDaySheet(); cacheSave(); }
 /* ---------- gợi ý ghi chú ---------- */
 function noteChips() {
   const cnt = {};
-  S.recent.concat(S.expenses.map((e) => e.note)).forEach((n) => {
+  // ⚡ Bolt: Prevent unnecessary array allocations (.map, .concat) to reduce GC pressure
+  const add = (n) => {
     (n || '').split(/\s*[,;]\s*/).forEach((t) => {
       t = t.trim().toLowerCase();
       if (t.length < 2 || t.length > 28) return;
       cnt[t] = (cnt[t] || 0) + 1;
     });
-  });
+  };
+  S.recent.forEach(add);
+  S.expenses.forEach((e) => add(e.note));
   const arr = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]).slice(0, 8);
   ['ăn sáng', 'ăn trưa', 'ăn tối', 'cf', 'xăng'].forEach((d) => { if (arr.length < 8 && arr.indexOf(d) < 0) arr.push(d); });
   return arr;
@@ -880,9 +883,15 @@ function fillChips(id) {
 /* ---------- hiển thị ---------- */
 function fillPeriods() {
   const t = todayStr();
-  $('periodSel').innerHTML = S.periods.map((p) =>
+  const html = S.periods.map((p) =>
     '<option value="' + esc(p.id) + '"' + (S.period && p.id === S.period.id ? ' selected' : '') + '>' +
     dmy(p.start_date) + ' – ' + dmy(p.end_date) + (t >= p.start_date && t <= p.end_date ? ' · hiện tại' : '') + '</option>').join('');
+  const el = $('periodSel');
+  // ⚡ Bolt: Cache DOM string to avoid unnecessary innerHTML updates that trigger reflows
+  if (el.getAttribute('data-html') !== html) {
+    el.innerHTML = html;
+    el.setAttribute('data-html', html);
+  }
 }
 function qDate() { return QDATE === 'today' ? todayStr() : yesterdayStr(); }
 
