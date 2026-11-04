@@ -215,17 +215,11 @@
 .bub { position:absolute; bottom:-40px; left:var(--x); width: calc(var(--s) * 1.5); height: calc(var(--s) * 1.5); border-radius:50%; opacity:0;
        background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95),rgba(255,255,255,.2) 58%),rgba(139,201,243,.28);
        border:1px solid rgba(255,255,255,.75); box-shadow:0 2px 8px rgba(102,174,232,.12);
-       animation:bubRise var(--d) linear var(--w) infinite; will-change:transform,opacity; }
-@keyframes drift1 { 0%,100% { transform:translate3d(0,0,0) scale(1); } 50% { transform:translate3d(90px,70px,0) scale(1.12); } }
-@keyframes drift2 { 0%,100% { transform:translate3d(0,0,0) scale(1); } 50% { transform:translate3d(-100px,-60px,0) scale(1.1); } }
-@keyframes drift3 { 0%,100% { transform:translate3d(0,0,0) scale(1); } 50% { transform:translate3d(80px,-50px,0) scale(1.15); } }
-@keyframes bubRise {
-  0%   { transform:translate3d(0,0,0); opacity:0; }
-  10%  { opacity:.75; }
-  35%  { transform:translate3d(16px,-38vh,0); }
-  65%  { transform:translate3d(-12px,-74vh,0); opacity:.6; }
-  100% { transform:translate3d(10px,-112vh,0); opacity:0; }
-}
+        will-change:transform,opacity; }
+
+
+
+
 @media (max-width:600px) {
   .b1 { width:340px; height:340px; } .b2 { width:300px; height:300px; } .b3 { width:300px; height:300px; }
   .bub:nth-child(n+9) { display:none; }
@@ -240,16 +234,16 @@
 .landscape { position:absolute; right:-4px; bottom:0; width:min(78%,480px); height:100%; overflow:visible; }
 
 /* cây lớn đung đưa chậm, liên tục */
-.tree { transform-origin:355px 196px; animation:treeSway 7.2s ease-in-out infinite; }
-.crown { transform-origin:352px 118px; animation:crownSway 5.6s ease-in-out infinite; }
+.tree { transform-origin:355px 196px;  }
+.crown { transform-origin:352px 118px;  }
 /* vài đám mây nhỏ trôi rất chậm */
-.cloud-one { animation:cloudDrift 26s ease-in-out infinite alternate; opacity:.34; }
-.cloud-two { animation:cloudDrift 32s ease-in-out infinite alternate-reverse; opacity:.28; }
-.cloud-three { animation:cloudDrift 29s ease-in-out infinite alternate; opacity:.22; }
+.cloud-one {  opacity:.34; }
+.cloud-two {  opacity:.28; }
+.cloud-three {  opacity:.22; }
 /* ngọn cỏ lay nhẹ */
-.tuft { transform-box:fill-box; transform-origin:50% 100%; animation:tuftSway 6.4s ease-in-out infinite; }
-.tuft.t1 { animation-duration:5.2s; animation-delay:-1.7s; }
-.tuft.t2 { animation-duration:7.3s; animation-delay:-3.4s; }
+.tuft { transform-box:fill-box; transform-origin:50% 100%;  }
+.tuft.t1 {   }
+.tuft.t2 {   }
 
 /* trạng thái bình thường: tán lá đầy đặn; đồng thời ẩn lá rụng */
 .canopy-full, .canopy-sparse, .ground-leaves { transition:opacity .9s ease; }
@@ -263,22 +257,15 @@
 .hero.over .canopy-sparse { opacity:.82; }
 .hero.over .ground-leaves { opacity:.72; }
 .hero.over .cloud-one { opacity:.2; } .hero.over .cloud-two { opacity:.16; } .hero.over .cloud-three { opacity:.13; }
-.hero.over .lf { animation:leafFall 12s linear infinite; }
-.hero.over .lfi { animation:leafTurn 4.6s ease-in-out infinite alternate; }
+.hero.over .lf {  }
+.hero.over .lfi {  }
 
-@keyframes treeSway { 0%,100% { transform:rotate(-1deg); } 50% { transform:rotate(1.2deg); } }
-@keyframes crownSway { 0%,100% { transform:rotate(-1.6deg) translateX(-1px); } 50% { transform:rotate(1.8deg) translateX(2px); } }
-@keyframes cloudDrift { from { transform:translateX(-10px); } to { transform:translateX(12px); } }
-@keyframes tuftSway { 0%,100% { transform:rotate(-5deg); } 50% { transform:rotate(6deg); } }
-@keyframes leafTurn { from { transform:rotate(-55deg); } to { transform:rotate(65deg); } }
-@keyframes leafFall {
-  0%   { transform:translate(var(--x0),var(--y0)); opacity:0; }
-  8%   { opacity:.85; }
-  30%  { transform:translate(calc(var(--x0) + var(--dx) * -.35),calc(var(--y0) + (var(--y1) - var(--y0)) * .3)); }
-  62%  { transform:translate(calc(var(--x0) + var(--dx) * .55),calc(var(--y0) + (var(--y1) - var(--y0)) * .62)); }
-  88%  { opacity:.8; }
-  100% { transform:translate(calc(var(--x0) + var(--dx)),var(--y1)); opacity:0; }
-}
+
+
+
+
+
+
 @media (min-width:760px) { .hero { min-height:206px; } }
 @media (max-width:600px) { .landscape { width:84%; opacity:.9; } .hero { padding-right:18px; min-height:190px; } }
 @media (prefers-reduced-motion:reduce) {
@@ -433,31 +420,11 @@ body {
     inset -5px -7px 16px rgba(95, 183, 232, .08),
     0 4px 18px rgba(90, 177, 230, .08);
 
-  animation: oceanBubble var(--d) linear var(--w) infinite;
+
   will-change: transform, opacity;
 }
 
-@keyframes oceanBubble {
-  0% {
-    transform: translate3d(0, 0, 0) scale(.85);
-    opacity: 0;
-  }
-  12% {
-    opacity: .7;
-  }
-  40% {
-    transform: translate3d(22px, -38vh, 0) scale(1);
-    opacity: .55;
-  }
-  70% {
-    transform: translate3d(-18px, -76vh, 0) scale(1.08);
-    opacity: .4;
-  }
-  100% {
-    transform: translate3d(12px, -115vh, 0) scale(1.15);
-    opacity: 0;
-  }
-}
+
 
 /* Ánh sáng mặt nước chuyển động rất chậm */
 .bg::before {
@@ -478,7 +445,7 @@ body {
     transparent 70%
   );
 
-  animation: oceanLight 18s ease-in-out infinite alternate;
+
 }
 
 .bg::after {
@@ -499,17 +466,10 @@ body {
     transparent 72%
   );
 
-  animation: oceanLight 24s ease-in-out infinite alternate-reverse;
+
 }
 
-@keyframes oceanLight {
-  from {
-    transform: translate3d(-12px, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(35px, 22px, 0) scale(1.12);
-  }
-}
+
 
 /* Giữ chuyển động nhẹ nhàng trên điện thoại */
 @media (max-width: 600px) {
@@ -523,7 +483,7 @@ body {
   .bub,
   .bg::before,
   .bg::after {
-    animation: none !important;
+
   }
 }
 
@@ -653,7 +613,7 @@ body {
     transparent 70%
   );
 
-  animation: oceanLight 18s ease-in-out infinite alternate;
+
 }
 
 .bg::after {
@@ -674,17 +634,10 @@ body {
     transparent 72%
   );
 
-  animation: oceanLight 24s ease-in-out infinite alternate-reverse;
+
 }
 
-@keyframes oceanLight {
-  from {
-    transform: translate3d(-12px, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(35px, 22px, 0) scale(1.12);
-  }
-}
+
   /* ---------- BỤI NƯỚC / BỌT KHÍ ---------- */
 
   .sea .dust {
@@ -699,24 +652,10 @@ body {
     box-shadow: 0 0 8px rgba(255,255,255,.8);
 
     opacity: 0;
-    animation: dustUp var(--t, 16s) linear var(--dl, 0s) infinite;
+
   }
 
-  @keyframes dustUp {
-    0% {
-      transform: translate(0, 0) scale(.6);
-      opacity: 0;
-    }
-    15% { opacity: .65; }
-    50% {
-      transform: translate(12px, -45vh) scale(1);
-    }
-    85% { opacity: .4; }
-    100% {
-      transform: translate(-8px, -100vh) scale(.7);
-      opacity: 0;
-    }
-  }
+
 
   /* ---------- ĐÁY BIỂN ---------- */
 
@@ -787,10 +726,7 @@ body {
     width: clamp(18px, calc(var(--gw) * .13), 34px);
 
     transform-origin: 50% 100%;
-    animation:
-      kelpSway var(--t, 9s)
-      ease-in-out var(--dl, 0s)
-      infinite alternate;
+
   }
 
   .kelp svg {
@@ -807,34 +743,24 @@ body {
     opacity: .55;
   }
 
-  @keyframes kelpSway {
-    0% {
-      transform: rotate(-5deg) skewX(-2deg);
-    }
-    100% {
-      transform: rotate(7deg) skewX(3deg);
-    }
-  }
+
 
   .grass {
     bottom: -3px;
     width: clamp(14px, calc(var(--gw) * .09), 24px);
     opacity: .65;
     transform-origin: 50% 100%;
-    animation: grassSway var(--t, 6s) ease-in-out infinite alternate;
+
   }
 
-  @keyframes grassSway {
-    from { transform: rotate(-7deg); }
-    to { transform: rotate(8deg); }
-  }
+
 
   /* ---------- SAO BIỂN ---------- */
 
   .star {
     bottom: 7px;
     transform-origin: center;
-    animation: starBreath 7s ease-in-out infinite alternate;
+
   }
 
   .star.s1 {
@@ -850,10 +776,7 @@ body {
     animation-delay: -3s;
   }
 
-  @keyframes starBreath {
-    from { scale: 1; }
-    to { scale: 1.08; }
-  }
+
 
   /* ---------- CÁ BƠI ---------- */
 
@@ -866,7 +789,7 @@ body {
     width: var(--wd);
     opacity: .7;
 
-    animation: swim var(--t, 32s) linear var(--dl, 0s) infinite;
+
   }
 
   .fish.small {
@@ -874,12 +797,12 @@ body {
   }
 
   .fish svg {
-    animation: fishBob 4s ease-in-out infinite alternate;
+
   }
 
   .fish .tail {
     transform-origin: 24px 25px;
-    animation: tailWag 1s ease-in-out infinite alternate;
+
   }
 
   .fish.slim .tail {
@@ -888,40 +811,14 @@ body {
 
   .fish.small .tail {
     transform-origin: 14px 12px;
-    animation-duration: .7s;
+
   }
 
-  @keyframes swim {
-    0% {
-      transform: translateX(0) scaleX(1);
-    }
-    46% {
-      transform: translateX(var(--sx)) scaleX(1);
-    }
-    50% {
-      transform: translateX(var(--sx)) scaleX(-1);
-    }
-    96% {
-      transform: translateX(0) scaleX(-1);
-    }
-    100% {
-      transform: translateX(0) scaleX(1);
-    }
-  }
 
-  @keyframes fishBob {
-    from {
-      transform: translateY(-3px) rotate(-2deg);
-    }
-    to {
-      transform: translateY(3px) rotate(2deg);
-    }
-  }
 
-  @keyframes tailWag {
-    from { transform: rotate(-14deg); }
-    to { transform: rotate(14deg); }
-  }
+
+
+
 
   /* ---------- CUA BÒ ---------- */
 
@@ -935,10 +832,7 @@ body {
     width: var(--cw);
     opacity: .7;
 
-    animation:
-      crabWalk var(--t, 35s)
-      ease-in-out var(--dl, 0s)
-      infinite alternate;
+
   }
 
   .crab.small {
@@ -946,11 +840,11 @@ body {
     left: auto;
     right: 12%;
     opacity: .48;
-    animation-direction: alternate-reverse;
+
   }
 
   .crab svg {
-    animation: crabBob 1s ease-in-out infinite alternate;
+
   }
 
   .crab .claw {
@@ -960,7 +854,7 @@ body {
   .crab .cl-l,
   .crab .cl-r {
     transform-origin: 12px 30px;
-    animation: clawLift 3s ease-in-out infinite alternate;
+
   }
 
   .crab .cl-r {
@@ -970,40 +864,24 @@ body {
   .crab .jaw {
     transform-box: view-box;
     transform-origin: 12px 24px;
-    animation: jawSnap 2.5s ease-in-out infinite;
+
   }
 
   .crab .legs {
     transform-box: view-box;
     transform-origin: 64px 60px;
-    animation: legsScuttle .6s ease-in-out infinite alternate;
+
   }
 
-  @keyframes crabWalk {
-    from { transform: translateX(0); }
-    to { transform: translateX(var(--walk)); }
-  }
 
-  @keyframes crabBob {
-    from { transform: translateY(0); }
-    to { transform: translateY(-2px); }
-  }
 
-  @keyframes clawLift {
-    from { transform: rotate(-8deg); }
-    to { transform: rotate(8deg); }
-  }
 
-  @keyframes jawSnap {
-    0%, 65%, 100% { transform: rotate(0); }
-    76% { transform: rotate(-15deg); }
-    86% { transform: rotate(2deg); }
-  }
 
-  @keyframes legsScuttle {
-    from { transform: scaleY(.97); }
-    to { transform: scaleY(1.03); }
-  }
+
+
+
+
+
 
   /* ---------- RÙA BIỂN ---------- */
 
@@ -1016,16 +894,16 @@ body {
     width: var(--wd);
     opacity: .7;
 
-    animation: swim 90s linear -22s infinite;
+
   }
 
   .turtle svg {
-    animation: turtleBob 7s ease-in-out infinite alternate;
+
   }
 
   .turtle .fl {
     transform-box: view-box;
-    animation: flipper 3s ease-in-out infinite alternate;
+
   }
 
   .turtle .fl-n {
@@ -1034,27 +912,17 @@ body {
 
   .turtle .fl-b {
     transform-origin: 98px 52px;
-    animation-delay: -1.5s;
+
   }
 
   .turtle .fl-r {
     transform-origin: 36px 52px;
-    animation-delay: -.75s;
+
   }
 
-  @keyframes turtleBob {
-    from {
-      transform: translateY(-7px) rotate(-2deg);
-    }
-    to {
-      transform: translateY(7px) rotate(2deg);
-    }
-  }
 
-  @keyframes flipper {
-    from { transform: rotate(-15deg); }
-    to { transform: rotate(14deg); }
-  }
+
+
 
 }
 
