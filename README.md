@@ -6,14 +6,14 @@ Web app theo dõi chi tiêu theo ngày: ngân sách chia đều cho các ngày t
 so-chi-tieu/
 ├── public/
 │   ├── index.html        ← giao diện, bố cục và logic
-│   ├── animations.css    ← hoạt ảnh và họa tiết trang trí (cảnh đồng cỏ, nút sáng, nền…)
+│   ├── animations.js     ← toàn bộ hoạt ảnh JavaScript (WAAPI, đồng cỏ, biển, pháo hoa, API điều khiển)
+│   ├── animations.css    ← họa tiết & kiểu dáng trang trí tĩnh (nền, màu sắc, bố cục)
 │   ├── work.js           ← mục "Công việc" (Linh kiện · Mật khẩu máy · Lịch năm)
 │   ├── work.css          ← giao diện của mục Công việc
 │   └── config.js         ← 2 giá trị Supabase (bạn điền)
 ├── supabase/
 │   ├── schema.sql        ← Sổ chi tiêu: bảng, bảo mật, hàm tự chuyển kỳ
-│   ├── work_schema.sql   ← Công việc: bảng, bảo mật, kho chứa ảnh/datasheet
-│   └── seed_tu_excel.sql ← nhập sẵn dữ liệu từ file Excel của bạn (chạy 1 lần)
+│   └── work_schema.sql   ← Công việc: bảng wk_parts, machine_passwords, cal_days, quy tắc bảo mật, kho ảnh/datasheet
 ├── wrangler.jsonc        ← cấu hình Cloudflare
 ├── .gitignore
 └── README.md
@@ -84,14 +84,11 @@ Dòng chữ nhỏ cuối trang cho biết phiên bản và hoạt ảnh đang b�
 
 Trên header có hai nút **Sổ chi tiêu | Công việc**. Mục Công việc có 3 phần:
 
-- **Linh kiện:** nhóm, tên, mã, hình ảnh (nhiều ảnh, tự thu nhỏ), datasheet (tải file PDF lên và/hoặc dán link), chức năng, ghi chú cách sửa. Có tìm kiếm và lọc theo nhóm.
-- **Mật khẩu máy:** mỗi máy một thẻ, mỗi thẻ nhiều mật khẩu (có thể gắn nhãn như "Cài đặt", "Hiệu chỉnh"). Bấm vào mật khẩu để chép. Nút **Dán nhiều mật khẩu** để thêm cả loạt (mỗi dòng một mật khẩu). Mật khẩu lưu thẳng, không mã hóa; chỉ người đã đăng nhập mới xem được.
-- **Lịch năm:** 12 tháng một lượt; bấm một ngày để chọn màu đánh dấu và viết ghi chú. Dưới lịch có danh sách các ngày đã đánh dấu hoặc ghi chú.
+- **Linh kiện:** nhóm, tên, mã, hình ảnh (nhiều ảnh, tự thu nhỏ), datasheet (tải file lên và/hoặc dán link), chức năng, ghi chú cách sửa. Có tìm kiếm, lọc theo nhóm, sửa/xóa ngay trên thẻ, và **thêm nhanh ghi chú hoặc ảnh** vào linh kiện đã có.
+- **Mật khẩu máy:** mỗi máy một thẻ, mỗi thẻ nhiều mật khẩu (có thể gắn nhãn). Bấm vào mật khẩu để chép; có nút dán nhiều mật khẩu một lúc. Lưu thẳng, không mã hóa; chỉ người đã đăng nhập mới xem được.
+- **Lịch năm:** 12 tháng một lượt; bấm một ngày để chọn màu đánh dấu và viết ghi chú.
 
-**Cài đặt lần đầu (làm một lần):**
-1. Supabase → SQL Editor → chạy `supabase/work_schema.sql` (tạo bảng và kho chứa ảnh/datasheet).
-2. Muốn có sẵn dữ liệu từ file Excel của bạn: chạy thêm `supabase/seed_tu_excel.sql` **đúng một lần** (chạy lại sẽ bị nhân đôi).
-3. Đưa `work.js`, `work.css` và `index.html` mới lên GitHub như các file khác.
+**Cài đặt lần đầu (hoặc khi gặp lỗi quyền ghi):** Supabase → SQL Editor → dán toàn bộ `supabase/work_schema.sql` → Run. File này an toàn khi chạy lại, không xóa dữ liệu, và tạo bảng **`wk_parts`** mới cho Linh kiện (bảng `components` cũ nếu có thì không dùng nữa, không bị đụng tới). Cuối trang Công việc có nút **Kiểm tra kết nối & quyền** để web tự thử đọc/thêm/sửa/xóa và chỉ ra chỗ nào bị chặn.
 
 Ảnh và datasheet nằm trong kho riêng tư `work-files` (mỗi file tối đa 50 MB, gói miễn phí tổng 1 GB), chỉ tài khoản của bạn mở được.
 
@@ -103,11 +100,37 @@ Trên header có hai nút **Sổ chi tiêu | Công việc**. Mục Công việc 
 - **Tự chuyển kỳ:** mỗi lần mở app, hàm `ensure_current_period` kiểm tra. Nếu hôm nay đã qua ngày kết thúc kỳ mới nhất, nó tạo kỳ kế tiếp (giữ nguyên ngân sách cũ, bạn tự sửa; app hiện thông báo nhắc). "Ngày bắt đầu kỳ hằng tháng" chỉnh trong **Cài đặt**: `1` = theo tháng dương lịch, `15` = kỳ từ 15 đến 14 tháng sau.
 - Dữ liệu các kỳ cũ giữ nguyên trong database, chọn ở danh sách kỳ dưới tiêu đề để xem lại. Không cần gom hay xóa tab như bản Google Sheet.
 
-## Chỉnh hoạt ảnh và trang trí
+## Chỉnh hoạt ảnh và trang trí (JavaScript Animations)
 
-Mọi hoạt ảnh nằm trong `public/animations.css`, được nạp sau phần CSS trong `index.html` nên ghi đè được kiểu gốc. Đầu file có mục lục. Muốn đổi tốc độ cây đung đưa, màu lá, bỏ bong bóng nền… chỉ cần sửa file này, không đụng tới `index.html`.
+Toàn bộ hoạt ảnh đã được chuyển sang file **`public/animations.js`** (dùng chuẩn Web Animations API), còn file **`public/animations.css`** chỉ giữ lại các kiểu dáng trang trí tĩnh (màu nền, gradient, bố cục).
 
-Trình duyệt hay giữ bản cũ của file CSS. Sau khi sửa, đổi số ở cuối trong `index.html` (`animations.css?v=1` thành `?v=2`) để mọi thiết bị tải bản mới.
+### Các tính năng và cách điều khiển qua JavaScript:
+- **Chỉnh tốc độ hoạt ảnh toàn web:**
+  ```js
+  AppAnimations.setSpeed(0.5); // Chạy chậm một nửa (slow-motion)
+  AppAnimations.setSpeed(1.5); // Chạy nhanh hơn 1.5 lần
+  ```
+- **Tạm dừng / Tiếp tục:**
+  ```js
+  AppAnimations.pause();  // Tạm dừng mọi chuyển động
+  AppAnimations.resume(); // Tiếp tục chuyển động
+  ```
+- **Bật / tắt từng nhóm hoạt ảnh:**
+  ```js
+  AppAnimations.toggle('sea', false);    // Tắt sinh vật biển hai bên (tiết kiệm pin)
+  AppAnimations.toggle('ocean', false);  // Tắt bong bóng nổi
+  AppAnimations.toggle('meadow', false); // Tắt cây đu đưa & mây trôi
+  AppAnimations.toggle('ui', false);     // Tắt hiệu ứng nảy nút, nháy hàng
+  ```
+- **Gọi trực tiếp các hiệu ứng ở bất cứ đâu:**
+  ```js
+  AppAnimations.flash(element);             // Nháy sáng một dòng hoặc ô ngày
+  AppAnimations.nudge(element);             // Rung nhẹ thẻ ngân sách
+  AppAnimations.floatText(anchor, '+45k');  // Chữ số bay lên
+  AppAnimations.starBurst(button);          // Bắn pháo hoa sao trắng
+  AppAnimations.popIn(element);             // Phần tử nảy ra
+  ```
+- **Đổi thông số hoạt ảnh:** Mở `public/animations.js`, tìm mục `KEYFRAMES` hoặc `CONFIG` ở đầu file để sửa thời gian, tọa độ rơi của lá, tốc độ cá bơi... rất trực quan.
 
 ## Cập nhật và nhờ Claude sửa
 
@@ -124,6 +147,7 @@ Nếu sửa cấu trúc bảng trong Supabase, hãy chạy đoạn SQL mới tro
 | Trang báo "Cần cấu hình Supabase" | Chưa điền `public/config.js`, hoặc chưa đẩy lên GitHub / Cloudflare chưa triển khai xong. |
 | "Sai email hoặc mật khẩu" | Kiểm tra tài khoản ở Authentication → Users; chắc là đã bật Auto Confirm. Đổi mật khẩu ngay trong trang Users. |
 | "Không có quyền ghi dữ liệu" | Chưa chạy `supabase/schema.sql` hoặc chạy bị lỗi giữa chừng. Chạy lại toàn bộ file. |
+| Không thêm/sửa/xóa được linh kiện, mật khẩu, lịch | Chạy lại `supabase/work_schema.sql`, tải lại trang, rồi nếu vẫn lỗi hãy bấm **Kiểm tra kết nối & quyền** ở cuối mục Công việc. Web tự thử đọc/thêm/sửa/xóa và chỉ ra chỗ bị chặn; bấm **Chép kết quả** để gửi cho người hỗ trợ. Dòng "Mục Công việc v…" ngay cạnh cho biết bản nào đang chạy. |
 | Build trên Cloudflare lỗi | Tên Worker trên Cloudflare phải trùng `name` trong `wrangler.jsonc`. |
 | Sửa xong mà trang không đổi | Chờ build xong (xem tab Deployments/Builds), rồi bấm Ctrl+Shift+R. Dòng cuối trang ghi số phiên bản để đối chiếu. |
 | Không thấy hoạt ảnh | Thiết bị đang bật "giảm chuyển động" (dòng cuối trang sẽ ghi rõ). |
