@@ -323,7 +323,7 @@
   @media (min-width:760px) { #app { grid-template-rows:auto 1fr; } }
 
 </style>
-<link rel="stylesheet" href="animations.css?v=7">
+<link rel="stylesheet" href="animations.css?v=9">
 <link rel="stylesheet" href="work.css?v=2">
 </head>
 <body>
@@ -345,6 +345,7 @@
     <nav class="mainTabs seg hidden" id="mainTabs" aria-label="Chọn mục"><button type="button" data-view="money" class="on">Sổ chi tiêu</button><button type="button" data-view="work">Công việc</button></nav>
     <div class="tools" id="tools">
       <button class="pill" id="status" type="button"><span class="dot"></span><span id="statusTxt">Đang tải…</span></button>
+      <button class="ibtn" id="btnTheme" type="button" aria-label="Chuyển sang chế độ Tối" title="Chuyển sang chế độ Tối">🌙</button>
       <button class="ibtn" id="btnSettings" aria-label="Cài đặt">⚙</button>
     </div>
   </header>
@@ -568,7 +569,7 @@
 
 <div class="toast" id="toast"></div>
 <script src="config.js"></script>
-<script src="animations.js?v=7"></script>
+<script src="animations.js?v=9"></script>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/+esm';
