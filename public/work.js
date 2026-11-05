@@ -665,12 +665,64 @@ function animateHerCells(root) {
   });
 }
 
+const MONTH_NAMES = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+
 function initCal() {
   if (!document.getElementById('wm-cal-single-style')) {
     const st = document.createElement('style');
     st.id = 'wm-cal-single-style';
     st.textContent = `
-      /* Bố cục lịch 1 tháng hiện tại với các ô ngày hình vuông bo góc */
+      /* Thanh chọn tháng & danh sách 12 tháng */
+      .wm-yr {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .wm-msel,
+      .wm-ysel {
+        width: auto !important;
+        padding: 7px 12px !important;
+        font-size: 14.5px !important;
+        font-weight: 800;
+        border-radius: 12px !important;
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .wm-mpills {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 6px;
+        margin: 0 0 14px;
+      }
+      .wm-mpills .chip {
+        padding: 7px 6px;
+        font-size: 12.5px;
+        text-align: center;
+        justify-content: center;
+        border-radius: 11px;
+      }
+      .wm-mpills .chip.on {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 800;
+        box-shadow: 0 3px 10px rgba(102, 174, 232, .28);
+      }
+      @media (max-width: 520px) {
+        .wm-mpills {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 5px;
+        }
+        .wm-mpills .chip {
+          font-size: 12px;
+          padding: 6px 4px;
+        }
+      }
+
+      /* Bố cục lịch 1 tháng với các ô ngày hình vuông bo góc */
       #kMonths {
         grid-template-columns: 1fr;
         max-width: 460px;
@@ -790,16 +842,56 @@ function initCal() {
     `;
     document.head.appendChild(st);
   }
+
+  const curY = new Date().getFullYear();
+  let yearOpts = '';
+  for (let y = curY - 5; y <= curY + 5; y++) {
+    yearOpts += '<option value="' + y + '">Năm ' + y + '</option>';
+  }
+
   $('wm-cal').innerHTML =
-    '<div class="wm-bar wm-calbar"><div class="wm-yr"><b id="kYear"></b></div>' +
-    '<button class="chip" data-c="today" type="button">Hôm nay</button></div>' +
+    '<div class="wm-bar wm-calbar">' +
+      '<div class="wm-yr">' +
+        '<button class="wm-ib" data-c="prev" type="button" aria-label="Tháng trước" title="Tháng trước">‹</button>' +
+        '<select id="kMonthSel" class="wm-msel" aria-label="Chọn tháng">' +
+          MONTH_NAMES.map((name, i) => '<option value="' + i + '">' + name + '</option>').join('') +
+        '</select>' +
+        '<select id="kYearSel" class="wm-ysel" aria-label="Chọn năm">' + yearOpts + '</select>' +
+        '<button class="wm-ib" data-c="next" type="button" aria-label="Tháng sau" title="Tháng sau">›</button>' +
+      '</div>' +
+      '<button class="chip" data-c="today" type="button">Hôm nay</button>' +
+    '</div>' +
+    '<div class="wm-mpills" id="kMonthPills">' +
+      MONTH_NAMES.map((name, i) => '<button type="button" class="chip" data-m="' + i + '">' + name + '</button>').join('') +
+    '</div>' +
     '<div class="wm-legend" id="kLegend">' + MARKS.map((m) => '<span><b class="c-' + m[0] + '"></b>' + m[1] + '</span>').join('') + '<em>Bấm vào một ngày để đánh dấu và ghi chú</em></div>' +
     '<div class="wm-months" id="kMonths"></div><div class="card wm-up" id="kList"></div>';
+
+  $('kMonthSel').addEventListener('change', (e) => {
+    setMonthYear(K.year, parseInt(e.target.value, 10));
+  });
+  $('kYearSel').addEventListener('change', (e) => {
+    setMonthYear(parseInt(e.target.value, 10), K.month);
+  });
+
   $('wm-cal').addEventListener('click', (e) => {
+    const mb = e.target.closest('[data-m]');
+    if (mb) {
+      setMonthYear(K.year, parseInt(mb.getAttribute('data-m'), 10));
+      return;
+    }
     const b = e.target.closest('[data-c]');
     if (b) {
       const a = b.getAttribute('data-c');
-      if (a === 'today') {
+      if (a === 'prev') {
+        let ny = K.year, nm = K.month - 1;
+        if (nm < 0) { nm = 11; ny -= 1; }
+        setMonthYear(ny, nm);
+      } else if (a === 'next') {
+        let ny = K.year, nm = K.month + 1;
+        if (nm > 11) { nm = 0; ny += 1; }
+        setMonthYear(ny, nm);
+      } else if (a === 'today') {
         syncCurrentMonth();
         loadCal(true).then(() => {
           const t = document.querySelector('.wm-d.today');
@@ -811,11 +903,36 @@ function initCal() {
     const d = e.target.closest('[data-day]'); if (d) openDay(d.getAttribute('data-day'));
   });
 }
+
+function syncMonthControls() {
+  const ms = $('kMonthSel'), ys = $('kYearSel'), pills = $('kMonthPills');
+  if (ms) ms.value = String(K.month);
+  if (ys) {
+    if (!ys.querySelector('option[value="' + K.year + '"]')) {
+      const opt = document.createElement('option');
+      opt.value = String(K.year);
+      opt.textContent = 'Năm ' + K.year;
+      ys.appendChild(opt);
+    }
+    ys.value = String(K.year);
+  }
+  if (pills) {
+    Array.prototype.forEach.call(pills.children, (btn) => {
+      btn.classList.toggle('on', parseInt(btn.getAttribute('data-m'), 10) === K.month);
+    });
+  }
+}
+
+async function setMonthYear(y, m) {
+  K.year = y;
+  K.month = m;
+  await loadCal();
+}
+
 async function loadCal(force) {
-  syncCurrentMonth();
   const ym = K.year + '-' + pad2(K.month + 1);
   const dim = new Date(Date.UTC(K.year, K.month + 1, 0)).getUTCDate();
-  $('kYear').textContent = 'Tháng ' + (K.month + 1) + ' / ' + K.year;
+  syncMonthControls();
   if (K.loadedYm === ym && !force) { renderCal(); return; }
   K.days = {}; renderCal();
   try {
@@ -824,12 +941,11 @@ async function loadCal(force) {
     K.loadedYm = ym; renderCal();
   } catch (e) { fail(e); }
 }
+
 function renderCal() {
-  syncCurrentMonth();
   const m = K.month, ym = K.year + '-' + pad2(m + 1);
-  $('kYear').textContent = 'Tháng ' + (m + 1) + ' / ' + K.year;
-  const today = todayStr();
-  const names = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+  syncMonthControls();
+  const today = todayStr(), now = new Date();
   const first = (new Date(Date.UTC(K.year, m, 1)).getUTCDay() + 6) % 7, dim = new Date(Date.UTC(K.year, m + 1, 0)).getUTCDate();
   let cells = '';
   for (let i = 0; i < first; i++) cells += '<i class="wm-dv"></i>';
@@ -841,15 +957,16 @@ function renderCal() {
       (isHer ? buildHerFxHtml() : '') +
       '<span>' + d + '</span></button>';
   }
-  $('kMonths').innerHTML = '<section class="wm-mon now"><h4>' + names[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
+  const isCurrentMonth = (K.year === now.getFullYear() && m === now.getMonth());
+  $('kMonths').innerHTML = '<section class="wm-mon' + (isCurrentMonth ? ' now' : '') + '"><h4>' + MONTH_NAMES[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
   animateHerCells($('kMonths'));
 
   const prefix = ym + '-';
   const list = Object.keys(K.days).filter((k) => k.startsWith(prefix)).sort().map((k) => K.days[k]).filter((x) => x.note || x.mark);
-  $('kList').innerHTML = '<h4>Ghi chú và đánh dấu ' + names[m].toLowerCase() + '/' + K.year + ' <span>' + list.length + '</span></h4>' + (list.length ? list.map((x) =>
+  $('kList').innerHTML = '<h4>Ghi chú và đánh dấu ' + MONTH_NAMES[m].toLowerCase() + '/' + K.year + ' <span>' + list.length + '</span></h4>' + (list.length ? list.map((x) =>
     '<button type="button" class="wm-ui" data-day="' + x.day + '"><b class="c-' + (x.mark || 'none') + '"></b><span class="wm-ud">' + dmy(x.day).slice(0, 5) + ' · ' + DOW_LONG[new Date(x.day + 'T00:00:00').getDay()] + '</span><span class="wm-ut">' +
     (x.note ? esc(x.note.split('\n')[0]) : '<i>' + esc(MARK_LABEL[x.mark] || '') + '</i>') + '</span></button>').join('') :
-    '<div class="wm-empty" style="padding:8px 0">Chưa có ngày nào trong ' + names[m].toLowerCase() + ' được đánh dấu hoặc ghi chú.</div>');
+    '<div class="wm-empty" style="padding:8px 0">Chưa có ngày nào trong ' + MONTH_NAMES[m].toLowerCase() + ' được đánh dấu hoặc ghi chú.</div>');
 }
 function openDay(day) {
   const dt = new Date(day + 'T00:00:00'), cur = K.days[day] || { mark: '', note: '' };
