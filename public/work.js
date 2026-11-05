@@ -7,7 +7,7 @@ const BUCKET = 'work-files';
 const TBL = 'wk_parts';                           // bảng Linh kiện (tạo bởi supabase/work_schema.sql)
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
-const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['green', 'Nghỉ'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác']];
+const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['green', 'Nghỉ'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
 const WORK_VERSION = 'v6 · 29/10/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
@@ -575,10 +575,11 @@ function editPw(id) {
 }
 
 /* =====================================================================
-   3) LỊCH THÁNG HIỆN TẠI: đánh dấu màu + ghi chú cho các ngày trong tháng hiện tại
+   3) LỊCH THÁNG HIỆN TẠI: ô vuông bo góc + đánh dấu "Her" (trái tim hồng phát sáng)
 ===================================================================== */
 const K = { year: new Date().getFullYear(), month: new Date().getMonth(), days: {} };
 const MARK_LABEL = {}; MARKS.forEach((m) => { MARK_LABEL[m[0]] = m[1]; });
+const HER_TAG = '[Her] ';
 
 function syncCurrentMonth() {
   const now = new Date();
@@ -586,17 +587,207 @@ function syncCurrentMonth() {
   K.month = now.getMonth();
 }
 
+// Chuẩn hóa dữ liệu đọc từ Supabase (hỗ trợ cả trường hợp DB giới hạn cột mark bằng CHECK constraint)
+function normalizeCalRow(r) {
+  if (!r) return r;
+  const copy = Object.assign({}, r);
+  if (copy.note && copy.note.indexOf(HER_TAG) === 0) {
+    copy.mark = 'her';
+    copy.note = copy.note.slice(HER_TAG.length);
+  }
+  return copy;
+}
+
+// Tạo các trái tim hồng phát sáng bên trong ô ngày được đánh dấu "Her"
+const HEART_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+const HER_PARTICLES = [
+  { x: 16, s: 11, dur: 2900, dl: -300, dx: 5, p: 0.95 },
+  { x: 74, s: 9,  dur: 3300, dl: -1400, dx: -6, p: 0.9 },
+  { x: 46, s: 13, dur: 3600, dl: -2100, dx: 4, p: 1.0 },
+  { x: 28, s: 6.5, dur: 2600, dl: -900, dx: -4, p: 0.8 },
+  { x: 62, s: 7.5, dur: 3100, dl: -2600, dx: 5, p: 0.85 },
+  { x: 84, s: 6,  dur: 2700, dl: -1750, dx: -3, p: 0.75 },
+  { x: 38, s: 8.5, dur: 3400, dl: -600, dx: -5, p: 0.88 }
+];
+
+function buildHerFxHtml() {
+  return '<span class="her-fx" aria-hidden="true">' +
+    HER_PARTICLES.map((p) =>
+      '<i class="her-h" style="left:' + p.x + '%;width:' + p.s + 'px;height:' + p.s + 'px" ' +
+      'data-dur="' + p.dur + '" data-dl="' + p.dl + '" data-dx="' + p.dx + '" data-pk="' + p.p + '">' +
+      HEART_SVG + '</i>'
+    ).join('') +
+    '</span>';
+}
+
+function animateHerCells(root) {
+  const container = root || $('kMonths');
+  if (!container) return;
+  const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const hearts = container.querySelectorAll('.wm-d.m-her .her-h');
+  hearts.forEach((h) => {
+    if (!h.animate || reduce) {
+      h.style.opacity = '0.75';
+      h.style.bottom = '35%';
+      return;
+    }
+    const dur = parseFloat(h.getAttribute('data-dur')) || 3000;
+    const dl = parseFloat(h.getAttribute('data-dl')) || 0;
+    const dx = parseFloat(h.getAttribute('data-dx')) || 4;
+    const pk = parseFloat(h.getAttribute('data-pk')) || 0.9;
+
+    h.animate([
+      { transform: 'translate3d(0px, 8px, 0) scale(0.45)', opacity: 0, offset: 0 },
+      { transform: 'translate3d(' + (dx * 0.5).toFixed(1) + 'px, -8px, 0) scale(0.95)', opacity: pk, offset: 0.25 },
+      { transform: 'translate3d(' + (-dx * 0.6).toFixed(1) + 'px, -26px, 0) scale(1.08)', opacity: pk * 0.9, offset: 0.6 },
+      { transform: 'translate3d(' + (dx * 0.3).toFixed(1) + 'px, -44px, 0) scale(0.85)', opacity: pk * 0.45, offset: 0.85 },
+      { transform: 'translate3d(0px, -56px, 0) scale(0.55)', opacity: 0, offset: 1 }
+    ], {
+      duration: dur,
+      delay: dl,
+      iterations: Infinity,
+      easing: 'ease-in-out'
+    });
+  });
+
+  // Hiệu ứng nhịp thở ánh hồng nhẹ cho viền ô "Her"
+  container.querySelectorAll('.wm-d.m-her').forEach((cell) => {
+    if (!cell.animate || reduce) return;
+    cell.animate([
+      { boxShadow: '0 0 8px rgba(255, 82, 214, .35), inset 0 0 10px rgba(255, 82, 214, .22)' },
+      { boxShadow: '0 0 15px rgba(255, 105, 224, .65), inset 0 0 16px rgba(255, 105, 224, .38)' }
+    ], {
+      duration: 2200,
+      iterations: Infinity,
+      direction: 'alternate',
+      easing: 'ease-in-out'
+    });
+  });
+}
+
 function initCal() {
   if (!document.getElementById('wm-cal-single-style')) {
     const st = document.createElement('style');
     st.id = 'wm-cal-single-style';
-    st.textContent =
-      '#kMonths { grid-template-columns: 1fr; }' +
-      '#kMonths .wm-mon { padding: 16px 18px 14px; }' +
-      '#kMonths .wm-mon h4 { font-size: 15.5px; margin-bottom: 10px; }' +
-      '#kMonths .wm-wd, #kMonths .wm-dg { gap: 6px; }' +
-      '#kMonths .wm-d { aspect-ratio: auto; height: 44px; font-size: 13.5px; border-radius: 11px; }' +
-      '@media (max-width: 520px) { #kMonths .wm-d { height: 38px; font-size: 12.5px; } }';
+    st.textContent = `
+      /* Bố cục lịch 1 tháng hiện tại với các ô ngày hình vuông bo góc */
+      #kMonths {
+        grid-template-columns: 1fr;
+        max-width: 460px;
+        margin: 0 auto 16px;
+      }
+      #kMonths .wm-mon {
+        padding: 16px 16px 15px;
+        border-radius: 22px;
+      }
+      #kMonths .wm-mon h4 {
+        font-size: 16px;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+      #kMonths .wm-wd,
+      #kMonths .wm-dg {
+        gap: 7px;
+      }
+      #kMonths .wm-dv {
+        aspect-ratio: 1 / 1;
+        border-radius: 13px;
+        background: rgba(200, 224, 244, .18);
+        border: 1px dashed rgba(180, 210, 236, .35);
+      }
+      html[data-theme="dark"] #kMonths .wm-dv {
+        background: rgba(25, 45, 68, .25);
+        border-color: rgba(55, 88, 125, .35);
+      }
+      #kMonths .wm-d {
+        aspect-ratio: 1 / 1 !important;
+        height: auto !important;
+        border-radius: 13px;
+        font-size: 14px;
+        font-weight: 700;
+        border: 1px solid rgba(205, 226, 245, .75);
+        background: rgba(246, 251, 255, .85);
+        overflow: hidden;
+        isolation: isolate;
+      }
+      html[data-theme="dark"] #kMonths .wm-d {
+        background: rgba(22, 39, 60, .85);
+        border-color: rgba(45, 75, 108, .75);
+      }
+      #kMonths .wm-d > span:not(.her-fx) {
+        position: relative;
+        z-index: 2;
+      }
+      @media (max-width: 520px) {
+        #kMonths .wm-wd,
+        #kMonths .wm-dg { gap: 5px; }
+        #kMonths .wm-d,
+        #kMonths .wm-dv { border-radius: 11px; font-size: 13px; }
+      }
+
+      /* Nhãn màu & hiệu ứng "Her" (Trái tim hồng neon phát sáng trên nền đêm) */
+      .c-her {
+        --mc: #ff5cd6;
+        --mb: #1e0726;
+      }
+      .wm-legend .c-her,
+      .wm-ui .c-her,
+      .wm-cols .c-her b {
+        background: radial-gradient(circle at 35% 35%, #ff9eee, #ff47cc 65%, #c91496 100%) !important;
+        box-shadow: 0 0 8px rgba(255, 92, 214, .85);
+      }
+      .wm-cols button.c-her {
+        background: linear-gradient(145deg, #1b0622 0%, #2a0a36 100%) !important;
+        color: #ff9ef0 !important;
+        border-color: rgba(255, 92, 214, .45);
+        text-shadow: 0 0 8px rgba(255, 92, 214, .55);
+      }
+      .wm-cols button.c-her.on {
+        border-color: #ff6ee0 !important;
+        box-shadow: 0 0 12px rgba(255, 92, 214, .55), inset 0 0 8px rgba(255, 92, 214, .25) !important;
+      }
+
+      /* Ô ngày được đánh dấu "Her" */
+      #kMonths .wm-d.m-her {
+        background: radial-gradient(circle at 50% 65%, #2b0938 0%, #14031c 70%, #09010d 100%) !important;
+        border-color: rgba(255, 92, 214, .65) !important;
+        color: #ffe3fa !important;
+      }
+      #kMonths .wm-d.m-her > span:not(.her-fx) {
+        color: #ffe6fb !important;
+        font-weight: 800;
+        text-shadow: 0 0 6px rgba(255, 92, 214, .95), 0 0 14px rgba(255, 70, 205, .75);
+      }
+      #kMonths .wm-d.m-her.has::after {
+        background: #ff85e4 !important;
+        box-shadow: 0 0 6px #ff5cd6;
+        z-index: 2;
+      }
+      .her-fx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: inherit;
+      }
+      .her-h {
+        position: absolute;
+        bottom: -8px;
+        display: block;
+        opacity: 0;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 0 3px rgba(255, 105, 224, .95)) drop-shadow(0 0 7px rgba(235, 30, 180, .85));
+      }
+      .her-h svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .her-h path {
+        fill: #ff85e4;
+      }
+    `;
     document.head.appendChild(st);
   }
   $('wm-cal').innerHTML =
@@ -629,7 +820,7 @@ async function loadCal(force) {
   K.days = {}; renderCal();
   try {
     const rows = must(await C.sb.from('cal_days').select('*').gte('day', ym + '-01').lte('day', ym + '-' + pad2(dim)).order('day'));
-    K.days = {}; rows.forEach((r) => { K.days[r.day] = r; });
+    K.days = {}; rows.forEach((r) => { K.days[r.day] = normalizeCalRow(r); });
     K.loadedYm = ym; renderCal();
   } catch (e) { fail(e); }
 }
@@ -644,10 +835,15 @@ function renderCal() {
   for (let i = 0; i < first; i++) cells += '<i class="wm-dv"></i>';
   for (let d = 1; d <= dim; d++) {
     const key = ym + '-' + pad2(d), x = K.days[key];
+    const isHer = !!(x && x.mark === 'her');
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (x && x.mark ? ' m-' + x.mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
-      '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '><span>' + d + '</span></button>';
+      '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
+      (isHer ? buildHerFxHtml() : '') +
+      '<span>' + d + '</span></button>';
   }
   $('kMonths').innerHTML = '<section class="wm-mon now"><h4>' + names[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
+  animateHerCells($('kMonths'));
+
   const prefix = ym + '-';
   const list = Object.keys(K.days).filter((k) => k.startsWith(prefix)).sort().map((k) => K.days[k]).filter((x) => x.note || x.mark);
   $('kList').innerHTML = '<h4>Ghi chú và đánh dấu ' + names[m].toLowerCase() + '/' + K.year + ' <span>' + list.length + '</span></h4>' + (list.length ? list.map((x) =>
@@ -676,8 +872,18 @@ function openDay(day) {
         if (K.days[day]) await track(async () => gotRows(must(await C.sb.from('cal_days').delete().eq('day', day).select('day'))));
         delete K.days[day];
       } else {
-        const saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark, note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
-        K.days[day] = saved;
+        let saved;
+        try {
+          saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark, note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
+        } catch (dbErr) {
+          // Nếu bảng cal_days trên Supabase có ràng buộc CHECK chỉ cho phép 5 màu cũ, tự động lưu kèm tiền tố [Her]
+          if (mark === 'her' && /check constraint|cal_days_mark_check/i.test(String(dbErr && dbErr.message || dbErr))) {
+            saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark: 'purple', note: HER_TAG + note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
+          } else {
+            throw dbErr;
+          }
+        }
+        K.days[day] = normalizeCalRow(saved);
       }
       closeDlg(); renderCal(); C.toast('Đã lưu');
     } catch (er) { fail(er); b.disabled = false; }
