@@ -735,38 +735,404 @@ body {
             transition-duration: .01ms !important;
   }
 }
+
+/* =====================================================================
+   CHẾ ĐỘ TỐI (DARK MODE — ĐẠI DƯƠNG ĐÊM PASTEL)
+   Kích hoạt khi <html data-theme="dark">
+   ===================================================================== */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1522;
+  --card: #132235;
+  --text: #e6f1fc;
+  --muted: #8ca8c6;
+  --line: #213752;
+  --accent: #68b5f0;
+  --accent2: #89ccf9;
+  --accent-deep: #93cefa;
+  --ok: #46c3a4;
+  --bad: #f08297;
+  --past: #0f1c2d;
+  --today: #182e47;
+  --chip: #182b42;
+  --shadow: 0 4px 12px rgba(0, 0, 0, .30), 0 12px 30px rgba(0, 0, 0, .35);
+  --shadow-hover: 0 8px 22px rgba(0, 0, 0, .42), 0 18px 38px rgba(0, 0, 0, .46);
+  --focus: 0 0 0 3px rgba(104, 181, 240, .28);
+  --sea-ink: #7ec6f9;
+  --sea-ink-light: #a6dcff;
+  --sea-ink-soft: #88ccf9;
+  --sea-ink-deep: #5ca8e2;
+  --sea-light: rgba(126, 198, 249, .12);
+  --sea-mid: rgba(126, 198, 249, .26);
+  --sea-deep: rgba(126, 198, 249, .48);
+}
+
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at 12% 15%, rgba(102, 181, 238, .15), transparent 40%),
+    radial-gradient(ellipse at 88% 72%, rgba(84, 158, 220, .12), transparent 44%),
+    linear-gradient(180deg, #091320 0%, #0d1b2d 55%, #102136 100%);
+  background-attachment: fixed;
+  color: var(--text);
+}
+
+/* Thanh tiêu đề & nút công cụ */
+html[data-theme="dark"] .top {
+  background: rgba(11, 21, 34, .84);
+  border-bottom-color: rgba(35, 59, 88, .85);
+}
+html[data-theme="dark"] .pill,
+html[data-theme="dark"] .ibtn {
+  background: #15263b;
+  border-color: var(--line);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+html[data-theme="dark"] .ibtn:hover {
+  background: #1d334f;
+  border-color: #2f4f75;
+}
+
+/* Thẻ ngân sách chính & đồng cỏ */
+html[data-theme="dark"] .hero {
+  --scene-ink: rgba(182, 226, 255, .68);
+  background-image:
+    radial-gradient(circle at 12% 22%, rgba(255,255,255,.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 27% 76%, rgba(255,255,255,.14) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 33%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+    linear-gradient(135deg, #1d5585 0%, #266ca3 55%, #3583be 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .38);
+}
+html[data-theme="dark"] .hero.over {
+  --scene-ink: rgba(255, 192, 206, .72);
+  background: linear-gradient(135deg, #7c3346 0%, #984157 58%, #b05269 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .38);
+}
+
+/* Các thẻ, ô nhập liệu, nút bấm, chip */
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .row,
+html[data-theme="dark"] .sheet,
+html[data-theme="dark"] .wm-card {
+  background: var(--card);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .card h2 {
+  text-decoration-color: rgba(104, 181, 240, .25);
+}
+html[data-theme="dark"] .seg {
+  background: #0e1a29;
+  border-color: #1d314a;
+}
+html[data-theme="dark"] .seg button.on {
+  background: #1c324d;
+  color: #9cd3fc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .wm-search input {
+  background: #0e1a29;
+  color: var(--text);
+  border-color: var(--line);
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #5c7896;
+}
+html[data-theme="dark"] input:hover,
+html[data-theme="dark"] textarea:hover,
+html[data-theme="dark"] select:hover {
+  border-color: #315278;
+}
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] select:focus {
+  background: #122133;
+  border-color: var(--accent);
+}
+html[data-theme="dark"] select.psel option {
+  background: #132235;
+  color: var(--text);
+}
+html[data-theme="dark"] .chip {
+  background: #172a40;
+  border-color: #243e5c;
+  color: #9acbf2;
+}
+html[data-theme="dark"] .chip:hover {
+  background: #1f3754;
+  border-color: #32557d;
+  color: #bce0ff;
+}
+html[data-theme="dark"] .btn {
+  background: #172a40;
+  border-color: var(--line);
+  color: var(--text);
+}
+html[data-theme="dark"] .btn:hover {
+  background: #1f3754;
+  border-color: #32557d;
+}
+html[data-theme="dark"] .btn.primary {
+  background: linear-gradient(135deg, #3c86c4, #58a3df);
+  border-color: transparent;
+  color: #fff;
+}
+html[data-theme="dark"] .btn.danger {
+  background: #2c1822;
+  border-color: #4d2635;
+  color: #f48ea2;
+}
+html[data-theme="dark"] .btn.danger:hover {
+  background: #3b1e2b;
+  border-color: #633043;
+}
+
+/* Bảng tuần & ô ngày trong kỳ */
+html[data-theme="dark"] #calWrap {
+  border-color: var(--line);
+  background:
+    radial-gradient(circle, rgba(104, 181, 240, .18) 1.1px, transparent 1.7px) 0 0 / 16px 16px,
+    linear-gradient(180deg, rgba(19, 34, 53, .75), rgba(14, 26, 42, .55));
+}
+html[data-theme="dark"] .wk {
+  background: rgba(19, 34, 53, .82);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .wk.now {
+  border-color: #386593;
+  box-shadow: 0 0 0 1px rgba(104, 181, 240, .2), var(--shadow);
+}
+html[data-theme="dark"] .wk .day:not(.void) {
+  background: linear-gradient(145deg, #15263b 0%, #172940 52%, #1b2842 100%);
+  border-color: #233b57;
+}
+html[data-theme="dark"] .wk .day:not(.void):nth-child(4n + 2),
+html[data-theme="dark"] .wk .day:not(.void):nth-child(4n + 3) {
+  background: linear-gradient(145deg, #17263d 0%, #1a2742 48%, #162940 100%);
+  border-color: #273c59;
+}
+html[data-theme="dark"] .wk .day.past:not(.void),
+html[data-theme="dark"] .row.past {
+  background: linear-gradient(145deg, #101d2e 0%, #122033 55%, #142036 100%);
+  border-color: #1c2f47;
+}
+html[data-theme="dark"] .wk .day.today:not(.void),
+html[data-theme="dark"] .row.today {
+  background: linear-gradient(145deg, #1b3654 0%, #213759 100%);
+  border-color: #467eb5;
+}
+html[data-theme="dark"] .day.void {
+  background: transparent;
+  border-color: #1c2f47;
+}
+html[data-theme="dark"] .day:hover,
+html[data-theme="dark"] .row:hover {
+  border-color: #3c6794;
+}
+html[data-theme="dark"] .chk span {
+  background: #0e1a29;
+  border-color: #2b4766;
+}
+html[data-theme="dark"] .badge {
+  background: #1d3958;
+  color: #93cefa;
+}
+html[data-theme="dark"] .banner {
+  background: linear-gradient(100deg, #162b44, #132338);
+  border-color: #315880;
+}
+html[data-theme="dark"] .switch i {
+  background: #253d59;
+}
+html[data-theme="dark"] .xi {
+  background: #172a40;
+}
+html[data-theme="dark"] .xi:hover {
+  background: #1e3550;
+}
+html[data-theme="dark"] .xi.on {
+  background: #1f3a58;
+  border-color: var(--accent);
+}
+html[data-theme="dark"] .xdel:hover {
+  background: #331c26;
+}
+html[data-theme="dark"] .floaty {
+  background: #182d46;
+  color: #9ad2fc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .4);
+}
+html[data-theme="dark"] .sk {
+  background: linear-gradient(90deg, #132235 25%, #1c314b 37%, #132235 63%);
+  background-size: 400% 100%;
+}
+
+/* Mục Công việc (work.css) trong Dark Mode */
+html[data-theme="dark"] .wm-empty {
+  background: rgba(19, 34, 53, .6);
+  border-color: #284463;
+}
+html[data-theme="dark"] .wm-ib {
+  background: #182b42;
+  color: #93c6ed;
+}
+html[data-theme="dark"] .wm-ib:hover {
+  background: #213a57;
+}
+html[data-theme="dark"] .wm-ib.bad {
+  background: #2e1923;
+  color: var(--bad);
+}
+html[data-theme="dark"] .wm-ib.bad:hover {
+  background: #3d202e;
+}
+html[data-theme="dark"] .wm-grp {
+  background: #1b3450;
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-code {
+  color: #8ab8de;
+}
+html[data-theme="dark"] .wm-cover,
+html[data-theme="dark"] .wm-gal button,
+html[data-theme="dark"] .wm-ph {
+  background: linear-gradient(135deg, #16283d, #112030);
+}
+html[data-theme="dark"] .wm-count {
+  background: rgba(19, 34, 53, .92);
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-addph {
+  background: #142438;
+  border-color: #2b496b;
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-addph:hover {
+  background: #1a2f48;
+}
+html[data-theme="dark"] .wm-pwc {
+  background: #16283d;
+  border-color: #264363;
+  color: #a8d8ff;
+}
+html[data-theme="dark"] .wm-pwc:hover {
+  background: #1d344f;
+  border-color: #365d87;
+}
+html[data-theme="dark"] .wm-pastebox,
+html[data-theme="dark"] .wm-quick,
+html[data-theme="dark"] .wm-ck {
+  background: #15263a;
+  border-color: #243e5c;
+}
+html[data-theme="dark"] .wm-ck.ok {
+  background: #122b29;
+}
+html[data-theme="dark"] .wm-ck.bad,
+html[data-theme="dark"] .wm-err:not(:empty),
+html[data-theme="dark"] .wm-banner {
+  background: #2c1822;
+  border-color: #522738;
+  color: #f799ab;
+}
+html[data-theme="dark"] .wm-mon {
+  background: rgba(19, 34, 53, .9);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .wm-mon.now {
+  border-color: #3d6c9c;
+}
+html[data-theme="dark"] .wm-d:hover,
+html[data-theme="dark"] .wm-ui:hover {
+  background: #1b314b;
+}
+html[data-theme="dark"] .wm-ui {
+  border-bottom-color: #1c2f47;
+}
+html[data-theme="dark"] .wm-modal .sheet > .twin:last-child {
+  background: linear-gradient(180deg, rgba(19, 34, 53, 0), #132235 30%);
+}
+html[data-theme="dark"] .wm-cact button {
+  background: rgba(19, 34, 53, .94);
+  color: #9ad2fc;
+}
+
+/* Đại dương & bong bóng nền trong Dark Mode */
+html[data-theme="dark"] .bg .b1 { background: radial-gradient(circle, rgba(82, 162, 230, .26) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b2 { background: radial-gradient(circle, rgba(70, 148, 218, .22) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b3 { background: radial-gradient(circle, rgba(100, 180, 242, .20) 0%, transparent 70%); }
+html[data-theme="dark"] .bub {
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(215, 240, 255, .75) 0%,
+      rgba(145, 208, 252, .28) 22%,
+      rgba(95, 175, 235, .14) 58%,
+      rgba(65, 145, 210, .08) 100%
+    );
+  border-color: rgba(175, 224, 255, .48);
+  box-shadow:
+    inset -4px -6px 14px rgba(110, 190, 245, .15),
+    0 0 14px rgba(110, 190, 245, .14);
+}
+@media (min-width: 1140px) {
+  html[data-theme="dark"] .sea {
+    background:
+      radial-gradient(ellipse at 50% 15%, rgba(110, 188, 245, .12), transparent 65%),
+      linear-gradient(180deg, rgba(20, 44, 72, .25) 0%, rgba(16, 36, 60, .45) 55%, rgba(12, 28, 48, .7) 100%);
+  }
+  html[data-theme="dark"] .sea::after {
+    background:
+      repeating-linear-gradient(170deg, rgba(145, 208, 252, .08) 0 2px, transparent 2px 13px),
+      linear-gradient(180deg, rgba(58, 132, 196, .18), rgba(42, 104, 162, .34));
+  }
+}
+
 `;
 
-  function applyPastelBlueDefs() {
+  function applyPastelBlueDefs(isDark) {
+    if (typeof isDark !== 'boolean') {
+      isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    }
     const root = document.documentElement;
     if (root && root.style) {
-      root.style.setProperty('--sea-ink', '#66b3e8');
-      root.style.setProperty('--sea-ink-light', '#93cff8');
-      root.style.setProperty('--sea-ink-soft', '#7cc0f0');
-      root.style.setProperty('--sea-ink-deep', '#529ed6');
-      root.style.setProperty('--sea-light', 'rgba(102, 179, 232, .10)');
-      root.style.setProperty('--sea-mid', 'rgba(102, 179, 232, .24)');
-      root.style.setProperty('--sea-deep', 'rgba(102, 179, 232, .45)');
+      root.style.setProperty('--sea-ink', isDark ? '#7ec6f9' : '#66b3e8');
+      root.style.setProperty('--sea-ink-light', isDark ? '#a6dcff' : '#93cff8');
+      root.style.setProperty('--sea-ink-soft', isDark ? '#88ccf9' : '#7cc0f0');
+      root.style.setProperty('--sea-ink-deep', isDark ? '#5ca8e2' : '#529ed6');
     }
     const defs = document.querySelector('.sea-defs defs');
     if (defs) {
+      const cTop = isDark ? '#92d2fc' : '#7ec4f4';
+      const cBot = isDark ? '#66b2ea' : '#5ba6de';
+      const sTop = isDark ? '#aee0ff' : '#98d3f9';
+      const sBot = isDark ? '#7ac0f4' : '#6eb8ec';
+      const rTop = isDark ? '#8ecdf8' : '#87c7f2';
+      const rMid = isDark ? '#6eb8ec' : '#6bb3e6';
+      const rBot = isDark ? '#549cd6' : '#559dd4';
+      const kBot = isDark ? '#68b2e8' : '#5ca7df';
+      const kTop = isDark ? '#9cd7fd' : '#8accf7';
       defs.innerHTML = `
         <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" style="stop-color:#7ec4f4;stop-opacity:.95"/>
-          <stop offset="1" style="stop-color:#5ba6de;stop-opacity:.68"/>
+          <stop offset="0" style="stop-color:${cTop};stop-opacity:.95"/>
+          <stop offset="1" style="stop-color:${cBot};stop-opacity:.68"/>
         </linearGradient>
         <linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" style="stop-color:#98d3f9;stop-opacity:.85"/>
-          <stop offset="1" style="stop-color:#6eb8ec;stop-opacity:.48"/>
+          <stop offset="0" style="stop-color:${sTop};stop-opacity:.85"/>
+          <stop offset="1" style="stop-color:${sBot};stop-opacity:.48"/>
         </linearGradient>
         <linearGradient id="gRock" x1="0" y1="0" x2=".35" y2="1">
-          <stop offset="0" style="stop-color:#87c7f2;stop-opacity:.82"/>
-          <stop offset=".6" style="stop-color:#6bb3e6;stop-opacity:.58"/>
-          <stop offset="1" style="stop-color:#559dd4;stop-opacity:.40"/>
+          <stop offset="0" style="stop-color:${rTop};stop-opacity:.82"/>
+          <stop offset=".6" style="stop-color:${rMid};stop-opacity:.58"/>
+          <stop offset="1" style="stop-color:${rBot};stop-opacity:.40"/>
         </linearGradient>
         <linearGradient id="gKelp" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" style="stop-color:#5ca7df;stop-opacity:.55"/>
-          <stop offset="1" style="stop-color:#8accf7;stop-opacity:.94"/>
+          <stop offset="0" style="stop-color:${kBot};stop-opacity:.55"/>
+          <stop offset="1" style="stop-color:${kTop};stop-opacity:.94"/>
         </linearGradient>
         <linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" style="stop-color:#8acaf5;stop-opacity:.34"/>
@@ -786,9 +1152,82 @@ body {
     }
     applyPastelBlueDefs();
   }
+  // ========== QUẢN LÝ CHẾ ĐỘ SÁNG / TỐI (LIGHT / DARK THEME) ==========
+  const THEME_KEY = 'app_theme';
 
-  // Nạp ngay lập tức để tránh FOUC (Flash of Unstyled SVG)
+  function getSavedTheme() {
+    try {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved === 'dark' || saved === 'light') return saved;
+    } catch (e) {}
+    return 'light';
+  }
+
+  function applyTheme(theme, animateBtn) {
+    const isDark = theme === 'dark';
+    const root = document.documentElement;
+    if (isDark) {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+    try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch (e) {}
+
+    // Cập nhật meta theme-color trên điện thoại
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) {
+      metaTheme.setAttribute('content', isDark ? '#0b1522' : '#f1f8ff');
+    }
+
+    // Cập nhật dải màu SVG sinh vật biển phù hợp với nền Sáng / Tối
+    applyPastelBlueDefs(isDark);
+
+    // Cập nhật biểu tượng nút #btnTheme
+    const btn = document.getElementById('btnTheme');
+    if (btn) {
+      btn.textContent = isDark ? '☀️' : '🌙';
+      const label = isDark ? 'Chuyển sang chế độ Sáng' : 'Chuyển sang chế độ Tối';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
+      if (animateBtn && btn.animate && CONFIG.enabled && !CONFIG.reducedMotion) {
+        btn.animate([
+          { transform: 'rotate(-90deg) scale(0.75)', opacity: 0.5 },
+          { transform: 'rotate(15deg) scale(1.12)', opacity: 1, offset: 0.65 },
+          { transform: 'rotate(0deg) scale(1)', opacity: 1 }
+        ], { duration: 360, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      }
+    }
+  }
+
+  function ensureThemeButton() {
+    const tools = document.getElementById('tools');
+    if (!tools) return;
+    let btn = document.getElementById('btnTheme');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = 'btnTheme';
+      btn.className = 'ibtn';
+      const settingsBtn = document.getElementById('btnSettings');
+      if (settingsBtn && settingsBtn.parentNode === tools) {
+        tools.insertBefore(btn, settingsBtn);
+      } else {
+        tools.appendChild(btn);
+      }
+    }
+    if (!btn._themeBound) {
+      btn._themeBound = true;
+      btn.addEventListener('click', () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next, true);
+      });
+    }
+    applyTheme(getSavedTheme(), false);
+  }
+
+  // Nạp ngay lập tức để tránh FOUC (Flash of Unstyled SVG) & khôi phục chế độ Sáng/Tối
   ensureBaseLayoutCss();
+  applyTheme(getSavedTheme(), false);
 
   // ========== 1. CẤU HÌNH & TRẠNG THÁI TOÀN CỤC ==========
   const CONFIG = {
@@ -1808,8 +2247,14 @@ body {
     sea: Sea,
 
     // Khởi động toàn bộ hoạt ảnh
+    // Điều khiển Chế độ Sáng / Tối
+    getTheme() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; },
+    setTheme(theme) { applyTheme(theme === 'dark' ? 'dark' : 'light', true); },
+    toggleTheme() { const next = this.getTheme() === 'dark' ? 'light' : 'dark'; applyTheme(next, true); return next; },
+
     init() {
       ensureBaseLayoutCss();
+      ensureThemeButton();
       updatePseudoStyles();
       animateInitialCards();
       Ocean.start();
@@ -1829,6 +2274,7 @@ body {
     // Làm mới lại các phần tử vừa render mới
     refresh() {
       ensureBaseLayoutCss();
+      ensureThemeButton();
       updatePseudoStyles();
       Ocean.start();
       Meadow.start();
