@@ -98,8 +98,6 @@
   .hero:after { width:105px; height:105px; }
 }
 
-/
-
 .bar > i { position:relative; overflow:hidden; }
 .bar > i::after { content:""; position:absolute; inset:0; transform:translateX(-100%);
   background:linear-gradient(90deg,transparent,rgba(102,174,232,.38),transparent);  }
@@ -108,9 +106,20 @@
 .floaty { position:fixed; z-index:30; pointer-events:none; font-weight:800; font-size:14px; color:var(--accent-deep);
   background:#fff; padding:4px 11px; border-radius:99px; box-shadow:0 6px 16px rgba(71,128,171,.18);
    }
-/
 
 /* ---------- Hoạt ảnh nền ---------- */
+/* Quầng màu pastel nền (.blob) & bong bóng xanh dương pastel (.bub) */
+.bg .blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+  opacity: .45;
+}
+.bg .b1 { width: 460px; height: 460px; top: -120px; left: -100px; background: radial-gradient(circle, #a8dcfa 0%, rgba(168,220,250,0) 70%); }
+.bg .b2 { width: 420px; height: 420px; bottom: -110px; right: -90px; background: radial-gradient(circle, #9ad4f8 0%, rgba(154,212,248,0) 70%); }
+.bg .b3 { width: 360px; height: 360px; top: 38%; left: 50%; transform: translateX(-50%); background: radial-gradient(circle, #bce4fc 0%, rgba(188,228,252,0) 70%); }
+
 .bg { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
 .wrap { position:relative; z-index:1; }
 
@@ -214,7 +223,6 @@
   position:absolute; border-radius:14px; border:2px solid #fff; opacity:0; transform-origin:center;
   box-shadow:0 0 0 1px rgba(110,180,230,.45), 0 0 20px rgba(255,255,255,.95), inset 0 0 14px rgba(255,255,255,.7);
 }
-/
 @media (prefers-reduced-motion:reduce) { .fx-layer { display:none; } }
 
 /* Nền ô ngày: chỉ dùng ombre xanh da trời và tím pastel */
@@ -340,8 +348,6 @@ body {
   }
 }
 
-/
-
 /* ---------- 10. Biển cả hai bên trang (rong biển, cá, cua, rùa, mỏm đá, sao biển) ---------- */
 /* Chỉ hiện khi hai bên trang còn đủ chỗ trống (màn hình rộng từ ~1140px). Điện thoại/máy tính bảng thì ẩn.
    Cả cảnh dùng MỘT màu (--sea-ink) với độ đậm nhạt khác nhau; mọi kích thước tính theo bề rộng chỗ trống (--gw). */
@@ -351,11 +357,14 @@ body {
    Phong cách: Minimal Ocean / Monochrome Blue
    ========================================================= */
 
-:root {
-  --sea-ink: #2c76ac;
-  --sea-light: rgba(44, 118, 172, .08);
-  --sea-mid: rgba(44, 118, 172, .22);
-  --sea-deep: rgba(44, 118, 172, .48);
+:root, html, body, .sea, .sea-defs {
+  --sea-ink: #66b3e8;
+  --sea-ink-light: #93cff8;
+  --sea-ink-soft: #7cc0f0;
+  --sea-ink-deep: #529ed6;
+  --sea-light: rgba(102, 179, 232, .10);
+  --sea-mid: rgba(102, 179, 232, .24);
+  --sea-deep: rgba(102, 179, 232, .45);
 }
 
 /* SVG definitions */
@@ -396,9 +405,9 @@ body {
       ),
       linear-gradient(
         180deg,
-        rgba(44,118,172,.025) 0%,
-        rgba(44,118,172,.055) 55%,
-        rgba(44,118,172,.12) 100%
+        rgba(116,192,242,.04) 0%,
+        rgba(116,192,242,.08) 55%,
+        rgba(102,179,232,.15) 100%
       );
   }
 
@@ -500,7 +509,7 @@ body {
     border-radius: 50%;
 
     background: rgba(255,255,255,.9);
-    border: 1px solid rgba(44,118,172,.18);
+    border: 1px solid rgba(102,179,232,.28);
     box-shadow: 0 0 8px rgba(255,255,255,.8);
 
     opacity: 0;
@@ -527,8 +536,8 @@ body {
       ),
       linear-gradient(
         180deg,
-        rgba(44,118,172,.13),
-        rgba(44,118,172,.28)
+        rgba(118,194,244,.18),
+        rgba(102,179,232,.34)
       );
   }
 
@@ -725,14 +734,57 @@ body {
   .sea *::after {
             transition-duration: .01ms !important;
   }
-}`;
+}
+`;
+
+  function applyPastelBlueDefs() {
+    const root = document.documentElement;
+    if (root && root.style) {
+      root.style.setProperty('--sea-ink', '#66b3e8');
+      root.style.setProperty('--sea-ink-light', '#93cff8');
+      root.style.setProperty('--sea-ink-soft', '#7cc0f0');
+      root.style.setProperty('--sea-ink-deep', '#529ed6');
+      root.style.setProperty('--sea-light', 'rgba(102, 179, 232, .10)');
+      root.style.setProperty('--sea-mid', 'rgba(102, 179, 232, .24)');
+      root.style.setProperty('--sea-deep', 'rgba(102, 179, 232, .45)');
+    }
+    const defs = document.querySelector('.sea-defs defs');
+    if (defs) {
+      defs.innerHTML = `
+        <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:#7ec4f4;stop-opacity:.95"/>
+          <stop offset="1" style="stop-color:#5ba6de;stop-opacity:.68"/>
+        </linearGradient>
+        <linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:#98d3f9;stop-opacity:.85"/>
+          <stop offset="1" style="stop-color:#6eb8ec;stop-opacity:.48"/>
+        </linearGradient>
+        <linearGradient id="gRock" x1="0" y1="0" x2=".35" y2="1">
+          <stop offset="0" style="stop-color:#87c7f2;stop-opacity:.82"/>
+          <stop offset=".6" style="stop-color:#6bb3e6;stop-opacity:.58"/>
+          <stop offset="1" style="stop-color:#559dd4;stop-opacity:.40"/>
+        </linearGradient>
+        <linearGradient id="gKelp" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" style="stop-color:#5ca7df;stop-opacity:.55"/>
+          <stop offset="1" style="stop-color:#8accf7;stop-opacity:.94"/>
+        </linearGradient>
+        <linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:#8acaf5;stop-opacity:.34"/>
+          <stop offset="1" style="stop-color:#8acaf5;stop-opacity:.12"/>
+        </linearGradient>
+      `;
+    }
+  }
 
   function ensureBaseLayoutCss() {
-    if (document.getElementById('app-animations-base-layout')) return;
-    const style = document.createElement('style');
-    style.id = 'app-animations-base-layout';
-    style.textContent = BASE_LAYOUT_CSS;
-    (document.head || document.documentElement).appendChild(style);
+    let style = document.getElementById('app-animations-base-layout');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'app-animations-base-layout';
+      style.textContent = BASE_LAYOUT_CSS;
+      (document.head || document.documentElement).appendChild(style);
+    }
+    applyPastelBlueDefs();
   }
 
   // Nạp ngay lập tức để tránh FOUC (Flash of Unstyled SVG)
