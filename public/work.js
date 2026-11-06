@@ -7,8 +7,8 @@ const BUCKET = 'work-files';
 const TBL = 'wk_parts';                           // bảng Linh kiện (tạo bởi supabase/work_schema.sql)
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
-const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['green', 'Nghỉ'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v6 · 29/10/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
+const WORK_VERSION = 'v7 · 06/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -595,6 +595,8 @@ function normalizeCalRow(r) {
     copy.mark = 'her';
     copy.note = copy.note.slice(HER_TAG.length);
   }
+  // Nhãn "Nghỉ" (green) đã bỏ: ngày cũ mang nhãn này coi như không đánh dấu (vẫn giữ ghi chú)
+  if (copy.mark === 'green') copy.mark = '';
   return copy;
 }
 
@@ -632,6 +634,15 @@ const PIXEL_BUTTERFLY_GOLD_SVG =
     '<path fill="#b86b00" d="M6 2h1v7H6V2z"/>' +
   '</svg>';
 
+// Icon viên pha lê thạch anh tím kiểu Pixel (8-bit crispEdges) cho nhãn "Khác" (purple)
+const PIXEL_GEM_PURPLE_SVG =
+  '<svg viewBox="0 0 11 9" shape-rendering="crispEdges" aria-hidden="true">' +
+    '<path fill="#8b45ff" d="M3 0h5v1h1v1h1v1h1v1h-1v1H9v1H8v1H7v1H6v1H5V8H4V7H3V6H2V5H1V4H0V3h1V2h1V1h1V0z"/>' +
+    '<path fill="#5b21b6" d="M1 3h9v1H1V3zm5 1h3v1H8v1H7v1H6V4z"/>' +
+    '<path fill="#c9a6ff" d="M3 1h2v1H4v1H2V2h1V1z"/>' +
+    '<path fill="#f5edff" d="M7 1h1v1H7V1zM3 1h1v1H3V1z"/>' +
+  '</svg>';
+
 function markDotHtml(code) {
   if (code === 'her') {
     return '<b class="c-her is-pixel">' + PIXEL_HEART_SVG + '</b>';
@@ -644,6 +655,9 @@ function markDotHtml(code) {
   }
   if (code === 'amber') {
     return '<b class="c-amber is-pixel">' + PIXEL_BUTTERFLY_GOLD_SVG + '</b>';
+  }
+  if (code === 'purple') {
+    return '<b class="c-purple is-pixel">' + PIXEL_GEM_PURPLE_SVG + '</b>';
   }
   return '<b class="c-' + (code || 'none') + '"></b>';
 }
@@ -760,6 +774,54 @@ function buildAmberButterflyFxHtml() {
         '<i class="amb-bf" style="left:' + b.x + '%;top:' + b.y + '%;width:' + b.s + 'px;height:' + b.s + 'px" ' +
         'data-dur="' + b.dur + '" data-dl="' + b.dl + '" data-dx="' + b.dx + '" data-dy="' + b.dy + '" data-rot="' + b.rot + '" data-flap="' + b.flap + '">' +
         GOLD_BUTTERFLY_SVG + '</i>'
+      ).join('') +
+    '</span>'
+  );
+}
+
+// Hiệu ứng "tinh vân tím": nền vũ trụ tím xoay chậm, pha lê thạch anh tím trôi lơ lửng
+// và các tia sáng 4 cánh lấp lánh cho nhãn "Khác" (m-purple)
+const PURPLE_GEM_SVG =
+  '<svg viewBox="0 0 28 28" aria-hidden="true">' +
+    '<path d="M8 4h12l6 7H2z" fill="#e2d0ff"/>' +
+    '<path d="M2 11h24L14 25z" fill="#9b5cff"/>' +
+    '<path d="M14 11l-3 0 3 14z" fill="#7c3aed"/>' +
+    '<path d="M2 11h24M8 4l3 7 3-7 3 7 3-7M11 11l3 14 3-14" fill="none" stroke="#f6efff" stroke-width="0.9" stroke-linejoin="round"/>' +
+    '<path d="M8 4h12l6 7-12 14L2 11z" fill="none" stroke="#5b21b6" stroke-width="1.1" stroke-linejoin="round"/>' +
+  '</svg>';
+const PURPLE_SPARK_SVG =
+  '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path fill="#ffffff" d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z"/>' +
+  '</svg>';
+
+const PURPLE_GEMS = [
+  { x: 14, y: 66, s: 12, dur: 4200, dl: -600,  dx: 5,  dy: -30, rot: 24 },
+  { x: 64, y: 72, s: 10, dur: 3800, dl: -2100, dx: -6, dy: -34, rot: -28 },
+  { x: 40, y: 80, s: 8,  dur: 3500, dl: -1300, dx: 4,  dy: -38, rot: 20 },
+  { x: 78, y: 48, s: 7,  dur: 3300, dl: -2800, dx: -4, dy: -26, rot: -18 }
+];
+const PURPLE_SPARKS = [
+  { x: 12, y: 16, s: 9,  dur: 1900, dl: -200 },
+  { x: 74, y: 12, s: 7,  dur: 2300, dl: -1200 },
+  { x: 84, y: 64, s: 8,  dur: 2100, dl: -700 },
+  { x: 22, y: 50, s: 5.5, dur: 1700, dl: -1500 },
+  { x: 52, y: 22, s: 5,  dur: 2500, dl: -400 },
+  { x: 46, y: 70, s: 6,  dur: 2000, dl: -1800 }
+];
+
+function buildPurpleNebulaFxHtml() {
+  return (
+    '<span class="oth-fx" aria-hidden="true">' +
+      '<i class="oth-neb"></i>' +
+      '<i class="oth-dust"></i>' +
+      PURPLE_GEMS.map((g) =>
+        '<i class="oth-gem" style="left:' + g.x + '%;top:' + g.y + '%;width:' + g.s + 'px;height:' + g.s + 'px" ' +
+        'data-dur="' + g.dur + '" data-dl="' + g.dl + '" data-dx="' + g.dx + '" data-dy="' + g.dy + '" data-rot="' + g.rot + '">' +
+        PURPLE_GEM_SVG + '</i>'
+      ).join('') +
+      PURPLE_SPARKS.map((p) =>
+        '<i class="oth-sp" style="left:' + p.x + '%;top:' + p.y + '%;width:' + p.s + 'px;height:' + p.s + 'px" ' +
+        'data-dur="' + p.dur + '" data-dl="' + p.dl + '">' + PURPLE_SPARK_SVG + '</i>'
       ).join('') +
     '</span>'
   );
@@ -929,6 +991,57 @@ function animateMarkedCells(root) {
       { boxShadow: '0 0 15px rgba(255, 218, 110, .70), inset 0 0 16px rgba(255, 210, 95, .36)' }
     ], { duration: 2000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
   });
+
+  // 5. Hiệu ứng tinh vân tím + pha lê thạch anh tím + tia lấp lánh cho các ô "Khác" (m-purple)
+  container.querySelectorAll('.wm-d.m-purple').forEach((cell) => {
+    if (!cell.animate || reduce) return;
+
+    const neb = cell.querySelector('.oth-neb');
+    if (neb) {
+      neb.animate([
+        { transform: 'rotate(0deg) scale(1)' },
+        { transform: 'rotate(180deg) scale(1.12)' },
+        { transform: 'rotate(360deg) scale(1)' }
+      ], { duration: 14000, iterations: Infinity, easing: 'linear' });
+    }
+    const dust = cell.querySelector('.oth-dust');
+    if (dust) {
+      dust.animate([
+        { opacity: 0.45, transform: 'translate3d(0, 0, 0)' },
+        { opacity: 0.9, transform: 'translate3d(-3px, -4px, 0)' }
+      ], { duration: 2600, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    }
+
+    cell.querySelectorAll('.oth-gem').forEach((g) => {
+      const dur = parseFloat(g.getAttribute('data-dur')) || 3800;
+      const dl = parseFloat(g.getAttribute('data-dl')) || 0;
+      const dx = parseFloat(g.getAttribute('data-dx')) || 4;
+      const dy = parseFloat(g.getAttribute('data-dy')) || -30;
+      const rot = parseFloat(g.getAttribute('data-rot')) || 20;
+      g.animate([
+        { transform: 'translate3d(0px, 4px, 0) rotate(0deg) scale(0.5)', opacity: 0, offset: 0 },
+        { transform: 'translate3d(' + (dx * 0.4).toFixed(1) + 'px, ' + (dy * 0.3).toFixed(1) + 'px, 0) rotate(' + (rot * 0.4).toFixed(0) + 'deg) scale(1.05)', opacity: 1, offset: 0.3 },
+        { transform: 'translate3d(' + (-dx * 0.3).toFixed(1) + 'px, ' + (dy * 0.7).toFixed(1) + 'px, 0) rotate(' + (-rot * 0.3).toFixed(0) + 'deg) scale(0.95)', opacity: 0.9, offset: 0.7 },
+        { transform: 'translate3d(' + dx + 'px, ' + dy + 'px, 0) rotate(' + rot + 'deg) scale(0.55)', opacity: 0, offset: 1 }
+      ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
+    });
+
+    cell.querySelectorAll('.oth-sp').forEach((sp) => {
+      const dur = parseFloat(sp.getAttribute('data-dur')) || 2000;
+      const dl = parseFloat(sp.getAttribute('data-dl')) || 0;
+      sp.animate([
+        { transform: 'scale(0) rotate(0deg)', opacity: 0 },
+        { transform: 'scale(1.15) rotate(45deg)', opacity: 1, offset: 0.45 },
+        { transform: 'scale(0.6) rotate(80deg)', opacity: 0.5, offset: 0.7 },
+        { transform: 'scale(0) rotate(90deg)', opacity: 0 }
+      ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
+    });
+
+    cell.animate([
+      { boxShadow: '0 0 7px rgba(139, 69, 255, .40), inset 0 0 10px rgba(167, 112, 255, .22)' },
+      { boxShadow: '0 0 15px rgba(178, 120, 255, .72), inset 0 0 16px rgba(214, 180, 255, .36)' }
+    ], { duration: 2400, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+  });
 }
 
 const MONTH_NAMES = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
@@ -1036,7 +1149,7 @@ function initCal() {
         border-color: rgba(45, 75, 108, .75);
       }
 
-      /* Các ngày được đánh dấu nhãn màu thường (Nghỉ, Hẹn/nhắc, Khác) hiển thị rõ màu của nhãn */
+      /* Mỗi nhãn có nền và hiệu ứng riêng */
       /* Riêng nhãn "Quan trọng" (.m-red) dùng nền caro đỏ-hồng + các ngôi sao đỏ viền trắng phát sáng theo clip mẫu */
       #kMonths .wm-d.m-red {
         background: #e63939 !important;
@@ -1082,11 +1195,6 @@ function initCal() {
         width: 100%;
         height: 100%;
         display: block;
-      }
-      #kMonths .wm-d.m-green {
-        background: #d9f2ea !important;
-        border: 1.5px solid #3fae93 !important;
-        color: #165947 !important;
       }
       /* Nhãn "Hẹn / nhắc" (.m-amber): Nền đêm ánh vàng kim + đàn bướm vàng phát sáng theo ảnh mẫu */
       #kMonths .wm-d.m-amber {
@@ -1150,32 +1258,100 @@ function initCal() {
         height: 100%;
         display: block;
       }
+      /* Nhãn "Khác" (.m-purple): Nền tinh vân tím xoay chậm + pha lê thạch anh tím trôi + tia sáng lấp lánh */
       #kMonths .wm-d.m-purple {
-        background: #e8e1fb !important;
-        border: 1.5px solid #8b73d9 !important;
-        color: #382478 !important;
+        background: radial-gradient(circle at 50% 55%, #2a1052 0%, #150630 62%, #08021a 100%) !important;
+        border: 1.5px solid rgba(178, 128, 255, .80) !important;
+        color: #f3eaff !important;
       }
-      #kMonths .wm-d.m-green > span,
-      #kMonths .wm-d.m-purple > span {
-        color: inherit !important;
+      #kMonths .wm-d.m-purple > span:not(.oth-fx) {
+        color: #f7f0ff !important;
         font-weight: 800;
+        text-shadow: 0 0 6px rgba(190, 140, 255, .95), 0 0 14px rgba(130, 60, 255, .85);
+      }
+      #kMonths .wm-d.m-purple.has::after {
+        background: #e2d0ff !important;
+        box-shadow: 0 0 6px #a970ff;
+        z-index: 2;
+      }
+      .oth-fx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: inherit;
+      }
+      .oth-neb {
+        position: absolute;
+        inset: -35%;
+        background:
+          radial-gradient(circle at 30% 35%, rgba(196, 92, 255, .55) 0%, rgba(196, 92, 255, 0) 32%),
+          radial-gradient(circle at 70% 60%, rgba(90, 110, 255, .45) 0%, rgba(90, 110, 255, 0) 34%),
+          radial-gradient(circle at 45% 78%, rgba(255, 110, 220, .30) 0%, rgba(255, 110, 220, 0) 28%);
+        will-change: transform;
+      }
+      .oth-dust {
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(1px 1px at 18% 28%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 62% 18%, #e9dcff 50%, transparent 51%),
+          radial-gradient(1px 1px at 82% 44%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 34% 82%, #d8c4ff 50%, transparent 51%),
+          radial-gradient(1px 1px at 72% 86%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 8% 62%, #e9dcff 50%, transparent 51%);
+        opacity: .6;
+        will-change: transform, opacity;
+      }
+      .oth-gem {
+        position: absolute;
+        display: block;
+        opacity: 0;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 0 2.5px rgba(230, 210, 255, .95)) drop-shadow(0 0 7px rgba(150, 80, 255, .85));
+      }
+      .oth-sp {
+        position: absolute;
+        display: block;
+        opacity: 0;
+        margin: -3px 0 0 -3px;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 0 3px rgba(255, 255, 255, .95)) drop-shadow(0 0 6px rgba(185, 130, 255, .9));
+      }
+      .oth-gem svg,
+      .oth-sp svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+      .wm-legend .c-purple.is-pixel,
+      .wm-ui .c-purple.is-pixel,
+      .wm-cols .c-purple b.is-pixel {
+        width: 15px !important;
+        height: 13px !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        vertical-align: -2px;
+        filter: drop-shadow(0 0 3px rgba(150, 80, 255, .92)) drop-shadow(0 0 7px rgba(200, 160, 255, .75));
+      }
+      .wm-legend .c-purple.is-pixel svg,
+      .wm-ui .c-purple.is-pixel svg,
+      .wm-cols .c-purple b.is-pixel svg {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
       /* Hỗ trợ chế độ Tối (Dark Mode) cho các ô màu nhãn để vẫn nổi rõ màu của nhãn */
 
-      html[data-theme="dark"] #kMonths .wm-d.m-green {
-        background: rgba(63, 174, 147, .26) !important;
-        border-color: #3fae93 !important;
-        color: #b3f5e2 !important;
-      }
 
-      html[data-theme="dark"] #kMonths .wm-d.m-purple {
-        background: rgba(139, 115, 217, .28) !important;
-        border-color: #8b73d9 !important;
-        color: #dcd2ff !important;
-      }
-
-      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx):not(.amber-fx) {
+      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx):not(.amber-fx):not(.oth-fx) {
         position: relative;
         z-index: 2;
       }
@@ -1460,7 +1636,7 @@ function renderCal() {
   for (let d = 1; d <= dim; d++) {
     const key = ym + '-' + pad2(d), x = K.days[key];
     const mark = x && x.mark ? x.mark : '';
-    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : (mark === 'amber' ? buildAmberButterflyFxHtml() : '')));
+    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : (mark === 'amber' ? buildAmberButterflyFxHtml() : (mark === 'purple' ? buildPurpleNebulaFxHtml() : ''))));
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
       fxHtml +

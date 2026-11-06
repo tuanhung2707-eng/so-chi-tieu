@@ -109,10 +109,10 @@ select:focus { border-color:var(--accent); box-shadow:var(--focus); background:#
 .wm-legend { display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:12.5px; font-weight:650; color:#4a6c88; margin:0 2px 14px; }
 .wm-legend span { display:inline-flex; align-items:center; gap:6px; } .wm-legend em { font-style:normal; font-weight:500; color:var(--muted); margin-left:auto; }
 .wm-legend b, .wm-ui b, .wm-cols b { width:11px; height:11px; border-radius:50%; display:inline-block; flex:none; }
-.c-red { --mc:#e0708a; --mb:#fde3e8; } .c-blue { --mc:#5aa4e3; --mb:#dcecfb; } .c-green { --mc:#3fae93; --mb:#d9f2ea; }
+.c-red { --mc:#e0708a; --mb:#fde3e8; } .c-blue { --mc:#5aa4e3; --mb:#dcecfb; }
 .c-amber { --mc:#e0a93a; --mb:#fdf0cf; } .c-purple { --mc:#8b73d9; --mb:#e8e1fb; } .c-none { --mc:#c9d9e6; --mb:#eef4f9; }
 .wm-legend b, .wm-ui b, .wm-cols b { background:var(--mc); } .wm-legend span { --mc:inherit; }
-.wm-legend .c-red, .wm-legend .c-blue, .wm-legend .c-green, .wm-legend .c-amber, .wm-legend .c-purple { background:var(--mc); }
+.wm-legend .c-red, .wm-legend .c-blue, .wm-legend .c-amber, .wm-legend .c-purple { background:var(--mc); }
 .wm-months { display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:14px; }
 .wm-mon { background:rgba(255,255,255,.88); border:1px solid rgba(220,234,246,.95); border-radius:18px; padding:12px 12px 10px; box-shadow:var(--shadow); }
 .wm-mon.now { border-color:#a9d7f5; box-shadow:0 0 0 1px rgba(130,196,236,.25), var(--shadow); }
@@ -125,7 +125,7 @@ select:focus { border-color:var(--accent); box-shadow:var(--focus); background:#
 .wm-d.today { outline:2px solid var(--accent); outline-offset:-2px; font-weight:800; }
 .wm-d.has::after { content:""; position:absolute; bottom:3px; left:50%; width:5px; height:5px; margin-left:-2.5px; border-radius:50%; background:var(--accent-deep); opacity:.75; }
 .wm-d[class*="m-"] { background:var(--mb); }
-.wm-d.m-red { --mb:#fde3e8; --mc:#e0708a; } .wm-d.m-blue { --mb:#dcecfb; --mc:#5aa4e3; } .wm-d.m-green { --mb:#d9f2ea; --mc:#3fae93; }
+.wm-d.m-red { --mb:#fde3e8; --mc:#e0708a; } .wm-d.m-blue { --mb:#dcecfb; --mc:#5aa4e3; }
 .wm-d.m-amber { --mb:#fdf0cf; --mc:#e0a93a; } .wm-d.m-purple { --mb:#e8e1fb; --mc:#8b73d9; }
 .wm-d[class*="m-"] span { color:#2c4a63; font-weight:800; }
 .wm-d[class*="m-"]:hover { filter:brightness(.97); }
