@@ -623,6 +623,15 @@ const PIXEL_FLAME_BLUE_SVG =
     '<path fill="#d4f6ff" d="M5 5h1v2h1v3H4V7h1V5z"/>' +
   '</svg>';
 
+// Icon con bướm vàng phát sáng (kiểu Pixel) cho nhãn "Hẹn / nhắc" (amber)
+const PIXEL_BUTTERFLY_GOLD_SVG =
+  '<svg viewBox="0 0 13 11" shape-rendering="crispEdges" aria-hidden="true">' +
+    '<path fill="#f5a623" d="M1 0h3v1h1v2h1V1h1v2h1V1h1V0h3v1h1v4h-1v1h-1v1h1v3h-3v-1H8V8H7v2H6V8H5v1H4v1H1V7h1V6H1V5H0V1h1V0z"/>' +
+    '<path fill="#ffe066" d="M1 1h3v1h1v2H2V3H1V1zm8 0h3v2h-1v1H8V2h1V1zM2 7h2v2H2V7zm7 0h2v2H9V7z"/>' +
+    '<path fill="#fff9db" d="M2 1h2v1H2V1zm8 0h2v1h-2V1z"/>' +
+    '<path fill="#b86b00" d="M6 2h1v7H6V2z"/>' +
+  '</svg>';
+
 function markDotHtml(code) {
   if (code === 'her') {
     return '<b class="c-her is-pixel">' + PIXEL_HEART_SVG + '</b>';
@@ -632,6 +641,9 @@ function markDotHtml(code) {
   }
   if (code === 'blue') {
     return '<b class="c-blue is-pixel">' + PIXEL_FLAME_BLUE_SVG + '</b>';
+  }
+  if (code === 'amber') {
+    return '<b class="c-amber is-pixel">' + PIXEL_BUTTERFLY_GOLD_SVG + '</b>';
   }
   return '<b class="c-' + (code || 'none') + '"></b>';
 }
@@ -712,6 +724,42 @@ function buildRedStarFxHtml() {
         '<i class="red-st" style="left:' + p.x + '%;top:' + p.y + '%;width:' + p.s + 'px;height:' + p.s + 'px" ' +
         'data-dur="' + p.dur + '" data-dl="' + p.dl + '" data-dx="' + p.dx + '" data-dy="' + p.dy + '" data-rot="' + p.rot + '">' +
         RED_STAR_SVG + '</i>'
+      ).join('') +
+    '</span>'
+  );
+}
+
+// Hiệu ứng đàn bướm vàng kim phát sáng kèm tia lấp lánh chéo trên nền đêm cho nhãn "Hẹn / nhắc" (m-amber) theo ảnh mẫu
+const GOLD_BUTTERFLY_SVG =
+  '<svg viewBox="0 0 28 28" aria-hidden="true">' +
+    // Tia sáng chéo 4 cánh (starburst lens flare) phía sau con bướm giống ảnh mẫu
+    '<path class="bf-flare" fill="#ffe89e" opacity="0.72" d="M14 14 L2 2 L14 12.6 L26 2 L15.4 14 L26 26 L14 15.4 L2 26 Z"/>' +
+    // Cánh bướm vàng ánh kim phát sáng
+    '<g class="bf-wings">' +
+      '<path fill="#fff8dc" stroke="#f7b733" stroke-width="0.9" d="M13.6 13.2 C10.2 6.8, 3.4 5.2, 2.8 10.2 C2.4 13.2, 6.2 15.2, 10.8 14.8 C6.8 16.4, 5.2 20.8, 8.2 22.4 C10.8 23.6, 13.0 19.8, 13.7 15.8 Z"/>' +
+      '<path fill="#fff8dc" stroke="#f7b733" stroke-width="0.9" d="M14.4 13.2 C17.8 6.8, 24.6 5.2, 25.2 10.2 C25.6 13.2, 21.8 15.2, 17.2 14.8 C21.2 16.4, 22.8 20.8, 19.8 22.4 C17.2 23.6, 15.0 19.8, 14.3 15.8 Z"/>' +
+      '<ellipse cx="14" cy="14.5" rx="0.85" ry="4.2" fill="#fffdf2"/>' +
+    '</g>' +
+  '</svg>';
+
+const AMBER_BUTTERFLIES = [
+  { x: 14, y: 78, s: 15, dur: 3400, dl: -300,  dx: 9,   dy: -48, rot: -16, flap: 280 },
+  { x: 68, y: 84, s: 13, dur: 3100, dl: -1600, dx: -10, dy: -52, rot: 14,  flap: 310 },
+  { x: 42, y: 88, s: 16, dur: 3700, dl: -950,  dx: 7,   dy: -56, rot: -12, flap: 260 },
+  { x: 24, y: 62, s: 9.5, dur: 2900, dl: -2100, dx: -7, dy: -38, rot: 18,  flap: 240 },
+  { x: 76, y: 58, s: 10.5, dur: 3200, dl: -750, dx: -8, dy: -40, rot: -15, flap: 290 },
+  { x: 52, y: 70, s: 8.5, dur: 2700, dl: -1350, dx: 6,  dy: -42, rot: 12,  flap: 230 },
+  { x: 12, y: 44, s: 8,   dur: 2800, dl: -2450, dx: 8,  dy: -32, rot: -10, flap: 250 },
+  { x: 82, y: 36, s: 9,   dur: 3000, dl: -1850, dx: -6, dy: -30, rot: 15,  flap: 270 }
+];
+
+function buildAmberButterflyFxHtml() {
+  return (
+    '<span class="amber-fx" aria-hidden="true">' +
+      AMBER_BUTTERFLIES.map((b) =>
+        '<i class="amb-bf" style="left:' + b.x + '%;top:' + b.y + '%;width:' + b.s + 'px;height:' + b.s + 'px" ' +
+        'data-dur="' + b.dur + '" data-dl="' + b.dl + '" data-dx="' + b.dx + '" data-dy="' + b.dy + '" data-rot="' + b.rot + '" data-flap="' + b.flap + '">' +
+        GOLD_BUTTERFLY_SVG + '</i>'
       ).join('') +
     '</span>'
   );
@@ -844,6 +892,42 @@ function animateMarkedCells(root) {
       { boxShadow: '0 0 6px rgba(235, 28, 36, .38), inset 0 0 8px rgba(180, 10, 18, .25)' },
       { boxShadow: '0 0 13px rgba(255, 65, 75, .68), inset 0 0 14px rgba(255, 255, 255, .28)' }
     ], { duration: 1800, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+  });
+
+  // 4. Hiệu ứng đàn bướm vàng kim phát sáng bay lượn cho các ô "Hẹn / nhắc" (m-amber)
+  container.querySelectorAll('.wm-d.m-amber').forEach((cell) => {
+    if (!cell.animate || reduce) return;
+
+    cell.querySelectorAll('.amb-bf').forEach((bf) => {
+      const dur = parseFloat(bf.getAttribute('data-dur')) || 3200;
+      const dl = parseFloat(bf.getAttribute('data-dl')) || 0;
+      const dx = parseFloat(bf.getAttribute('data-dx')) || 8;
+      const dy = parseFloat(bf.getAttribute('data-dy')) || -44;
+      const rot = parseFloat(bf.getAttribute('data-rot')) || -14;
+      const flap = parseFloat(bf.getAttribute('data-flap')) || 270;
+
+      // Chuyển động bay lượn mềm mại và tỏa sáng
+      bf.animate([
+        { transform: 'translate3d(0px, 6px, 0) rotate(' + rot + 'deg) scale(0.45)', opacity: 0, offset: 0 },
+        { transform: 'translate3d(' + (dx * 0.55).toFixed(1) + 'px, ' + (dy * 0.32).toFixed(1) + 'px, 0) rotate(' + (-rot * 0.6).toFixed(1) + 'deg) scale(1.05)', opacity: 1, offset: 0.28 },
+        { transform: 'translate3d(' + (-dx * 0.45).toFixed(1) + 'px, ' + (dy * 0.68).toFixed(1) + 'px, 0) rotate(' + (rot * 0.8).toFixed(1) + 'deg) scale(0.96)', opacity: 0.92, offset: 0.68 },
+        { transform: 'translate3d(' + (dx * 0.3).toFixed(1) + 'px, ' + dy + 'px, 0) rotate(' + (-rot * 0.4).toFixed(1) + 'deg) scale(0.5)', opacity: 0, offset: 1 }
+      ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
+
+      // Vẫy cánh bướm liên tục
+      const wings = bf.querySelector('.bf-wings');
+      if (wings) {
+        wings.animate([
+          { transform: 'scaleX(1)' },
+          { transform: 'scaleX(0.32)' }
+        ], { duration: flap, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+      }
+    });
+
+    cell.animate([
+      { boxShadow: '0 0 7px rgba(245, 184, 65, .38), inset 0 0 10px rgba(245, 184, 65, .20)' },
+      { boxShadow: '0 0 15px rgba(255, 218, 110, .70), inset 0 0 16px rgba(255, 210, 95, .36)' }
+    ], { duration: 2000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
   });
 }
 
@@ -1004,10 +1088,67 @@ function initCal() {
         border: 1.5px solid #3fae93 !important;
         color: #165947 !important;
       }
+      /* Nhãn "Hẹn / nhắc" (.m-amber): Nền đêm ánh vàng kim + đàn bướm vàng phát sáng theo ảnh mẫu */
       #kMonths .wm-d.m-amber {
-        background: #fdf0cf !important;
-        border: 1.5px solid #e0a93a !important;
-        color: #6e4c08 !important;
+        background: radial-gradient(circle at 50% 58%, #261b06 0%, #110b02 65%, #050300 100%) !important;
+        border: 1.5px solid rgba(247, 192, 75, .80) !important;
+        color: #fff8e3 !important;
+      }
+      #kMonths .wm-d.m-amber > span:not(.amber-fx) {
+        color: #fff9e6 !important;
+        font-weight: 800;
+        text-shadow: 0 0 6px rgba(255, 208, 90, .95), 0 0 14px rgba(235, 160, 25, .85);
+      }
+      #kMonths .wm-d.m-amber.has::after {
+        background: #ffe89e !important;
+        box-shadow: 0 0 6px #f7b733;
+        z-index: 2;
+      }
+      .amber-fx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: inherit;
+      }
+      .amb-bf {
+        position: absolute;
+        display: block;
+        opacity: 0;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 0 3px rgba(255, 236, 160, .98)) drop-shadow(0 0 8px rgba(240, 172, 40, .88));
+      }
+      .amb-bf svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+      .amb-bf .bf-wings {
+        transform-origin: 14px 14px;
+        will-change: transform;
+      }
+      .wm-legend .c-amber.is-pixel,
+      .wm-ui .c-amber.is-pixel,
+      .wm-cols .c-amber b.is-pixel {
+        width: 16px !important;
+        height: 14px !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        vertical-align: -2px;
+        filter: drop-shadow(0 0 3px rgba(245, 175, 35, .92)) drop-shadow(0 0 7px rgba(255, 220, 110, .75));
+      }
+      .wm-legend .c-amber.is-pixel svg,
+      .wm-ui .c-amber.is-pixel svg,
+      .wm-cols .c-amber b.is-pixel svg {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
       #kMonths .wm-d.m-purple {
         background: #e8e1fb !important;
@@ -1015,7 +1156,6 @@ function initCal() {
         color: #382478 !important;
       }
       #kMonths .wm-d.m-green > span,
-      #kMonths .wm-d.m-amber > span,
       #kMonths .wm-d.m-purple > span {
         color: inherit !important;
         font-weight: 800;
@@ -1028,18 +1168,14 @@ function initCal() {
         border-color: #3fae93 !important;
         color: #b3f5e2 !important;
       }
-      html[data-theme="dark"] #kMonths .wm-d.m-amber {
-        background: rgba(224, 169, 58, .26) !important;
-        border-color: #e0a93a !important;
-        color: #ffe5a3 !important;
-      }
+
       html[data-theme="dark"] #kMonths .wm-d.m-purple {
         background: rgba(139, 115, 217, .28) !important;
         border-color: #8b73d9 !important;
         color: #dcd2ff !important;
       }
 
-      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx) {
+      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx):not(.amber-fx) {
         position: relative;
         z-index: 2;
       }
@@ -1324,7 +1460,7 @@ function renderCal() {
   for (let d = 1; d <= dim; d++) {
     const key = ym + '-' + pad2(d), x = K.days[key];
     const mark = x && x.mark ? x.mark : '';
-    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : ''));
+    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : (mark === 'amber' ? buildAmberButterflyFxHtml() : '')));
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
       fxHtml +
