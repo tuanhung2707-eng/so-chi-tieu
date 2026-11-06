@@ -615,12 +615,23 @@ const PIXEL_STAR_RED_SVG =
     '<path fill="#ff9ca0" d="M5 2h1v2H4V3h1V2zM3 4h2v1H3V4z"/>' +
   '</svg>';
 
+// Icon ngọn lửa xanh dương kiểu Pixel (8-bit crispEdges) cho nhãn "Công việc" (blue)
+const PIXEL_FLAME_BLUE_SVG =
+  '<svg viewBox="0 0 11 13" shape-rendering="crispEdges" aria-hidden="true">' +
+    '<path fill="#1b6ef3" d="M5 0h1v1h1v2h1v1h1v2h1v4H9v1H8v1H3v-1H2v-1H1V6h1V4h1V3h1V2h1V0z"/>' +
+    '<path fill="#47b8ff" d="M5 2h1v2h1v1h1v2h1v3H8v1H3v-1H2V7h1V5h1V4h1V2z"/>' +
+    '<path fill="#d4f6ff" d="M5 5h1v2h1v3H4V7h1V5z"/>' +
+  '</svg>';
+
 function markDotHtml(code) {
   if (code === 'her') {
     return '<b class="c-her is-pixel">' + PIXEL_HEART_SVG + '</b>';
   }
   if (code === 'red') {
     return '<b class="c-red is-pixel">' + PIXEL_STAR_RED_SVG + '</b>';
+  }
+  if (code === 'blue') {
+    return '<b class="c-blue is-pixel">' + PIXEL_FLAME_BLUE_SVG + '</b>';
   }
   return '<b class="c-' + (code || 'none') + '"></b>';
 }
@@ -645,40 +656,32 @@ function buildHerFxHtml() {
     '</span>';
 }
 
-// Hiệu ứng lửa cháy 2D Anime ở viền trên & dưới cho nhãn "Công việc" (m-blue) theo clip mẫu
+// Hiệu ứng lửa xanh dương cháy rực ở thanh dưới cho nhãn "Công việc" (m-blue)
 function buildWorkFireFxHtml() {
   return (
     '<span class="work-fx" aria-hidden="true">' +
-      // Cụm lửa góc trên phải & mép trên
-      '<svg class="wf-svg wf-top" viewBox="0 0 100 54" preserveAspectRatio="none">' +
+      '<svg class="wf-svg wf-bot" viewBox="0 0 100 62" preserveAspectRatio="none">' +
+        // Lớp lửa xanh dương đậm ngoài cùng phủ toàn bộ thanh dưới
         '<g class="wf-outer">' +
-          '<path fill="#f22613" d="M36 0 C42 14, 58 10, 64 22 C52 24, 48 16, 42 20 C48 31, 68 28, 76 38 C68 42, 58 37, 54 42 C66 49, 86 44, 100 34 L100 0 Z"/>' +
-          '<path fill="#ff3814" d="M0 0 L26 0 C22 8, 12 11, 4 15 C8 9, 4 5, 0 8 Z" opacity="0.88"/>' +
-          '<path class="wf-wisp1" fill="#f22613" d="M62 44 C72 48, 84 46, 92 39 C83 41, 72 41, 62 44 Z"/>' +
+          '<path fill="#1464f6" d="M0 62 L0 30 C5 22, 12 34, 16 18 C20 28, 26 24, 31 12 C36 25, 43 28, 49 8 C55 24, 62 26, 68 11 C73 25, 80 22, 85 15 C90 27, 96 22, 100 28 L100 62 Z"/>' +
+          '<path fill="#2986ff" opacity="0.88" d="M0 62 L0 36 C7 28, 14 38, 22 20 C28 33, 36 27, 42 15 C49 30, 57 25, 63 14 C70 29, 78 26, 86 19 C92 31, 97 27, 100 34 L100 62 Z"/>' +
         '</g>' +
+        // Lớp lửa xanh lam sáng (cyan-blue) ở tầng giữa
+        '<g class="wf-mid">' +
+          '<path fill="#45b6ff" d="M0 62 L0 42 C6 34, 15 41, 20 26 C26 37, 33 33, 39 21 C45 34, 53 31, 59 18 C65 33, 73 32, 79 23 C85 35, 93 33, 100 40 L100 62 Z"/>' +
+        '</g>' +
+        // Lõi lửa xanh băng - trắng sáng rực sát đáy thanh dưới
         '<g class="wf-inner">' +
-          '<path fill="#ffea54" d="M54 0 C58 10, 70 8, 74 18 C65 19, 61 14, 57 17 C63 25, 79 23, 86 30 C80 33, 72 30, 69 33 C78 38, 91 34, 100 25 L100 0 Z"/>' +
-          '<path fill="#fff685" d="M68 0 C72 7, 82 7, 86 15 C79 15, 76 12, 74 15 C79 20, 90 19, 100 14 L100 0 Z"/>' +
+          '<path fill="#8ce6ff" d="M0 62 L0 48 C8 42, 16 47, 23 35 C30 44, 38 41, 45 30 C52 42, 60 39, 67 31 C74 43, 83 40, 90 34 C95 43, 98 44, 100 48 L100 62 Z"/>' +
+          '<path fill="#e3fbff" d="M0 62 L0 54 C10 49, 20 53, 28 44 C36 51, 46 48, 53 41 C61 50, 71 47, 79 43 C87 50, 94 49, 100 53 L100 62 Z"/>' +
         '</g>' +
       '</svg>' +
-      // Cụm lửa góc dưới phải, dưới trái & mép dưới
-      '<svg class="wf-svg wf-bot" viewBox="0 0 100 60" preserveAspectRatio="none">' +
-        '<g class="wf-outer">' +
-          '<path fill="#f22613" d="M100 60 L28 60 C34 48, 50 50, 56 38 C46 37, 40 43, 36 37 C42 24, 62 20, 74 30 C66 18, 52 22, 48 14 C60 6, 82 12, 92 26 C95 18, 98 12, 100 8 Z"/>' +
-          '<path fill="#ff3312" d="M0 60 L0 36 C6 42, 16 44, 24 51 C16 52, 10 49, 7 53 C14 56, 22 57, 28 60 Z"/>' +
-          '<path class="wf-wisp2" fill="#f22613" d="M36 22 C44 14, 56 13, 64 19 C54 18, 44 19, 36 22 Z"/>' +
-        '</g>' +
-        '<g class="wf-inner">' +
-          '<path fill="#ffea54" d="M100 60 L46 60 C50 50, 64 50, 68 40 C60 40, 55 44, 52 39 C57 29, 73 26, 82 34 C76 24, 65 26, 62 20 C72 14, 88 19, 96 30 L100 22 Z"/>' +
-          '<path fill="#fff685" d="M100 60 L62 60 C66 52, 76 51, 80 43 C74 43, 70 45, 68 41 C73 34, 86 33, 94 40 L100 32 Z"/>' +
-          '<path fill="#ffea54" d="M0 60 L0 46 C5 50, 12 52, 17 57 L12 60 Z"/>' +
-        '</g>' +
-      '</svg>' +
-      // Các tàn lửa nhỏ bay lơ lửng
-      '<i class="wf-ember" style="right:14%;top:28%;width:5px;height:3px" data-dur="720" data-dl="-120" data-dx="-6" data-dy="5"></i>' +
-      '<i class="wf-ember" style="right:28%;bottom:30%;width:6px;height:3.5px" data-dur="680" data-dl="-340" data-dx="-8" data-dy="-7"></i>' +
-      '<i class="wf-ember" style="left:18%;bottom:20%;width:4.5px;height:2.5px" data-dur="760" data-dl="-500" data-dx="6" data-dy="-6"></i>' +
-      '<i class="wf-ember y" style="right:20%;bottom:22%;width:4px;height:2.5px" data-dur="620" data-dl="-210" data-dx="-5" data-dy="-8"></i>' +
+      // Các tàn lửa xanh dương bay từ thanh dưới lên
+      '<i class="wf-ember" style="left:16%;bottom:24%;width:4px;height:4px" data-dur="760" data-dl="-120" data-dx="4" data-dy="-18"></i>' +
+      '<i class="wf-ember c" style="left:36%;bottom:28%;width:3.5px;height:3.5px" data-dur="680" data-dl="-380" data-dx="-5" data-dy="-22"></i>' +
+      '<i class="wf-ember" style="left:54%;bottom:30%;width:4.5px;height:4.5px" data-dur="720" data-dl="-240" data-dx="5" data-dy="-24"></i>' +
+      '<i class="wf-ember c" style="left:72%;bottom:26%;width:3.5px;height:3.5px" data-dur="640" data-dl="-510" data-dx="-4" data-dy="-19"></i>' +
+      '<i class="wf-ember" style="left:84%;bottom:22%;width:4px;height:4px" data-dur="740" data-dl="-190" data-dx="-3" data-dy="-16"></i>' +
     '</span>'
   );
 }
@@ -759,64 +762,55 @@ function animateMarkedCells(root) {
     });
   });
 
-  // 2. Hiệu ứng lửa cháy 2D Anime cho các ô "Công việc" (m-blue)
+  // 2. Hiệu ứng lửa xanh dương ở thanh dưới cho các ô "Công việc" (m-blue)
   container.querySelectorAll('.wm-d.m-blue').forEach((cell) => {
     if (!cell.animate || reduce) return;
 
-    const topOuter = cell.querySelector('.wf-top .wf-outer');
-    const topInner = cell.querySelector('.wf-top .wf-inner');
     const botOuter = cell.querySelector('.wf-bot .wf-outer');
+    const botMid = cell.querySelector('.wf-bot .wf-mid');
     const botInner = cell.querySelector('.wf-bot .wf-inner');
 
-    if (topOuter) {
-      topOuter.animate([
-        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' },
-        { transform: 'scale(1.08, 1.14) skewX(-6deg) translate(-2px, 1px)', offset: 0.33 },
-        { transform: 'scale(0.95, 0.92) skewX(4deg) translate(1px, -1px)', offset: 0.68 },
-        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' }
-      ], { duration: 640, iterations: Infinity, easing: 'ease-in-out' });
-    }
-    if (topInner) {
-      topInner.animate([
-        { transform: 'scale(1, 1) skewX(0deg)' },
-        { transform: 'scale(0.92, 1.18) skewX(5deg)', offset: 0.45 },
-        { transform: 'scale(1.06, 0.90) skewX(-5deg)', offset: 0.8 },
-        { transform: 'scale(1, 1) skewX(0deg)' }
-      ], { duration: 520, iterations: Infinity, easing: 'ease-in-out' });
-    }
     if (botOuter) {
       botOuter.animate([
-        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' },
-        { transform: 'scale(1.10, 1.16) skewX(7deg) translate(-2px, -1px)', offset: 0.36 },
-        { transform: 'scale(0.94, 0.90) skewX(-5deg) translate(1px, 1px)', offset: 0.72 },
-        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' }
-      ], { duration: 680, delay: -220, iterations: Infinity, easing: 'ease-in-out' });
+        { transform: 'scale(1, 1) skewX(0deg) translateY(0px)' },
+        { transform: 'scale(1.06, 1.18) skewX(-5deg) translateY(-1px)', offset: 0.34 },
+        { transform: 'scale(0.96, 0.90) skewX(5deg) translateY(1px)', offset: 0.70 },
+        { transform: 'scale(1, 1) skewX(0deg) translateY(0px)' }
+      ], { duration: 660, iterations: Infinity, easing: 'ease-in-out' });
+    }
+    if (botMid) {
+      botMid.animate([
+        { transform: 'scale(1, 1) skewX(0deg)' },
+        { transform: 'scale(0.95, 1.22) skewX(6deg)', offset: 0.42 },
+        { transform: 'scale(1.05, 0.88) skewX(-5deg)', offset: 0.76 },
+        { transform: 'scale(1, 1) skewX(0deg)' }
+      ], { duration: 540, delay: -180, iterations: Infinity, easing: 'ease-in-out' });
     }
     if (botInner) {
       botInner.animate([
         { transform: 'scale(1, 1) skewX(0deg)' },
-        { transform: 'scale(1.08, 1.20) skewX(-6deg)', offset: 0.4 },
-        { transform: 'scale(0.92, 0.88) skewX(6deg)', offset: 0.78 },
+        { transform: 'scale(1.04, 1.25) skewX(-4deg)', offset: 0.45 },
+        { transform: 'scale(0.96, 0.86) skewX(4deg)', offset: 0.80 },
         { transform: 'scale(1, 1) skewX(0deg)' }
-      ], { duration: 540, delay: -140, iterations: Infinity, easing: 'ease-in-out' });
+      ], { duration: 480, delay: -90, iterations: Infinity, easing: 'ease-in-out' });
     }
 
     cell.querySelectorAll('.wf-ember').forEach((em) => {
       const dur = parseFloat(em.getAttribute('data-dur')) || 700;
       const dl = parseFloat(em.getAttribute('data-dl')) || 0;
-      const dx = parseFloat(em.getAttribute('data-dx')) || -6;
-      const dy = parseFloat(em.getAttribute('data-dy')) || -6;
+      const dx = parseFloat(em.getAttribute('data-dx')) || 4;
+      const dy = parseFloat(em.getAttribute('data-dy')) || -18;
       em.animate([
-        { transform: 'translate3d(0, 0, 0) scale(0.5) rotate(-15deg)', opacity: 0, offset: 0 },
-        { transform: 'translate3d(' + (dx * 0.5).toFixed(1) + 'px, ' + (dy * 0.5).toFixed(1) + 'px, 0) scale(1.1) rotate(10deg)', opacity: 0.95, offset: 0.4 },
-        { transform: 'translate3d(' + dx + 'px, ' + dy + 'px, 0) scale(0.3) rotate(25deg)', opacity: 0, offset: 1 }
+        { transform: 'translate3d(0, 0, 0) scale(0.45)', opacity: 0, offset: 0 },
+        { transform: 'translate3d(' + (dx * 0.5).toFixed(1) + 'px, ' + (dy * 0.45).toFixed(1) + 'px, 0) scale(1.08)', opacity: 0.95, offset: 0.38 },
+        { transform: 'translate3d(' + dx + 'px, ' + dy + 'px, 0) scale(0.25)', opacity: 0, offset: 1 }
       ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-out' });
     });
 
     cell.animate([
-      { boxShadow: '0 0 7px rgba(255, 56, 20, .42), inset 0 0 8px rgba(255, 56, 20, .25)' },
-      { boxShadow: '0 0 14px rgba(255, 90, 20, .75), inset 0 0 14px rgba(255, 68, 17, .42)' }
-    ], { duration: 850, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+      { boxShadow: '0 0 7px rgba(25, 118, 255, .42), inset 0 -6px 12px rgba(38, 148, 255, .35)' },
+      { boxShadow: '0 0 14px rgba(68, 182, 255, .75), inset 0 -10px 18px rgba(75, 195, 255, .58)' }
+    ], { duration: 880, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
   });
 
   // 3. Hiệu ứng ngôi sao đỏ viền trắng trên nền caro đỏ-hồng cho các ô "Quan trọng" (m-red)
@@ -1056,20 +1050,20 @@ function initCal() {
         #kMonths .wm-dv { border-radius: 11px; font-size: 13px; }
       }
 
-      /* 1) Nhãn & hiệu ứng "Công việc" (.m-blue): Lửa cháy 2D Anime ở viền trên & dưới trên nền đen */
+      /* 1) Nhãn & hiệu ứng "Công việc" (.m-blue): Lửa xanh dương cháy ở thanh dưới */
       #kMonths .wm-d.m-blue {
-        background: radial-gradient(circle at 75% 80%, #260600 0%, #0d0200 55%, #050101 100%) !important;
-        border: 1.5px solid rgba(255, 68, 18, .75) !important;
-        color: #fff5dc !important;
+        background: radial-gradient(circle at 50% 92%, #0c2b5e 0%, #061530 58%, #030914 100%) !important;
+        border: 1.5px solid rgba(58, 168, 255, .82) !important;
+        color: #eaf8ff !important;
       }
       #kMonths .wm-d.m-blue > span:not(.work-fx) {
-        color: #fff6e0 !important;
+        color: #f0faff !important;
         font-weight: 800;
-        text-shadow: 0 0 6px rgba(255, 90, 15, .95), 0 0 14px rgba(242, 38, 19, .85);
+        text-shadow: 0 0 6px rgba(56, 178, 255, .95), 0 0 14px rgba(20, 108, 255, .88);
       }
       #kMonths .wm-d.m-blue.has::after {
-        background: #ffea54 !important;
-        box-shadow: 0 0 6px #ff3814;
+        background: #b8f2ff !important;
+        box-shadow: 0 0 6px #38a8ff;
         z-index: 2;
       }
       .work-fx {
@@ -1080,42 +1074,54 @@ function initCal() {
         z-index: 1;
         border-radius: inherit;
       }
-      .wf-svg {
+      .wf-svg.wf-bot {
         position: absolute;
-        left: 0;
-        width: 100%;
-        display: block;
-        filter: drop-shadow(0 0 4px rgba(255, 50, 10, .85));
-      }
-      .wf-top {
-        top: -2px;
-        height: 46%;
-      }
-      .wf-bot {
+        left: -2%;
+        right: -2%;
         bottom: -2px;
-        height: 52%;
-      }
-      .wf-top .wf-outer,
-      .wf-top .wf-inner {
-        transform-origin: 85% 0%;
-        will-change: transform;
+        width: 104%;
+        height: 54%;
+        display: block;
+        filter: drop-shadow(0 -2px 5px rgba(32, 145, 255, .9));
       }
       .wf-bot .wf-outer,
+      .wf-bot .wf-mid,
       .wf-bot .wf-inner {
-        transform-origin: 80% 100%;
+        transform-origin: 50% 100%;
         will-change: transform;
       }
       .wf-ember {
         position: absolute;
-        border-radius: 99px;
-        background: #ff3814;
-        box-shadow: 0 0 5px #ff2600;
+        border-radius: 50%;
+        background: #45b6ff;
+        box-shadow: 0 0 5px #1e88ff;
         opacity: 0;
         will-change: transform, opacity;
       }
-      .wf-ember.y {
-        background: #ffea54;
-        box-shadow: 0 0 5px #ff9900;
+      .wf-ember.c {
+        background: #caf6ff;
+        box-shadow: 0 0 6px #58c8ff;
+      }
+      .wm-legend .c-blue.is-pixel,
+      .wm-ui .c-blue.is-pixel,
+      .wm-cols .c-blue b.is-pixel {
+        width: 14px !important;
+        height: 16px !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        vertical-align: -3px;
+        filter: drop-shadow(0 0 3px rgba(30, 130, 255, .9)) drop-shadow(0 0 7px rgba(85, 195, 255, .75));
+      }
+      .wm-legend .c-blue.is-pixel svg,
+      .wm-ui .c-blue.is-pixel svg,
+      .wm-cols .c-blue b.is-pixel svg {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
       /* 2) Nhãn màu & hiệu ứng "Her" (Trái tim hồng Pixel phát sáng trên nền đêm) */
