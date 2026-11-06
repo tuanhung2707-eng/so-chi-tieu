@@ -1833,7 +1833,7 @@ async function setView(v) {
   if (v === 'work') {
     show('work');
     try {
-      if (!WORK) { WORK = await import('./work.js?v=7'); WORK.initWork({ sb, getUser: () => S.user, toast, esc, setStatus }); }
+      if (!WORK) { WORK = await import('./work.js?v=8'); WORK.initWork({ sb, getUser: () => S.user, toast, esc, setStatus }); }
       WORK.openWork();
     } catch (e) { toast('Không tải được mục Công việc: ' + (e && e.message ? e.message : e), true); }
   } else {

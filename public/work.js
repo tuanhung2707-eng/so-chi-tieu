@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v7 · 06/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v8 · 06/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -686,22 +686,21 @@ function buildHerFxHtml() {
 function buildWorkFireFxHtml() {
   return (
     '<span class="work-fx" aria-hidden="true">' +
-      '<svg class="wf-svg wf-bot" viewBox="0 0 100 62" preserveAspectRatio="none">' +
+
         // Lớp lửa xanh dương đậm ngoài cùng phủ toàn bộ thanh dưới
-        '<g class="wf-outer">' +
+        '<svg class="wf-svg wf-bot wf-outer" viewBox="0 0 100 62" preserveAspectRatio="none">' +
           '<path fill="#1464f6" d="M0 62 L0 30 C5 22, 12 34, 16 18 C20 28, 26 24, 31 12 C36 25, 43 28, 49 8 C55 24, 62 26, 68 11 C73 25, 80 22, 85 15 C90 27, 96 22, 100 28 L100 62 Z"/>' +
           '<path fill="#2986ff" opacity="0.88" d="M0 62 L0 36 C7 28, 14 38, 22 20 C28 33, 36 27, 42 15 C49 30, 57 25, 63 14 C70 29, 78 26, 86 19 C92 31, 97 27, 100 34 L100 62 Z"/>' +
-        '</g>' +
+        '</svg>' +
         // Lớp lửa xanh lam sáng (cyan-blue) ở tầng giữa
-        '<g class="wf-mid">' +
+        '<svg class="wf-svg wf-bot wf-mid" viewBox="0 0 100 62" preserveAspectRatio="none">' +
           '<path fill="#45b6ff" d="M0 62 L0 42 C6 34, 15 41, 20 26 C26 37, 33 33, 39 21 C45 34, 53 31, 59 18 C65 33, 73 32, 79 23 C85 35, 93 33, 100 40 L100 62 Z"/>' +
-        '</g>' +
+        '</svg>' +
         // Lõi lửa xanh băng - trắng sáng rực sát đáy thanh dưới
-        '<g class="wf-inner">' +
+        '<svg class="wf-svg wf-bot wf-inner" viewBox="0 0 100 62" preserveAspectRatio="none">' +
           '<path fill="#8ce6ff" d="M0 62 L0 48 C8 42, 16 47, 23 35 C30 44, 38 41, 45 30 C52 42, 60 39, 67 31 C74 43, 83 40, 90 34 C95 43, 98 44, 100 48 L100 62 Z"/>' +
           '<path fill="#e3fbff" d="M0 62 L0 54 C10 49, 20 53, 28 44 C36 51, 46 48, 53 41 C61 50, 71 47, 79 43 C87 50, 94 49, 100 53 L100 62 Z"/>' +
-        '</g>' +
-      '</svg>' +
+        '</svg>' +
       // Các tàn lửa xanh dương bay từ thanh dưới lên
       '<i class="wf-ember" style="left:16%;bottom:24%;width:4px;height:4px" data-dur="760" data-dl="-120" data-dx="4" data-dy="-18"></i>' +
       '<i class="wf-ember c" style="left:36%;bottom:28%;width:3.5px;height:3.5px" data-dur="680" data-dl="-380" data-dx="-5" data-dy="-22"></i>' +
@@ -827,10 +826,60 @@ function buildPurpleNebulaFxHtml() {
   );
 }
 
+/* Quản lý hiệu ứng của lịch: mọi animation được ghi lại để
+   - hủy hết khi vẽ lại lịch (không chồng animation cũ lên mới),
+   - tạm dừng khi lịch không hiện trên màn hình / chuyển tab / ẩn ứng dụng, chạy tiếp khi quay lại.
+   Nhờ vậy trình duyệt không phải vẽ liên tục những thứ không ai nhìn thấy => hết giật, hết nháy màn. */
+const FX = { anims: [], onScreen: true, bound: false };
+function fxShouldRun() { return FX.onScreen && document.visibilityState === 'visible'; }
+function fxAnim(el, keyframes, opts) {
+  const a = el.animate(keyframes, opts);
+  FX.anims.push(a);
+  if (!fxShouldRun()) { try { a.pause(); } catch (e) {} }
+  return a;
+}
+function fxSync() {
+  const run = fxShouldRun();
+  FX.anims.forEach((a) => { try { if (run) { if (a.playState === 'paused') a.play(); } else if (a.playState === 'running') a.pause(); } catch (e) {} });
+}
+function fxReset() {
+  FX.anims.forEach((a) => { try { a.cancel(); } catch (e) {} });
+  FX.anims = [];
+}
+function fxBind() {
+  if (FX.bound) return;
+  FX.bound = true;
+  document.addEventListener('visibilitychange', fxSync);
+  const box = $('kMonths');
+  if (box && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      FX.onScreen = entries.some((en) => en.isIntersecting);
+      fxSync();
+    }).observe(box);
+  }
+}
+// Viền sáng "thở": chỉ đổi độ mờ (opacity) của một lớp sáng cố định, không vẽ lại bóng đổ mỗi khung hình
+function glowPulse(cell, duration) {
+  const g = cell.querySelector('.wm-glow');
+  if (!g) return;
+  fxAnim(g, [{ opacity: 0.25 }, { opacity: 1 }], { duration: duration, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+}
+
 function animateMarkedCells(root) {
   const container = root || $('kMonths');
   if (!container) return;
   const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  fxReset();
+
+  // Nhiều ngày có hiệu ứng (hoặc màn hình điện thoại): bớt một nửa hạt bay trong mỗi ô cho nhẹ máy
+  const fxCells = container.querySelectorAll('.wm-d.m-her, .wm-d.m-blue, .wm-d.m-red, .wm-d.m-amber, .wm-d.m-purple');
+  if (fxCells.length > 6 || window.innerWidth < 520) {
+    fxCells.forEach((cell) => {
+      cell.querySelectorAll('.her-h, .wf-ember, .red-st, .amb-bf, .oth-gem, .oth-sp').forEach((el, i) => {
+        if (i % 2) el.remove();
+      });
+    });
+  }
 
   // 1. Hiệu ứng trái tim bay cho các ô "Her" (m-her)
   const hearts = container.querySelectorAll('.wm-d.m-her .her-h');
@@ -845,7 +894,7 @@ function animateMarkedCells(root) {
     const dx = parseFloat(h.getAttribute('data-dx')) || 4;
     const pk = parseFloat(h.getAttribute('data-pk')) || 0.9;
 
-    h.animate([
+    fxAnim(h, [
       { transform: 'translate3d(0px, 8px, 0) scale(0.45)', opacity: 0, offset: 0 },
       { transform: 'translate3d(' + (dx * 0.5).toFixed(1) + 'px, -8px, 0) scale(0.95)', opacity: pk, offset: 0.25 },
       { transform: 'translate3d(' + (-dx * 0.6).toFixed(1) + 'px, -26px, 0) scale(1.08)', opacity: pk * 0.9, offset: 0.6 },
@@ -861,27 +910,19 @@ function animateMarkedCells(root) {
 
   container.querySelectorAll('.wm-d.m-her').forEach((cell) => {
     if (!cell.animate || reduce) return;
-    cell.animate([
-      { boxShadow: '0 0 8px rgba(255, 82, 214, .35), inset 0 0 10px rgba(255, 82, 214, .22)' },
-      { boxShadow: '0 0 15px rgba(255, 105, 224, .65), inset 0 0 16px rgba(255, 105, 224, .38)' }
-    ], {
-      duration: 2200,
-      iterations: Infinity,
-      direction: 'alternate',
-      easing: 'ease-in-out'
-    });
+    glowPulse(cell, 2200);
   });
 
   // 2. Hiệu ứng lửa xanh dương ở thanh dưới cho các ô "Công việc" (m-blue)
   container.querySelectorAll('.wm-d.m-blue').forEach((cell) => {
     if (!cell.animate || reduce) return;
 
-    const botOuter = cell.querySelector('.wf-bot .wf-outer');
-    const botMid = cell.querySelector('.wf-bot .wf-mid');
-    const botInner = cell.querySelector('.wf-bot .wf-inner');
+    const botOuter = cell.querySelector('.wf-outer');
+    const botMid = cell.querySelector('.wf-mid');
+    const botInner = cell.querySelector('.wf-inner');
 
     if (botOuter) {
-      botOuter.animate([
+      fxAnim(botOuter, [
         { transform: 'scale(1, 1) skewX(0deg) translateY(0px)' },
         { transform: 'scale(1.06, 1.18) skewX(-5deg) translateY(-1px)', offset: 0.34 },
         { transform: 'scale(0.96, 0.90) skewX(5deg) translateY(1px)', offset: 0.70 },
@@ -889,7 +930,7 @@ function animateMarkedCells(root) {
       ], { duration: 660, iterations: Infinity, easing: 'ease-in-out' });
     }
     if (botMid) {
-      botMid.animate([
+      fxAnim(botMid, [
         { transform: 'scale(1, 1) skewX(0deg)' },
         { transform: 'scale(0.95, 1.22) skewX(6deg)', offset: 0.42 },
         { transform: 'scale(1.05, 0.88) skewX(-5deg)', offset: 0.76 },
@@ -897,7 +938,7 @@ function animateMarkedCells(root) {
       ], { duration: 540, delay: -180, iterations: Infinity, easing: 'ease-in-out' });
     }
     if (botInner) {
-      botInner.animate([
+      fxAnim(botInner, [
         { transform: 'scale(1, 1) skewX(0deg)' },
         { transform: 'scale(1.04, 1.25) skewX(-4deg)', offset: 0.45 },
         { transform: 'scale(0.96, 0.86) skewX(4deg)', offset: 0.80 },
@@ -910,17 +951,14 @@ function animateMarkedCells(root) {
       const dl = parseFloat(em.getAttribute('data-dl')) || 0;
       const dx = parseFloat(em.getAttribute('data-dx')) || 4;
       const dy = parseFloat(em.getAttribute('data-dy')) || -18;
-      em.animate([
+      fxAnim(em, [
         { transform: 'translate3d(0, 0, 0) scale(0.45)', opacity: 0, offset: 0 },
         { transform: 'translate3d(' + (dx * 0.5).toFixed(1) + 'px, ' + (dy * 0.45).toFixed(1) + 'px, 0) scale(1.08)', opacity: 0.95, offset: 0.38 },
         { transform: 'translate3d(' + dx + 'px, ' + dy + 'px, 0) scale(0.25)', opacity: 0, offset: 1 }
       ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-out' });
     });
 
-    cell.animate([
-      { boxShadow: '0 0 7px rgba(25, 118, 255, .42), inset 0 -6px 12px rgba(38, 148, 255, .35)' },
-      { boxShadow: '0 0 14px rgba(68, 182, 255, .75), inset 0 -10px 18px rgba(75, 195, 255, .58)' }
-    ], { duration: 880, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    glowPulse(cell, 880);
   });
 
   // 3. Hiệu ứng ngôi sao đỏ viền trắng trên nền caro đỏ-hồng cho các ô "Quan trọng" (m-red)
@@ -929,7 +967,7 @@ function animateMarkedCells(root) {
 
     const grid = cell.querySelector('.red-grid');
     if (grid) {
-      grid.animate([
+      fxAnim(grid, [
         { transform: 'translate3d(0px, 0px, 0)' },
         { transform: 'translate3d(-12px, -12px, 0)' }
       ], { duration: 4200, iterations: Infinity, easing: 'linear' });
@@ -942,7 +980,7 @@ function animateMarkedCells(root) {
       const dy = parseFloat(st.getAttribute('data-dy')) || -14;
       const rot = parseFloat(st.getAttribute('data-rot')) || 160;
 
-      st.animate([
+      fxAnim(st, [
         { transform: 'translate3d(0px, 0px, 0) rotate(0deg) scale(0.55)', opacity: 0, offset: 0 },
         { transform: 'translate3d(' + (dx * 0.35).toFixed(1) + 'px, ' + (dy * 0.35).toFixed(1) + 'px, 0) rotate(' + (rot * 0.35).toFixed(0) + 'deg) scale(1.06)', opacity: 1, offset: 0.28 },
         { transform: 'translate3d(' + (dx * 0.75).toFixed(1) + 'px, ' + (dy * 0.75).toFixed(1) + 'px, 0) rotate(' + (rot * 0.75).toFixed(0) + 'deg) scale(0.95)', opacity: 0.92, offset: 0.72 },
@@ -950,10 +988,7 @@ function animateMarkedCells(root) {
       ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
     });
 
-    cell.animate([
-      { boxShadow: '0 0 6px rgba(235, 28, 36, .38), inset 0 0 8px rgba(180, 10, 18, .25)' },
-      { boxShadow: '0 0 13px rgba(255, 65, 75, .68), inset 0 0 14px rgba(255, 255, 255, .28)' }
-    ], { duration: 1800, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    glowPulse(cell, 1800);
   });
 
   // 4. Hiệu ứng đàn bướm vàng kim phát sáng bay lượn cho các ô "Hẹn / nhắc" (m-amber)
@@ -969,7 +1004,7 @@ function animateMarkedCells(root) {
       const flap = parseFloat(bf.getAttribute('data-flap')) || 270;
 
       // Chuyển động bay lượn mềm mại và tỏa sáng
-      bf.animate([
+      fxAnim(bf, [
         { transform: 'translate3d(0px, 6px, 0) rotate(' + rot + 'deg) scale(0.45)', opacity: 0, offset: 0 },
         { transform: 'translate3d(' + (dx * 0.55).toFixed(1) + 'px, ' + (dy * 0.32).toFixed(1) + 'px, 0) rotate(' + (-rot * 0.6).toFixed(1) + 'deg) scale(1.05)', opacity: 1, offset: 0.28 },
         { transform: 'translate3d(' + (-dx * 0.45).toFixed(1) + 'px, ' + (dy * 0.68).toFixed(1) + 'px, 0) rotate(' + (rot * 0.8).toFixed(1) + 'deg) scale(0.96)', opacity: 0.92, offset: 0.68 },
@@ -977,19 +1012,16 @@ function animateMarkedCells(root) {
       ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
 
       // Vẫy cánh bướm liên tục
-      const wings = bf.querySelector('.bf-wings');
+      const wings = bf.querySelector('svg');
       if (wings) {
-        wings.animate([
+        fxAnim(wings, [
           { transform: 'scaleX(1)' },
           { transform: 'scaleX(0.32)' }
         ], { duration: flap, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
       }
     });
 
-    cell.animate([
-      { boxShadow: '0 0 7px rgba(245, 184, 65, .38), inset 0 0 10px rgba(245, 184, 65, .20)' },
-      { boxShadow: '0 0 15px rgba(255, 218, 110, .70), inset 0 0 16px rgba(255, 210, 95, .36)' }
-    ], { duration: 2000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    glowPulse(cell, 2000);
   });
 
   // 5. Hiệu ứng tinh vân tím + pha lê thạch anh tím + tia lấp lánh cho các ô "Khác" (m-purple)
@@ -998,7 +1030,7 @@ function animateMarkedCells(root) {
 
     const neb = cell.querySelector('.oth-neb');
     if (neb) {
-      neb.animate([
+      fxAnim(neb, [
         { transform: 'rotate(0deg) scale(1)' },
         { transform: 'rotate(180deg) scale(1.12)' },
         { transform: 'rotate(360deg) scale(1)' }
@@ -1006,7 +1038,7 @@ function animateMarkedCells(root) {
     }
     const dust = cell.querySelector('.oth-dust');
     if (dust) {
-      dust.animate([
+      fxAnim(dust, [
         { opacity: 0.45, transform: 'translate3d(0, 0, 0)' },
         { opacity: 0.9, transform: 'translate3d(-3px, -4px, 0)' }
       ], { duration: 2600, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
@@ -1018,7 +1050,7 @@ function animateMarkedCells(root) {
       const dx = parseFloat(g.getAttribute('data-dx')) || 4;
       const dy = parseFloat(g.getAttribute('data-dy')) || -30;
       const rot = parseFloat(g.getAttribute('data-rot')) || 20;
-      g.animate([
+      fxAnim(g, [
         { transform: 'translate3d(0px, 4px, 0) rotate(0deg) scale(0.5)', opacity: 0, offset: 0 },
         { transform: 'translate3d(' + (dx * 0.4).toFixed(1) + 'px, ' + (dy * 0.3).toFixed(1) + 'px, 0) rotate(' + (rot * 0.4).toFixed(0) + 'deg) scale(1.05)', opacity: 1, offset: 0.3 },
         { transform: 'translate3d(' + (-dx * 0.3).toFixed(1) + 'px, ' + (dy * 0.7).toFixed(1) + 'px, 0) rotate(' + (-rot * 0.3).toFixed(0) + 'deg) scale(0.95)', opacity: 0.9, offset: 0.7 },
@@ -1029,7 +1061,7 @@ function animateMarkedCells(root) {
     cell.querySelectorAll('.oth-sp').forEach((sp) => {
       const dur = parseFloat(sp.getAttribute('data-dur')) || 2000;
       const dl = parseFloat(sp.getAttribute('data-dl')) || 0;
-      sp.animate([
+      fxAnim(sp, [
         { transform: 'scale(0) rotate(0deg)', opacity: 0 },
         { transform: 'scale(1.15) rotate(45deg)', opacity: 1, offset: 0.45 },
         { transform: 'scale(0.6) rotate(80deg)', opacity: 0.5, offset: 0.7 },
@@ -1037,10 +1069,7 @@ function animateMarkedCells(root) {
       ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
     });
 
-    cell.animate([
-      { boxShadow: '0 0 7px rgba(139, 69, 255, .40), inset 0 0 10px rgba(167, 112, 255, .22)' },
-      { boxShadow: '0 0 15px rgba(178, 120, 255, .72), inset 0 0 16px rgba(214, 180, 255, .36)' }
-    ], { duration: 2400, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    glowPulse(cell, 2400);
   });
 }
 
@@ -1233,9 +1262,8 @@ function initCal() {
         display: block;
         overflow: visible;
       }
-      .amb-bf .bf-wings {
-        transform-origin: 14px 14px;
-        will-change: transform;
+      .amb-bf svg {
+        transform-origin: 50% 50%;
       }
       .wm-legend .c-amber.is-pixel,
       .wm-ui .c-amber.is-pixel,
@@ -1274,6 +1302,22 @@ function initCal() {
         box-shadow: 0 0 6px #a970ff;
         z-index: 2;
       }
+      /* Lớp sáng viền của các ô có hiệu ứng (chỉ animate opacity => nhẹ, không giật) */
+      .wm-glow {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        border-radius: inherit;
+        opacity: .6;
+        box-shadow: inset 0 0 14px var(--glow-in, rgba(255, 255, 255, .3));
+        will-change: opacity;
+      }
+      #kMonths .wm-d.m-red    { --glow-in: rgba(255, 255, 255, .30); box-shadow: 0 0 10px rgba(245, 50, 60, .55); }
+      #kMonths .wm-d.m-blue   { --glow-in: rgba(75, 195, 255, .55);  box-shadow: 0 0 10px rgba(45, 150, 255, .58); }
+      #kMonths .wm-d.m-amber  { --glow-in: rgba(255, 210, 95, .34);  box-shadow: 0 0 11px rgba(250, 200, 90, .55); }
+      #kMonths .wm-d.m-purple { --glow-in: rgba(214, 180, 255, .34); box-shadow: 0 0 11px rgba(160, 100, 255, .58); }
+      #kMonths .wm-d.m-her    { --glow-in: rgba(255, 105, 224, .36); box-shadow: 0 0 11px rgba(255, 95, 220, .52); }
       .oth-fx {
         position: absolute;
         inset: 0;
@@ -1351,7 +1395,7 @@ function initCal() {
       /* Hỗ trợ chế độ Tối (Dark Mode) cho các ô màu nhãn để vẫn nổi rõ màu của nhãn */
 
 
-      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx):not(.amber-fx):not(.oth-fx) {
+      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx):not(.amber-fx):not(.oth-fx):not(.wm-glow) {
         position: relative;
         z-index: 2;
       }
@@ -1388,19 +1432,16 @@ function initCal() {
       }
       .wf-svg.wf-bot {
         position: absolute;
+        transform-origin: 50% 100%;
         left: -2%;
         right: -2%;
         bottom: -2px;
         width: 104%;
         height: 54%;
         display: block;
-        filter: drop-shadow(0 -2px 5px rgba(32, 145, 255, .9));
       }
-      .wf-bot .wf-outer,
-      .wf-bot .wf-mid,
-      .wf-bot .wf-inner {
-        transform-origin: 50% 100%;
-        will-change: transform;
+      .wf-svg.wf-outer {
+        filter: drop-shadow(0 -2px 5px rgba(32, 145, 255, .9));
       }
       .wf-ember {
         position: absolute;
@@ -1639,11 +1680,12 @@ function renderCal() {
     const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : (mark === 'amber' ? buildAmberButterflyFxHtml() : (mark === 'purple' ? buildPurpleNebulaFxHtml() : ''))));
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
-      fxHtml +
+      fxHtml + (fxHtml ? '<i class="wm-glow" aria-hidden="true"></i>' : '') +
       '<span>' + d + '</span></button>';
   }
   const isCurrentMonth = (K.year === now.getFullYear() && m === now.getMonth());
   $('kMonths').innerHTML = '<section class="wm-mon' + (isCurrentMonth ? ' now' : '') + '"><h4>' + MONTH_NAMES[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
+  fxBind();
   animateMarkedCells($('kMonths'));
 
   const prefix = ym + '-';
