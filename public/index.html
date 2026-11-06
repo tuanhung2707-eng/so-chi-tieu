@@ -1405,9 +1405,16 @@ html[data-theme="dark"] .bub {
 
 
 
-  /* ---------- Biểu đồ tròn (Pie Chart) tổng hợp các mục chi tiêu ---------- */
-  .pie-card { margin-top:18px; margin-bottom:18px; }
+  /* ---------- Biểu đồ tròn (Pie Chart) tổng hợp các mục chi tiêu (thu gọn mặc định, bấm mới mở) ---------- */
+  .pie-card { margin-top:18px; margin-bottom:18px; padding:13px 18px; transition:padding .2s ease, box-shadow .2s ease; }
+  .pie-card.open { padding:18px 19px; }
+  .pie-head { display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none; margin:0 !important; }
+  .pie-title-wrap { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; min-width:0; }
+  .pie-title { font-size:15px; font-weight:750; color:var(--text); }
   .pie-sub { font-size:12px; color:var(--muted); font-weight:650; }
+  .pie-btn { padding:6px 12px; font-size:12px; font-weight:750; flex:none; pointer-events:none; }
+  .pie-body { margin-top:14px; padding-top:14px; border-top:1px solid var(--line); animation:pieSlide .24s cubic-bezier(.2,.8,.2,1); }
+  @keyframes pieSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
   .pie-wrap { display:grid; grid-template-columns:230px minmax(0,1fr); gap:22px; align-items:center; margin-top:8px; }
   .pie-box { position:relative; width:210px; height:210px; margin:0 auto; display:grid; place-items:center; }
   .pie-svg { width:100%; height:100%; overflow:visible; transform:rotate(-90deg); display:block; }
@@ -1617,11 +1624,14 @@ html[data-theme="dark"] .bub {
     </section>
 
     <section class="card pie-card" id="pieCard">
-      <h2>
-        <span>Biểu đồ chi tiêu theo mục</span>
-        <span class="pie-sub" id="pieMeta"></span>
-      </h2>
-      <div id="pieBody"></div>
+      <div class="pie-head" id="pieToggle" role="button" tabindex="0" aria-expanded="false">
+        <div class="pie-title-wrap">
+          <span class="pie-title">Biểu đồ chi tiêu theo mục</span>
+          <span class="pie-sub" id="pieMeta"></span>
+        </div>
+        <span class="chip pie-btn" id="pieBtnTxt">Xem biểu đồ ▾</span>
+      </div>
+      <div class="pie-body hidden" id="pieBody"></div>
     </section>
 
     <div class="lh">
@@ -1990,7 +2000,7 @@ function renderPieChart() {
   });
 
   const items = Object.keys(groups).map((k) => groups[k]).sort((a, b) => b.amount - a.amount);
-  if (meta) meta.textContent = items.length ? (items.length + ' mục · ' + S.expenses.length + ' khoản chi') : 'Chưa có khoản chi';
+  if (meta) meta.textContent = items.length ? ('· ' + items.length + ' mục · ' + money(totalSpent) + ' ₫') : '· Chưa có khoản chi';
 
   if (!items.length || totalSpent <= 0) {
     body.innerHTML = '<div class="empty" style="padding:20px 0">Chưa có khoản chi nào trong kỳ này để hiển thị biểu đồ.</div>';
@@ -2322,6 +2332,18 @@ function openNew(first) {
 
 /* ---------- sự kiện ---------- */
 function bind() {
+  const pieToggle = $('pieToggle');
+  if (pieToggle) {
+    const togglePie = () => {
+      const card = $('pieCard'), body = $('pieBody'), btn = $('pieBtnTxt');
+      const isOpen = body.classList.toggle('hidden') === false;
+      card.classList.toggle('open', isOpen);
+      pieToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (btn) btn.textContent = isOpen ? 'Thu gọn ▴' : 'Xem biểu đồ ▾';
+    };
+    pieToggle.addEventListener('click', togglePie);
+    pieToggle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePie(); } });
+  }
   $('mainTabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && b.getAttribute('data-view') !== VIEW) setView(b.getAttribute('data-view')); });
   $('qAmt').addEventListener('input', () => previewAmt('qAmt', 'qPrev', true));
   $('eAmt').addEventListener('input', () => previewAmt('eAmt', 'ePrev', true));
