@@ -1239,6 +1239,7 @@ html[data-theme="dark"] .bub {
       ocean: true,            // Bong bóng nổi & ánh sáng mặt nước chuyển động
       meadow: true,           // Cây đu đưa, mây trôi, ngọn cỏ lay, lá rơi trong thẻ ngân sách
       sea: true,              // Cảnh đại dương hai bên trang (cá, rùa, cua, rong biển, sao biển, bụi nước)
+      daisy: true,            // Hoa cúc Daisy pastel nhiều kích cỡ, nổi lơ lửng chậm xung quanh bảng các ngày trong kỳ
       ui: true                // Nháy hàng vừa sửa, rung lắc khi tiêu lố, pháo hoa sao, chữ bay lên, thẻ hiện ra
     }
   };
@@ -1873,6 +1874,205 @@ html[data-theme="dark"] .bub {
     }
   };
 
+  // ========== 7.5. HOA CÚC DAISY PASTEL NỔI XUNG QUANH BẢNG CÁC NGÀY TRONG KỲ (CALENDAR DAISIES) ==========
+  const DAISY_PRESETS = [
+    { type: 'blue',   s: 34, top: 4,  left: 5,  dur: 17000, dl: -3000,  dx: 12,  dy: -18, rot: 24,  op: 0.86 },
+    { type: 'pink',   s: 24, top: 7,  left: 27, dur: 21000, dl: -8000,  dx: -14, dy: -22, rot: -28, op: 0.80 },
+    { type: 'purple', s: 28, top: 3,  left: 51, dur: 15000, dl: -5000,  dx: 15,  dy: -14, rot: 20,  op: 0.84 },
+    { type: 'blue',   s: 20, top: 6,  left: 74, dur: 19000, dl: -11000, dx: -10, dy: -20, rot: -22, op: 0.75 },
+    { type: 'pink',   s: 38, top: 5,  left: 92, dur: 22000, dl: -2000,  dx: 14,  dy: -16, rot: 26,  op: 0.90 },
+
+    { type: 'purple', s: 22, top: 23, left: 2,  dur: 18000, dl: -9000,  dx: -12, dy: -24, rot: -25, op: 0.78 },
+    { type: 'blue',   s: 17, top: 29, left: 16, dur: 23000, dl: -4000,  dx: 11,  dy: -15, rot: 18,  op: 0.72 },
+    { type: 'pink',   s: 26, top: 27, left: 83, dur: 16000, dl: -13000, dx: -13, dy: -26, rot: -20, op: 0.82 },
+    { type: 'purple', s: 34, top: 25, left: 96, dur: 20000, dl: -7000,  dx: 12,  dy: -20, rot: 25,  op: 0.88 },
+
+    { type: 'pink',   s: 18, top: 47, left: 4,  dur: 24000, dl: -15000, dx: 13,  dy: -16, rot: 22,  op: 0.75 },
+    { type: 'blue',   s: 30, top: 51, left: 12, dur: 17000, dl: -1000,  dx: -12, dy: -24, rot: -24, op: 0.85 },
+    { type: 'purple', s: 22, top: 45, left: 87, dur: 19000, dl: -10000, dx: 11,  dy: -18, rot: 20,  op: 0.78 },
+    { type: 'blue',   s: 26, top: 53, left: 95, dur: 22000, dl: -6000,  dx: -14, dy: -22, rot: -26, op: 0.82 },
+
+    { type: 'purple', s: 36, top: 69, left: 1,  dur: 20000, dl: -12000, dx: 14,  dy: -20, rot: 28,  op: 0.90 },
+    { type: 'pink',   s: 20, top: 73, left: 20, dur: 16000, dl: -4000,  dx: -10, dy: -18, rot: -18, op: 0.75 },
+    { type: 'blue',   s: 28, top: 67, left: 79, dur: 23000, dl: -14000, dx: 13,  dy: -25, rot: 22,  op: 0.85 },
+    { type: 'pink',   s: 18, top: 75, left: 93, dur: 18000, dl: -8000,  dx: -11, dy: -16, rot: -20, op: 0.72 },
+
+    { type: 'blue',   s: 24, top: 91, left: 7,  dur: 19000, dl: -6000,  dx: 12,  dy: -15, rot: 22,  op: 0.80 },
+    { type: 'purple', s: 32, top: 89, left: 34, dur: 21000, dl: -16000, dx: -15, dy: -24, rot: -26, op: 0.88 },
+    { type: 'pink',   s: 24, top: 92, left: 61, dur: 17000, dl: -2000,  dx: 12,  dy: -18, rot: 20,  op: 0.82 },
+    { type: 'blue',   s: 36, top: 90, left: 89, dur: 24000, dl: -10000, dx: -14, dy: -22, rot: -25, op: 0.90 }
+  ];
+
+  function ensureDaisyDefs() {
+    if (document.getElementById('daisyDefsSvg')) return;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = 'daisyDefsSvg';
+    svg.setAttribute('class', 'daisy-defs');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;';
+    svg.innerHTML = `
+      <defs>
+        <g id="appDaisyBlue">
+          <g class="df-p" fill="#9ad4fb">
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(36 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(72 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(108 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(144 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(180 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(216 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(252 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(288 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(324 12 12)"/>
+          </g>
+          <circle cx="12" cy="12" r="3.2" fill="#ffd566"/>
+          <circle cx="11.2" cy="11.2" r="1.1" fill="#fff" opacity="0.75"/>
+        </g>
+        <g id="appDaisyPink">
+          <g class="df-p" fill="#fbaece">
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(36 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(72 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(108 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(144 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(180 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(216 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(252 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(288 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(324 12 12)"/>
+          </g>
+          <circle cx="12" cy="12" r="3.2" fill="#ffe270"/>
+          <circle cx="11.2" cy="11.2" r="1.1" fill="#fff" opacity="0.75"/>
+        </g>
+        <g id="appDaisyPurple">
+          <g class="df-p" fill="#cbaaf8">
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(36 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(72 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(108 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(144 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(180 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(216 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(252 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(288 12 12)"/>
+            <ellipse cx="12" cy="4.8" rx="2.1" ry="4.5" transform="rotate(324 12 12)"/>
+          </g>
+          <circle cx="12" cy="12" r="3.2" fill="#ffd566"/>
+          <circle cx="11.2" cy="11.2" r="1.1" fill="#fff" opacity="0.75"/>
+        </g>
+      </defs>
+    `;
+    (document.body || document.documentElement).appendChild(svg);
+  }
+
+  function ensureDaisyStyles() {
+    if (document.getElementById('daisyStyles')) return;
+    const st = document.createElement('style');
+    st.id = 'daisyStyles';
+    st.textContent = `
+      #calWrap {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      #calWrap > :not(.daisy-field) {
+        position: relative;
+        z-index: 2;
+      }
+      .daisy-field {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+        border-radius: inherit;
+      }
+      .daisy-item {
+        position: absolute;
+        display: block;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 2px 6px rgba(102, 174, 232, .24));
+      }
+      .daisy-item svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      html[data-theme="dark"] .daisy-item {
+        filter: drop-shadow(0 0 8px rgba(160, 215, 255, .32)) drop-shadow(0 2px 4px rgba(0, 0, 0, .4));
+      }
+      html[data-theme="dark"] #appDaisyBlue .df-p { fill: #86cbf8; }
+      html[data-theme="dark"] #appDaisyPink .df-p { fill: #f99fc4; }
+      html[data-theme="dark"] #appDaisyPurple .df-p { fill: #c09af6; }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  const Daisy = {
+    anims: [],
+    start() {
+      this.stop();
+      if (!CONFIG.enabled || CONFIG.reducedMotion || CONFIG.categories.daisy === false) return;
+
+      const calWrap = document.getElementById('calWrap');
+      if (!calWrap) return;
+
+      ensureDaisyDefs();
+      ensureDaisyStyles();
+
+      let field = calWrap.querySelector('.daisy-field');
+      if (!field) {
+        field = document.createElement('div');
+        field.className = 'daisy-field';
+        field.setAttribute('aria-hidden', 'true');
+
+        const map = { blue: '#appDaisyBlue', pink: '#appDaisyPink', purple: '#appDaisyPurple' };
+        field.innerHTML = DAISY_PRESETS.map((d) =>
+          `<span class="daisy-item" style="width:${d.s}px;height:${d.s}px;top:${d.top}%;left:${d.left}%;opacity:${d.op};" ` +
+          `data-dur="${d.dur}" data-dl="${d.dl}" data-dx="${d.dx}" data-dy="${d.dy}" data-rot="${d.rot}">` +
+          `<svg viewBox="0 0 24 24"><use href="${map[d.type]}"/></svg>` +
+          `</span>`
+        ).join('');
+
+        calWrap.insertBefore(field, calWrap.firstChild);
+      }
+
+      field.querySelectorAll('.daisy-item').forEach((el) => {
+        const dur = parseFloat(el.getAttribute('data-dur')) || 18000;
+        const dl = parseFloat(el.getAttribute('data-dl')) || 0;
+        const dx = parseFloat(el.getAttribute('data-dx')) || 12;
+        const dy = parseFloat(el.getAttribute('data-dy')) || -18;
+        const rot = parseFloat(el.getAttribute('data-rot')) || 24;
+
+        const a = runAnimation(el, [
+          { transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)', offset: 0 },
+          { transform: `translate3d(${(dx * 0.9).toFixed(1)}px, ${(dy * 0.7).toFixed(1)}px, 0) rotate(${(rot * 0.9).toFixed(0)}deg) scale(1.06)`, offset: 0.32 },
+          { transform: `translate3d(${(-dx * 0.8).toFixed(1)}px, ${(dy * 1.3).toFixed(1)}px, 0) rotate(${(-rot * 0.75).toFixed(0)}deg) scale(0.95)`, offset: 0.68 },
+          { transform: `translate3d(${(dx * 0.4).toFixed(1)}px, ${(dy * 0.5).toFixed(1)}px, 0) rotate(${(rot * 0.35).toFixed(0)}deg) scale(1.02)`, offset: 0.86 },
+          { transform: 'translate3d(0, 0, 0) rotate(0deg) scale(1)', offset: 1 }
+        ], {
+          duration: dur,
+          delay: dl,
+          iterations: Infinity,
+          easing: 'ease-in-out'
+        }, 'daisy');
+
+        if (a) this.anims.push(a);
+      });
+    },
+
+    stop() {
+      this.anims.forEach((a) => a.cancel());
+      this.anims = [];
+      const field = document.querySelector('#calWrap .daisy-field');
+      if (field && field.parentNode) {
+        field.parentNode.removeChild(field);
+      }
+    }
+  };
+
+
   // ========== 6. CẢNH ĐỒNG CỎ THẺ NGÂN SÁCH (HERO MEADOW) ==========
   const Meadow = {
     anims: [],
@@ -2190,6 +2390,9 @@ html[data-theme="dark"] .bub {
           if (target.id === 'hero') {
             Meadow.checkOverState();
           }
+          if (target.id === 'list' || target.id === 'calWrap') {
+            Daisy.start();
+          }
         } else if (m.type === 'childList' && m.addedNodes.length) {
           const target = m.target;
           if (target && target.classList && target.classList.contains('chips')) {
@@ -2245,6 +2448,7 @@ html[data-theme="dark"] .bub {
     ocean: Ocean,
     meadow: Meadow,
     sea: Sea,
+    daisy: Daisy,
 
     // Khởi động toàn bộ hoạt ảnh
     // Điều khiển Chế độ Sáng / Tối
@@ -2260,6 +2464,8 @@ html[data-theme="dark"] .bub {
       Ocean.start();
       Meadow.start();
       Sea.start();
+      Daisy.start();
+      Daisy.start();
       setupObserver();
 
       // Cập nhật lại khoảng cách bơi khi co giãn kích thước màn hình
@@ -2316,6 +2522,7 @@ html[data-theme="dark"] .bub {
         if (category === 'ocean') isEnabled ? Ocean.start() : Ocean.stop();
         if (category === 'meadow') isEnabled ? Meadow.start() : Meadow.stop();
         if (category === 'sea') isEnabled ? Sea.start() : Sea.stop();
+        if (category === 'daisy') isEnabled ? Daisy.start() : Daisy.stop();
         updatePseudoStyles();
       }
     }
