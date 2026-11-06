@@ -599,7 +599,20 @@ function normalizeCalRow(r) {
 }
 
 // Tạo các trái tim hồng phát sáng bên trong ô ngày được đánh dấu "Her"
-const HEART_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+// Icon trái tim kiểu Pixel (8-bit crispEdges) dùng cho cả nhãn đánh dấu "Her" và hiệu ứng bay
+const PIXEL_HEART_SVG =
+  '<svg viewBox="0 0 11 10" shape-rendering="crispEdges" aria-hidden="true">' +
+    '<path fill="#ff66dc" d="M2 0h2v1h1v1h1V1h1V0h2v1h1v1h1v3h-1v1H9v1H8v1H7v1H6v1H5V9H4V8H3V7H2V6H1V5H0V2h1V1h1V0z"/>' +
+    '<path fill="#ffb8f0" d="M2 1h2v1H3v1H2V1zm-1 1h1v2H1V2z"/>' +
+  '</svg>';
+const HEART_SVG = PIXEL_HEART_SVG;
+
+function markDotHtml(code) {
+  if (code === 'her') {
+    return '<b class="c-her is-pixel">' + PIXEL_HEART_SVG + '</b>';
+  }
+  return '<b class="c-' + (code || 'none') + '"></b>';
+}
 const HER_PARTICLES = [
   { x: 16, s: 11, dur: 2900, dl: -300, dx: 5, p: 0.95 },
   { x: 74, s: 9,  dur: 3300, dl: -1400, dx: -6, p: 0.9 },
@@ -782,11 +795,26 @@ function initCal() {
         --mc: #ff5cd6;
         --mb: #1e0726;
       }
-      .wm-legend .c-her,
-      .wm-ui .c-her,
-      .wm-cols .c-her b {
-        background: radial-gradient(circle at 35% 35%, #ff9eee, #ff47cc 65%, #c91496 100%) !important;
-        box-shadow: 0 0 8px rgba(255, 92, 214, .85);
+      .wm-legend .c-her.is-pixel,
+      .wm-ui .c-her.is-pixel,
+      .wm-cols .c-her b.is-pixel {
+        width: 15px !important;
+        height: 14px !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        vertical-align: -2px;
+        filter: drop-shadow(0 0 4px rgba(255, 92, 214, .95)) drop-shadow(0 0 8px rgba(235, 30, 180, .75));
+      }
+      .wm-legend .c-her.is-pixel svg,
+      .wm-ui .c-her.is-pixel svg,
+      .wm-cols .c-her b.is-pixel svg {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
       .wm-cols button.c-her {
         background: linear-gradient(145deg, #1b0622 0%, #2a0a36 100%) !important;
@@ -864,7 +892,7 @@ function initCal() {
     '<div class="wm-mpills" id="kMonthPills">' +
       MONTH_NAMES.map((name, i) => '<button type="button" class="chip" data-m="' + i + '">' + name + '</button>').join('') +
     '</div>' +
-    '<div class="wm-legend" id="kLegend">' + MARKS.map((m) => '<span><b class="c-' + m[0] + '"></b>' + m[1] + '</span>').join('') + '<em>Bấm vào một ngày để đánh dấu và ghi chú</em></div>' +
+    '<div class="wm-legend" id="kLegend">' + MARKS.map((m) => '<span>' + markDotHtml(m[0]) + m[1] + '</span>').join('') + '<em>Bấm vào một ngày để đánh dấu và ghi chú</em></div>' +
     '<div class="wm-months" id="kMonths"></div><div class="card wm-up" id="kList"></div>';
 
   $('kMonthSel').addEventListener('change', (e) => {
@@ -964,7 +992,7 @@ function renderCal() {
   const prefix = ym + '-';
   const list = Object.keys(K.days).filter((k) => k.startsWith(prefix)).sort().map((k) => K.days[k]).filter((x) => x.note || x.mark);
   $('kList').innerHTML = '<h4>Ghi chú và đánh dấu ' + MONTH_NAMES[m].toLowerCase() + '/' + K.year + ' <span>' + list.length + '</span></h4>' + (list.length ? list.map((x) =>
-    '<button type="button" class="wm-ui" data-day="' + x.day + '"><b class="c-' + (x.mark || 'none') + '"></b><span class="wm-ud">' + dmy(x.day).slice(0, 5) + ' · ' + DOW_LONG[new Date(x.day + 'T00:00:00').getDay()] + '</span><span class="wm-ut">' +
+    '<button type="button" class="wm-ui" data-day="' + x.day + '">' + markDotHtml(x.mark || 'none') + '<span class="wm-ud">' + dmy(x.day).slice(0, 5) + ' · ' + DOW_LONG[new Date(x.day + 'T00:00:00').getDay()] + '</span><span class="wm-ut">' +
     (x.note ? esc(x.note.split('\n')[0]) : '<i>' + esc(MARK_LABEL[x.mark] || '') + '</i>') + '</span></button>').join('') :
     '<div class="wm-empty" style="padding:8px 0">Chưa có ngày nào trong ' + MONTH_NAMES[m].toLowerCase() + ' được đánh dấu hoặc ghi chú.</div>');
 }
@@ -972,7 +1000,7 @@ function openDay(day) {
   const dt = new Date(day + 'T00:00:00'), cur = K.days[day] || { mark: '', note: '' };
   let mark = cur.mark || '';
   openDlg('<h2>' + DOW_LONG[dt.getDay()] + ', ' + dmy(day) + '</h2>' +
-    '<div class="field"><label>Đánh dấu</label><div class="wm-cols" id="kCols">' + MARKS.map((m) => '<button type="button" class="c-' + m[0] + (mark === m[0] ? ' on' : '') + '" data-col="' + m[0] + '"><b></b>' + m[1] + '</button>').join('') + '</div></div>' +
+    '<div class="field"><label>Đánh dấu</label><div class="wm-cols" id="kCols">' + MARKS.map((m) => '<button type="button" class="c-' + m[0] + (mark === m[0] ? ' on' : '') + '" data-col="' + m[0] + '">' + markDotHtml(m[0]) + m[1] + '</button>').join('') + '</div></div>' +
     '<div class="field"><label for="kNote">Ghi chú</label><textarea id="kNote" rows="5" data-autofocus placeholder="Việc cần làm, cuộc hẹn, nhắc nhở…"></textarea></div>' +
     '<div class="prev bad wm-err"></div><div class="twin">' + (K.days[day] ? '<button class="btn danger" data-k="del" type="button">Xóa</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
   $('kNote').value = cur.note || '';
