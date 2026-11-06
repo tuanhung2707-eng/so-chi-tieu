@@ -607,9 +607,20 @@ const PIXEL_HEART_SVG =
   '</svg>';
 const HEART_SVG = PIXEL_HEART_SVG;
 
+// Icon ngôi sao đỏ kiểu Pixel (8-bit crispEdges) cho nhãn "Quan trọng" (red)
+const PIXEL_STAR_RED_SVG =
+  '<svg viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">' +
+    '<path fill="#ffffff" d="M5 0h1v2h1v1h4v1h-1v1H9v1H8v1h1v3H8v1H7v-1H6V9H5v1H4v1H3v-1H2V7h1V6H2V5H1V4H0V3h4V2h1V0z"/>' +
+    '<path fill="#ef1d26" d="M5 1h1v2h1v1h3v1H8v1H7v1h1v3H7V9H6V8H5v1H4v1H3V7h1V6H3V5H1V4h3V3h1V1z"/>' +
+    '<path fill="#ff9ca0" d="M5 2h1v2H4V3h1V2zM3 4h2v1H3V4z"/>' +
+  '</svg>';
+
 function markDotHtml(code) {
   if (code === 'her') {
     return '<b class="c-her is-pixel">' + PIXEL_HEART_SVG + '</b>';
+  }
+  if (code === 'red') {
+    return '<b class="c-red is-pixel">' + PIXEL_STAR_RED_SVG + '</b>';
   }
   return '<b class="c-' + (code || 'none') + '"></b>';
 }
@@ -668,6 +679,37 @@ function buildWorkFireFxHtml() {
       '<i class="wf-ember" style="right:28%;bottom:30%;width:6px;height:3.5px" data-dur="680" data-dl="-340" data-dx="-8" data-dy="-7"></i>' +
       '<i class="wf-ember" style="left:18%;bottom:20%;width:4.5px;height:2.5px" data-dur="760" data-dl="-500" data-dx="6" data-dy="-6"></i>' +
       '<i class="wf-ember y" style="right:20%;bottom:22%;width:4px;height:2.5px" data-dur="620" data-dl="-210" data-dx="-5" data-dy="-8"></i>' +
+    '</span>'
+  );
+}
+
+// Hiệu ứng ngôi sao đỏ viền trắng phát sáng trên nền caro đỏ-hồng cho nhãn "Quan trọng" (m-red) theo clip mẫu
+const RED_STAR_SVG =
+  '<svg viewBox="0 0 28 28" aria-hidden="true">' +
+    '<path d="M14 2.2l3.35 6.78 7.49 1.09-5.42 5.28 1.28 7.46L14 19.28l-6.7 3.53 1.28-7.46-5.42-5.28 7.49-1.09L14 2.2z" ' +
+    'fill="#eb1c24" stroke="#ffffff" stroke-width="3.6" stroke-linejoin="round" paint-order="stroke"/>' +
+  '</svg>';
+
+const RED_STAR_PARTICLES = [
+  { x: 10, y: 18, s: 14, dur: 3600, dl: -400,  dx: 8,  dy: -16, rot: 140 },
+  { x: 70, y: 12, s: 12, dur: 3200, dl: -1500, dx: -9, dy: 14,  rot: -160 },
+  { x: 66, y: 62, s: 15, dur: 3800, dl: -900,  dx: -7, dy: -18, rot: 180 },
+  { x: 16, y: 66, s: 11, dur: 3100, dl: -2200, dx: 10, dy: -12, rot: -140 },
+  { x: 44, y: 20, s: 7.5, dur: 2800, dl: -700, dx: -6, dy: 12,  rot: 200 },
+  { x: 32, y: 74, s: 8.5, dur: 3400, dl: -1800, dx: 7, dy: -15, rot: -180 },
+  { x: 82, y: 40, s: 8,  dur: 2900, dl: -1100, dx: -8, dy: -10, rot: 160 },
+  { x: 18, y: 44, s: 6.5, dur: 2700, dl: -2500, dx: 6, dy: 10,  rot: -200 }
+];
+
+function buildRedStarFxHtml() {
+  return (
+    '<span class="red-fx" aria-hidden="true">' +
+      '<i class="red-grid"></i>' +
+      RED_STAR_PARTICLES.map((p) =>
+        '<i class="red-st" style="left:' + p.x + '%;top:' + p.y + '%;width:' + p.s + 'px;height:' + p.s + 'px" ' +
+        'data-dur="' + p.dur + '" data-dl="' + p.dl + '" data-dx="' + p.dx + '" data-dy="' + p.dy + '" data-rot="' + p.rot + '">' +
+        RED_STAR_SVG + '</i>'
+      ).join('') +
     '</span>'
   );
 }
@@ -776,6 +818,39 @@ function animateMarkedCells(root) {
       { boxShadow: '0 0 14px rgba(255, 90, 20, .75), inset 0 0 14px rgba(255, 68, 17, .42)' }
     ], { duration: 850, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
   });
+
+  // 3. Hiệu ứng ngôi sao đỏ viền trắng trên nền caro đỏ-hồng cho các ô "Quan trọng" (m-red)
+  container.querySelectorAll('.wm-d.m-red').forEach((cell) => {
+    if (!cell.animate || reduce) return;
+
+    const grid = cell.querySelector('.red-grid');
+    if (grid) {
+      grid.animate([
+        { transform: 'translate3d(0px, 0px, 0)' },
+        { transform: 'translate3d(-12px, -12px, 0)' }
+      ], { duration: 4200, iterations: Infinity, easing: 'linear' });
+    }
+
+    cell.querySelectorAll('.red-st').forEach((st) => {
+      const dur = parseFloat(st.getAttribute('data-dur')) || 3200;
+      const dl = parseFloat(st.getAttribute('data-dl')) || 0;
+      const dx = parseFloat(st.getAttribute('data-dx')) || 8;
+      const dy = parseFloat(st.getAttribute('data-dy')) || -14;
+      const rot = parseFloat(st.getAttribute('data-rot')) || 160;
+
+      st.animate([
+        { transform: 'translate3d(0px, 0px, 0) rotate(0deg) scale(0.55)', opacity: 0, offset: 0 },
+        { transform: 'translate3d(' + (dx * 0.35).toFixed(1) + 'px, ' + (dy * 0.35).toFixed(1) + 'px, 0) rotate(' + (rot * 0.35).toFixed(0) + 'deg) scale(1.06)', opacity: 1, offset: 0.28 },
+        { transform: 'translate3d(' + (dx * 0.75).toFixed(1) + 'px, ' + (dy * 0.75).toFixed(1) + 'px, 0) rotate(' + (rot * 0.75).toFixed(0) + 'deg) scale(0.95)', opacity: 0.92, offset: 0.72 },
+        { transform: 'translate3d(' + dx + 'px, ' + dy + 'px, 0) rotate(' + rot + 'deg) scale(0.5)', opacity: 0, offset: 1 }
+      ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-in-out' });
+    });
+
+    cell.animate([
+      { boxShadow: '0 0 6px rgba(235, 28, 36, .38), inset 0 0 8px rgba(180, 10, 18, .25)' },
+      { boxShadow: '0 0 13px rgba(255, 65, 75, .68), inset 0 0 14px rgba(255, 255, 255, .28)' }
+    ], { duration: 1800, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+  });
 }
 
 const MONTH_NAMES = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
@@ -883,11 +958,52 @@ function initCal() {
         border-color: rgba(45, 75, 108, .75);
       }
 
-      /* Các ngày được đánh dấu nhãn màu thường (Quan trọng, Nghỉ, Hẹn/nhắc, Khác) hiển thị rõ màu của nhãn */
+      /* Các ngày được đánh dấu nhãn màu thường (Nghỉ, Hẹn/nhắc, Khác) hiển thị rõ màu của nhãn */
+      /* Riêng nhãn "Quan trọng" (.m-red) dùng nền caro đỏ-hồng + các ngôi sao đỏ viền trắng phát sáng theo clip mẫu */
       #kMonths .wm-d.m-red {
-        background: #fde3e8 !important;
-        border: 1.5px solid #e0708a !important;
-        color: #7a1c33 !important;
+        background: #e63939 !important;
+        border: 1.5px solid #ff5252 !important;
+        color: #ffffff !important;
+      }
+      #kMonths .wm-d.m-red > span:not(.red-fx) {
+        color: #ffffff !important;
+        font-weight: 850;
+        text-shadow: 0 1px 3px rgba(120, 0, 0, .95), 0 0 8px rgba(180, 0, 10, .85), 0 0 2px #fff;
+      }
+      #kMonths .wm-d.m-red.has::after {
+        background: #ffffff !important;
+        box-shadow: 0 0 6px #ffffff;
+        z-index: 2;
+      }
+      .red-fx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: inherit;
+      }
+      .red-grid {
+        position: absolute;
+        inset: -14px;
+        background-color: #f46868;
+        background-image:
+          linear-gradient(180deg, rgba(165, 8, 14, .62) 0%, rgba(215, 28, 32, .18) 45%, rgba(255, 130, 130, .08) 100%),
+          repeating-conic-gradient(#ea3b3b 0% 25%, #f77e7e 0% 50%);
+        background-size: 100% 100%, 12px 12px;
+        will-change: transform;
+      }
+      .red-st {
+        position: absolute;
+        display: block;
+        opacity: 0;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 0 2.5px rgba(255, 255, 255, .95)) drop-shadow(0 0 6px rgba(255, 220, 220, .8));
+      }
+      .red-st svg {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
       #kMonths .wm-d.m-green {
         background: #d9f2ea !important;
@@ -904,7 +1020,6 @@ function initCal() {
         border: 1.5px solid #8b73d9 !important;
         color: #382478 !important;
       }
-      #kMonths .wm-d.m-red > span,
       #kMonths .wm-d.m-green > span,
       #kMonths .wm-d.m-amber > span,
       #kMonths .wm-d.m-purple > span {
@@ -913,11 +1028,7 @@ function initCal() {
       }
 
       /* Hỗ trợ chế độ Tối (Dark Mode) cho các ô màu nhãn để vẫn nổi rõ màu của nhãn */
-      html[data-theme="dark"] #kMonths .wm-d.m-red {
-        background: rgba(224, 112, 138, .26) !important;
-        border-color: #e0708a !important;
-        color: #ffc2d0 !important;
-      }
+
       html[data-theme="dark"] #kMonths .wm-d.m-green {
         background: rgba(63, 174, 147, .26) !important;
         border-color: #3fae93 !important;
@@ -934,7 +1045,7 @@ function initCal() {
         color: #dcd2ff !important;
       }
 
-      #kMonths .wm-d > span:not(.her-fx):not(.work-fx) {
+      #kMonths .wm-d > span:not(.her-fx):not(.work-fx):not(.red-fx) {
         position: relative;
         z-index: 2;
       }
@@ -1012,6 +1123,9 @@ function initCal() {
         --mc: #ff5cd6;
         --mb: #1e0726;
       }
+      .wm-legend .c-red.is-pixel,
+      .wm-ui .c-red.is-pixel,
+      .wm-cols .c-red b.is-pixel,
       .wm-legend .c-her.is-pixel,
       .wm-ui .c-her.is-pixel,
       .wm-cols .c-her b.is-pixel {
@@ -1026,6 +1140,16 @@ function initCal() {
         vertical-align: -2px;
         filter: drop-shadow(0 0 4px rgba(255, 92, 214, .95)) drop-shadow(0 0 8px rgba(235, 30, 180, .75));
       }
+      .wm-legend .c-red.is-pixel,
+      .wm-ui .c-red.is-pixel,
+      .wm-cols .c-red b.is-pixel {
+        width: 15px !important;
+        height: 15px !important;
+        filter: drop-shadow(0 0 3px rgba(239, 29, 38, .85)) drop-shadow(0 0 6px rgba(255, 120, 120, .65));
+      }
+      .wm-legend .c-red.is-pixel svg,
+      .wm-ui .c-red.is-pixel svg,
+      .wm-cols .c-red b.is-pixel svg,
       .wm-legend .c-her.is-pixel svg,
       .wm-ui .c-her.is-pixel svg,
       .wm-cols .c-her b.is-pixel svg {
@@ -1194,7 +1318,7 @@ function renderCal() {
   for (let d = 1; d <= dim; d++) {
     const key = ym + '-' + pad2(d), x = K.days[key];
     const mark = x && x.mark ? x.mark : '';
-    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : '');
+    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : ''));
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
       fxHtml +
