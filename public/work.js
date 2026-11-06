@@ -613,6 +613,7 @@ function markDotHtml(code) {
   }
   return '<b class="c-' + (code || 'none') + '"></b>';
 }
+
 const HER_PARTICLES = [
   { x: 16, s: 11, dur: 2900, dl: -300, dx: 5, p: 0.95 },
   { x: 74, s: 9,  dur: 3300, dl: -1400, dx: -6, p: 0.9 },
@@ -633,10 +634,50 @@ function buildHerFxHtml() {
     '</span>';
 }
 
-function animateHerCells(root) {
+// Hiệu ứng lửa cháy 2D Anime ở viền trên & dưới cho nhãn "Công việc" (m-blue) theo clip mẫu
+function buildWorkFireFxHtml() {
+  return (
+    '<span class="work-fx" aria-hidden="true">' +
+      // Cụm lửa góc trên phải & mép trên
+      '<svg class="wf-svg wf-top" viewBox="0 0 100 54" preserveAspectRatio="none">' +
+        '<g class="wf-outer">' +
+          '<path fill="#f22613" d="M36 0 C42 14, 58 10, 64 22 C52 24, 48 16, 42 20 C48 31, 68 28, 76 38 C68 42, 58 37, 54 42 C66 49, 86 44, 100 34 L100 0 Z"/>' +
+          '<path fill="#ff3814" d="M0 0 L26 0 C22 8, 12 11, 4 15 C8 9, 4 5, 0 8 Z" opacity="0.88"/>' +
+          '<path class="wf-wisp1" fill="#f22613" d="M62 44 C72 48, 84 46, 92 39 C83 41, 72 41, 62 44 Z"/>' +
+        '</g>' +
+        '<g class="wf-inner">' +
+          '<path fill="#ffea54" d="M54 0 C58 10, 70 8, 74 18 C65 19, 61 14, 57 17 C63 25, 79 23, 86 30 C80 33, 72 30, 69 33 C78 38, 91 34, 100 25 L100 0 Z"/>' +
+          '<path fill="#fff685" d="M68 0 C72 7, 82 7, 86 15 C79 15, 76 12, 74 15 C79 20, 90 19, 100 14 L100 0 Z"/>' +
+        '</g>' +
+      '</svg>' +
+      // Cụm lửa góc dưới phải, dưới trái & mép dưới
+      '<svg class="wf-svg wf-bot" viewBox="0 0 100 60" preserveAspectRatio="none">' +
+        '<g class="wf-outer">' +
+          '<path fill="#f22613" d="M100 60 L28 60 C34 48, 50 50, 56 38 C46 37, 40 43, 36 37 C42 24, 62 20, 74 30 C66 18, 52 22, 48 14 C60 6, 82 12, 92 26 C95 18, 98 12, 100 8 Z"/>' +
+          '<path fill="#ff3312" d="M0 60 L0 36 C6 42, 16 44, 24 51 C16 52, 10 49, 7 53 C14 56, 22 57, 28 60 Z"/>' +
+          '<path class="wf-wisp2" fill="#f22613" d="M36 22 C44 14, 56 13, 64 19 C54 18, 44 19, 36 22 Z"/>' +
+        '</g>' +
+        '<g class="wf-inner">' +
+          '<path fill="#ffea54" d="M100 60 L46 60 C50 50, 64 50, 68 40 C60 40, 55 44, 52 39 C57 29, 73 26, 82 34 C76 24, 65 26, 62 20 C72 14, 88 19, 96 30 L100 22 Z"/>' +
+          '<path fill="#fff685" d="M100 60 L62 60 C66 52, 76 51, 80 43 C74 43, 70 45, 68 41 C73 34, 86 33, 94 40 L100 32 Z"/>' +
+          '<path fill="#ffea54" d="M0 60 L0 46 C5 50, 12 52, 17 57 L12 60 Z"/>' +
+        '</g>' +
+      '</svg>' +
+      // Các tàn lửa nhỏ bay lơ lửng
+      '<i class="wf-ember" style="right:14%;top:28%;width:5px;height:3px" data-dur="720" data-dl="-120" data-dx="-6" data-dy="5"></i>' +
+      '<i class="wf-ember" style="right:28%;bottom:30%;width:6px;height:3.5px" data-dur="680" data-dl="-340" data-dx="-8" data-dy="-7"></i>' +
+      '<i class="wf-ember" style="left:18%;bottom:20%;width:4.5px;height:2.5px" data-dur="760" data-dl="-500" data-dx="6" data-dy="-6"></i>' +
+      '<i class="wf-ember y" style="right:20%;bottom:22%;width:4px;height:2.5px" data-dur="620" data-dl="-210" data-dx="-5" data-dy="-8"></i>' +
+    '</span>'
+  );
+}
+
+function animateMarkedCells(root) {
   const container = root || $('kMonths');
   if (!container) return;
   const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  // 1. Hiệu ứng trái tim bay cho các ô "Her" (m-her)
   const hearts = container.querySelectorAll('.wm-d.m-her .her-h');
   hearts.forEach((h) => {
     if (!h.animate || reduce) {
@@ -663,7 +704,6 @@ function animateHerCells(root) {
     });
   });
 
-  // Hiệu ứng nhịp thở ánh hồng nhẹ cho viền ô "Her"
   container.querySelectorAll('.wm-d.m-her').forEach((cell) => {
     if (!cell.animate || reduce) return;
     cell.animate([
@@ -675,6 +715,66 @@ function animateHerCells(root) {
       direction: 'alternate',
       easing: 'ease-in-out'
     });
+  });
+
+  // 2. Hiệu ứng lửa cháy 2D Anime cho các ô "Công việc" (m-blue)
+  container.querySelectorAll('.wm-d.m-blue').forEach((cell) => {
+    if (!cell.animate || reduce) return;
+
+    const topOuter = cell.querySelector('.wf-top .wf-outer');
+    const topInner = cell.querySelector('.wf-top .wf-inner');
+    const botOuter = cell.querySelector('.wf-bot .wf-outer');
+    const botInner = cell.querySelector('.wf-bot .wf-inner');
+
+    if (topOuter) {
+      topOuter.animate([
+        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' },
+        { transform: 'scale(1.08, 1.14) skewX(-6deg) translate(-2px, 1px)', offset: 0.33 },
+        { transform: 'scale(0.95, 0.92) skewX(4deg) translate(1px, -1px)', offset: 0.68 },
+        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' }
+      ], { duration: 640, iterations: Infinity, easing: 'ease-in-out' });
+    }
+    if (topInner) {
+      topInner.animate([
+        { transform: 'scale(1, 1) skewX(0deg)' },
+        { transform: 'scale(0.92, 1.18) skewX(5deg)', offset: 0.45 },
+        { transform: 'scale(1.06, 0.90) skewX(-5deg)', offset: 0.8 },
+        { transform: 'scale(1, 1) skewX(0deg)' }
+      ], { duration: 520, iterations: Infinity, easing: 'ease-in-out' });
+    }
+    if (botOuter) {
+      botOuter.animate([
+        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' },
+        { transform: 'scale(1.10, 1.16) skewX(7deg) translate(-2px, -1px)', offset: 0.36 },
+        { transform: 'scale(0.94, 0.90) skewX(-5deg) translate(1px, 1px)', offset: 0.72 },
+        { transform: 'scale(1, 1) skewX(0deg) translate(0px, 0px)' }
+      ], { duration: 680, delay: -220, iterations: Infinity, easing: 'ease-in-out' });
+    }
+    if (botInner) {
+      botInner.animate([
+        { transform: 'scale(1, 1) skewX(0deg)' },
+        { transform: 'scale(1.08, 1.20) skewX(-6deg)', offset: 0.4 },
+        { transform: 'scale(0.92, 0.88) skewX(6deg)', offset: 0.78 },
+        { transform: 'scale(1, 1) skewX(0deg)' }
+      ], { duration: 540, delay: -140, iterations: Infinity, easing: 'ease-in-out' });
+    }
+
+    cell.querySelectorAll('.wf-ember').forEach((em) => {
+      const dur = parseFloat(em.getAttribute('data-dur')) || 700;
+      const dl = parseFloat(em.getAttribute('data-dl')) || 0;
+      const dx = parseFloat(em.getAttribute('data-dx')) || -6;
+      const dy = parseFloat(em.getAttribute('data-dy')) || -6;
+      em.animate([
+        { transform: 'translate3d(0, 0, 0) scale(0.5) rotate(-15deg)', opacity: 0, offset: 0 },
+        { transform: 'translate3d(' + (dx * 0.5).toFixed(1) + 'px, ' + (dy * 0.5).toFixed(1) + 'px, 0) scale(1.1) rotate(10deg)', opacity: 0.95, offset: 0.4 },
+        { transform: 'translate3d(' + dx + 'px, ' + dy + 'px, 0) scale(0.3) rotate(25deg)', opacity: 0, offset: 1 }
+      ], { duration: dur, delay: dl, iterations: Infinity, easing: 'ease-out' });
+    });
+
+    cell.animate([
+      { boxShadow: '0 0 7px rgba(255, 56, 20, .42), inset 0 0 8px rgba(255, 56, 20, .25)' },
+      { boxShadow: '0 0 14px rgba(255, 90, 20, .75), inset 0 0 14px rgba(255, 68, 17, .42)' }
+    ], { duration: 850, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
   });
 }
 
@@ -770,16 +870,71 @@ function initCal() {
         border-radius: 13px;
         font-size: 14px;
         font-weight: 700;
-        border: 1px solid rgba(205, 226, 245, .75);
-        background: rgba(246, 251, 255, .85);
         overflow: hidden;
         isolation: isolate;
       }
-      html[data-theme="dark"] #kMonths .wm-d {
+      /* Chỉ áp màu nền mặc định cho ô ngày CHƯA đánh dấu để các ngày có nhãn hiện đúng màu của nhãn */
+      #kMonths .wm-d:not([class*="m-"]) {
+        border: 1px solid rgba(205, 226, 245, .75);
+        background: rgba(246, 251, 255, .85);
+      }
+      html[data-theme="dark"] #kMonths .wm-d:not([class*="m-"]) {
         background: rgba(22, 39, 60, .85);
         border-color: rgba(45, 75, 108, .75);
       }
-      #kMonths .wm-d > span:not(.her-fx) {
+
+      /* Các ngày được đánh dấu nhãn màu thường (Quan trọng, Nghỉ, Hẹn/nhắc, Khác) hiển thị rõ màu của nhãn */
+      #kMonths .wm-d.m-red {
+        background: #fde3e8 !important;
+        border: 1.5px solid #e0708a !important;
+        color: #7a1c33 !important;
+      }
+      #kMonths .wm-d.m-green {
+        background: #d9f2ea !important;
+        border: 1.5px solid #3fae93 !important;
+        color: #165947 !important;
+      }
+      #kMonths .wm-d.m-amber {
+        background: #fdf0cf !important;
+        border: 1.5px solid #e0a93a !important;
+        color: #6e4c08 !important;
+      }
+      #kMonths .wm-d.m-purple {
+        background: #e8e1fb !important;
+        border: 1.5px solid #8b73d9 !important;
+        color: #382478 !important;
+      }
+      #kMonths .wm-d.m-red > span,
+      #kMonths .wm-d.m-green > span,
+      #kMonths .wm-d.m-amber > span,
+      #kMonths .wm-d.m-purple > span {
+        color: inherit !important;
+        font-weight: 800;
+      }
+
+      /* Hỗ trợ chế độ Tối (Dark Mode) cho các ô màu nhãn để vẫn nổi rõ màu của nhãn */
+      html[data-theme="dark"] #kMonths .wm-d.m-red {
+        background: rgba(224, 112, 138, .26) !important;
+        border-color: #e0708a !important;
+        color: #ffc2d0 !important;
+      }
+      html[data-theme="dark"] #kMonths .wm-d.m-green {
+        background: rgba(63, 174, 147, .26) !important;
+        border-color: #3fae93 !important;
+        color: #b3f5e2 !important;
+      }
+      html[data-theme="dark"] #kMonths .wm-d.m-amber {
+        background: rgba(224, 169, 58, .26) !important;
+        border-color: #e0a93a !important;
+        color: #ffe5a3 !important;
+      }
+      html[data-theme="dark"] #kMonths .wm-d.m-purple {
+        background: rgba(139, 115, 217, .28) !important;
+        border-color: #8b73d9 !important;
+        color: #dcd2ff !important;
+      }
+
+      #kMonths .wm-d > span:not(.her-fx):not(.work-fx) {
         position: relative;
         z-index: 2;
       }
@@ -790,7 +945,69 @@ function initCal() {
         #kMonths .wm-dv { border-radius: 11px; font-size: 13px; }
       }
 
-      /* Nhãn màu & hiệu ứng "Her" (Trái tim hồng neon phát sáng trên nền đêm) */
+      /* 1) Nhãn & hiệu ứng "Công việc" (.m-blue): Lửa cháy 2D Anime ở viền trên & dưới trên nền đen */
+      #kMonths .wm-d.m-blue {
+        background: radial-gradient(circle at 75% 80%, #260600 0%, #0d0200 55%, #050101 100%) !important;
+        border: 1.5px solid rgba(255, 68, 18, .75) !important;
+        color: #fff5dc !important;
+      }
+      #kMonths .wm-d.m-blue > span:not(.work-fx) {
+        color: #fff6e0 !important;
+        font-weight: 800;
+        text-shadow: 0 0 6px rgba(255, 90, 15, .95), 0 0 14px rgba(242, 38, 19, .85);
+      }
+      #kMonths .wm-d.m-blue.has::after {
+        background: #ffea54 !important;
+        box-shadow: 0 0 6px #ff3814;
+        z-index: 2;
+      }
+      .work-fx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: inherit;
+      }
+      .wf-svg {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        display: block;
+        filter: drop-shadow(0 0 4px rgba(255, 50, 10, .85));
+      }
+      .wf-top {
+        top: -2px;
+        height: 46%;
+      }
+      .wf-bot {
+        bottom: -2px;
+        height: 52%;
+      }
+      .wf-top .wf-outer,
+      .wf-top .wf-inner {
+        transform-origin: 85% 0%;
+        will-change: transform;
+      }
+      .wf-bot .wf-outer,
+      .wf-bot .wf-inner {
+        transform-origin: 80% 100%;
+        will-change: transform;
+      }
+      .wf-ember {
+        position: absolute;
+        border-radius: 99px;
+        background: #ff3814;
+        box-shadow: 0 0 5px #ff2600;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .wf-ember.y {
+        background: #ffea54;
+        box-shadow: 0 0 5px #ff9900;
+      }
+
+      /* 2) Nhãn màu & hiệu ứng "Her" (Trái tim hồng Pixel phát sáng trên nền đêm) */
       .c-her {
         --mc: #ff5cd6;
         --mb: #1e0726;
@@ -830,7 +1047,7 @@ function initCal() {
       /* Ô ngày được đánh dấu "Her" */
       #kMonths .wm-d.m-her {
         background: radial-gradient(circle at 50% 65%, #2b0938 0%, #14031c 70%, #09010d 100%) !important;
-        border-color: rgba(255, 92, 214, .65) !important;
+        border: 1.5px solid rgba(255, 92, 214, .65) !important;
         color: #ffe3fa !important;
       }
       #kMonths .wm-d.m-her > span:not(.her-fx) {
@@ -863,9 +1080,6 @@ function initCal() {
         width: 100%;
         height: 100%;
         display: block;
-      }
-      .her-h path {
-        fill: #ff85e4;
       }
     `;
     document.head.appendChild(st);
@@ -979,15 +1193,16 @@ function renderCal() {
   for (let i = 0; i < first; i++) cells += '<i class="wm-dv"></i>';
   for (let d = 1; d <= dim; d++) {
     const key = ym + '-' + pad2(d), x = K.days[key];
-    const isHer = !!(x && x.mark === 'her');
-    cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (x && x.mark ? ' m-' + x.mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
+    const mark = x && x.mark ? x.mark : '';
+    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : '');
+    cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
-      (isHer ? buildHerFxHtml() : '') +
+      fxHtml +
       '<span>' + d + '</span></button>';
   }
   const isCurrentMonth = (K.year === now.getFullYear() && m === now.getMonth());
   $('kMonths').innerHTML = '<section class="wm-mon' + (isCurrentMonth ? ' now' : '') + '"><h4>' + MONTH_NAMES[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
-  animateHerCells($('kMonths'));
+  animateMarkedCells($('kMonths'));
 
   const prefix = ym + '-';
   const list = Object.keys(K.days).filter((k) => k.startsWith(prefix)).sort().map((k) => K.days[k]).filter((x) => x.note || x.mark);
