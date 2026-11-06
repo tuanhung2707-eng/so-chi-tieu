@@ -179,9 +179,10 @@
     #hero { grid-column:1; grid-row:1; }
     .stats { grid-column:1; grid-row:2; gap:10px; margin:14px 0 0; }
     #quick { grid-column:2; grid-row:1 / span 2; margin-bottom:0; }
-    .lh { grid-column:1 / -1; grid-row:3; margin-top:24px; }
-    #calWrap { grid-column:1 / -1; grid-row:4; }
-    #app > p { grid-column:1 / -1; grid-row:5; }
+    #pieCard { grid-column:1 / -1; grid-row:3; margin-top:18px; margin-bottom:0; }
+    .lh { grid-column:1 / -1; grid-row:4; margin-top:22px; }
+    #calWrap { grid-column:1 / -1; grid-row:5; }
+    #app > p { grid-column:1 / -1; grid-row:6; }
     .hero { min-height:174px; }
     .stat { padding:14px 12px; }
     .card { padding:20px; }
@@ -321,6 +322,1122 @@
 
   /* Thẻ ngân sách và ô thêm khoản chi nằm cạnh nhau: dồn khoảng trống xuống dưới 3 ô tổng quan */
   @media (min-width:760px) { #app { grid-template-rows:auto 1fr; } }
+
+
+/* =====================================================================
+   animations.css – Giao diện & bố cục trang trí cho Sổ chi tiêu
+   (Toàn bộ @keyframes và thuộc tính animation đã được chuyển sang animations.js)
+   ===================================================================== */
+
+/* ---------- 1. Giảm chuyển động ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {  transition:none !important; scroll-behavior:auto !important; }
+}
+
+/* ---------- Chi tiết trang trí & hoạt ảnh nhẹ ---------- */
+.top h1 {
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+}
+.top h1::after {
+  content:"✦";
+  display:inline-block;
+  color:#79bce9;
+  font-size:.78em;
+  transform-origin:center;
+    text-shadow:0 2px 8px rgba(102,174,232,.28);
+}
+.hero {
+  background-image:
+    radial-gradient(circle at 12% 22%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+    radial-gradient(circle at 27% 76%, rgba(255,255,255,.15) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 33%, rgba(255,255,255,.2) 0 2px, transparent 3px),
+    linear-gradient(135deg,#77b9ed 0%,#8dcdf1 55%,#b3e1f9 100%);
+}
+.hero:before {
+    box-shadow:0 0 0 16px rgba(255,255,255,.035), 0 0 0 34px rgba(255,255,255,.025);
+}
+.hero:after {
+    box-shadow:0 0 0 12px rgba(255,255,255,.035);
+}
+.hero .lbl::before {
+  content:"✧";
+  display:inline-block;
+  margin-right:7px;
+  font-size:1.15em;
+  }
+
+.card h2 {
+  text-decoration:underline;
+  text-decoration-color:#e2f1fc;
+  text-decoration-thickness:3px;
+  text-underline-offset:5px;
+}
+.btn, .chip, .ibtn, .seg button {
+  position:relative;
+  overflow:hidden;
+}
+.btn::after, .chip::after, .ibtn::after {
+  content:"";
+  position:absolute;
+  top:-60%;
+  left:-75%;
+  width:42%;
+  height:220%;
+  transform:rotate(22deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.58),transparent);
+  opacity:0;
+  pointer-events:none;
+}
+.btn:hover::after, .chip:hover::after, .ibtn:hover::after {
+  opacity:1;
+  }
+.btn.primary {
+  background-size:180% 180%;
+  }
+
+.pill .dot {
+  box-shadow:0 0 0 3px rgba(54,155,131,.10);
+}
+
+.sheet {
+  background-image:radial-gradient(circle at 100% 0%,rgba(196,229,251,.2),transparent 34%);
+}
+@media (max-width:600px) {
+  .hero:before { width:155px; height:155px; }
+  .hero:after { width:105px; height:105px; }
+}
+
+.bar > i { position:relative; overflow:hidden; }
+.bar > i::after { content:""; position:absolute; inset:0; transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(102,174,232,.38),transparent);  }
+
+#btnSettings:hover { transform:rotate(60deg); }
+.floaty { position:fixed; z-index:30; pointer-events:none; font-weight:800; font-size:14px; color:var(--accent-deep);
+  background:#fff; padding:4px 11px; border-radius:99px; box-shadow:0 6px 16px rgba(71,128,171,.18);
+   }
+
+/* ---------- Hoạt ảnh nền ---------- */
+/* Quầng màu pastel nền (.blob) & bong bóng xanh dương pastel (.bub) */
+.bg .blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+  opacity: .45;
+}
+.bg .b1 { width: 460px; height: 460px; top: -120px; left: -100px; background: radial-gradient(circle, #a8dcfa 0%, rgba(168,220,250,0) 70%); }
+.bg .b2 { width: 420px; height: 420px; bottom: -110px; right: -90px; background: radial-gradient(circle, #9ad4f8 0%, rgba(154,212,248,0) 70%); }
+.bg .b3 { width: 360px; height: 360px; top: 38%; left: 50%; transform: translateX(-50%); background: radial-gradient(circle, #bce4fc 0%, rgba(188,228,252,0) 70%); }
+
+.bg { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.wrap { position:relative; z-index:1; }
+
+.bub { position:absolute; bottom:-40px; left:var(--x); width: calc(var(--s) * 1.5); height: calc(var(--s) * 1.5); border-radius:50%; opacity:0;
+       background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95),rgba(255,255,255,.2) 58%),rgba(139,201,243,.28);
+       border:1px solid rgba(255,255,255,.75); box-shadow:0 2px 8px rgba(102,174,232,.12);
+        will-change:transform,opacity; }
+@media (max-width:600px) {
+  .b1 { width:340px; height:340px; } .b2 { width:300px; height:300px; } .b3 { width:300px; height:300px; }
+  .bub:nth-child(n+9) { display:none; }
+}
+
+/* ================= Cảnh đồng cỏ trong thẻ "Hôm nay còn được tiêu" (đơn sắc, chạy tự động) ================= */
+.hero { --scene-ink:rgba(30,98,140,.74); }
+.hero.over { --scene-ink:rgba(128,48,66,.78); }
+.hero-scene { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; color:var(--scene-ink); transition:color .8s ease; }
+.hero > :not(.hero-scene) { position:relative; z-index:1; }
+.landscape { position:absolute; right:-4px; bottom:0; width:min(78%,480px); height:100%; overflow:visible; }
+
+/* cây lớn đung đưa chậm, liên tục */
+.tree { transform-origin:355px 196px;  }
+.crown { transform-origin:352px 118px;  }
+/* vài đám mây nhỏ trôi rất chậm */
+.cloud-one {  opacity:.34; }
+.cloud-two {  opacity:.28; }
+.cloud-three {  opacity:.22; }
+/* ngọn cỏ lay nhẹ */
+.tuft { transform-box:fill-box; transform-origin:50% 100%;  }
+
+/* trạng thái bình thường: tán lá đầy đặn; đồng thời ẩn lá rụng */
+.canopy-full, .canopy-sparse, .ground-leaves { transition:opacity .9s ease; }
+.canopy-sparse { opacity:0; }
+.ground-leaves { opacity:0; }
+.lf { opacity:0; }
+.lfi { transform-box:fill-box; transform-origin:50% 50%; }
+
+/* trạng thái đã tiêu lố: cây thưa lá, lá rơi chậm, mây mờ hơn */
+.hero.over .canopy-full { opacity:0; }
+.hero.over .canopy-sparse { opacity:.82; }
+.hero.over .ground-leaves { opacity:.72; }
+.hero.over .cloud-one { opacity:.2; } .hero.over .cloud-two { opacity:.16; } .hero.over .cloud-three { opacity:.13; }
+
+@media (min-width:760px) { .hero { min-height:206px; } }
+@media (max-width:600px) { .landscape { width:84%; opacity:.9; } .hero { padding-right:18px; min-height:190px; } }
+
+/* ================= Nút "Thêm vào hôm nay": viền sáng nhẹ + ánh sáng lướt như chiếu vào gương ================= */
+#qGo { border-color:rgba(255,255,255,.78);  }
+#qGo::before {
+  content:""; position:absolute; top:-35%; bottom:-35%; left:0; width:34%; pointer-events:none; z-index:0;
+  background:linear-gradient(100deg,
+    transparent 0%, transparent 14%, rgba(255,255,255,.38) 22%, transparent 30%,
+    transparent 40%, rgba(255,255,255,.82) 54%, transparent 70%, transparent 100%);
+  transform:translateX(-130%) skewX(-22deg);
+  }
+#qGo:disabled::before { display:none; }
+
+/* ================= Họa tiết cho lịch các ngày trong kỳ (đơn sắc) ================= */
+#calWrap {
+  position:relative; padding:14px 12px 12px; border-radius:26px; border:1px solid rgba(206,227,244,.85);
+  background:
+    radial-gradient(circle, rgba(102,174,232,.24) 1.1px, transparent 1.7px) 0 0 / 16px 16px,
+    linear-gradient(180deg, rgba(232,244,254,.62), rgba(246,251,255,.38));
+}
+.dow { position:relative; padding-bottom:14px; }
+.dow::after {
+  content:""; position:absolute; left:8px; right:8px; bottom:3px; height:6px; opacity:.6;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='6' viewBox='0 0 24 6'%3E%3Cpath d='M0 3 Q6 0 12 3 T24 3' fill='none' stroke='%2366aee8' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x center;
+}
+.wk { position:relative; }
+.wk::before {
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:repeating-radial-gradient(circle at 100% 0, rgba(102,174,232,.20) 0 1.2px, transparent 1.2px 11px);
+  -webkit-mask-image:radial-gradient(circle at 100% 0, #000 0, transparent 160px);
+  mask-image:radial-gradient(circle at 100% 0, #000 0, transparent 160px);
+}
+.wk:nth-child(even)::before {
+  background:repeating-radial-gradient(circle at 0 100%, rgba(102,174,232,.20) 0 1.2px, transparent 1.2px 11px);
+  -webkit-mask-image:radial-gradient(circle at 0 100%, #000 0, transparent 160px);
+  mask-image:radial-gradient(circle at 0 100%, #000 0, transparent 160px);
+}
+.wk > * { position:relative; }
+@media (max-width:680px) {
+  #calWrap { padding:10px 6px 8px; border-radius:20px; background-size:14px 14px, auto; }
+  .wk::before, .wk:nth-child(even)::before { -webkit-mask-size:120px 120px; }
+}
+
+/* ---------- 9. Pháo hoa sao trắng khi bấm "Thêm vào hôm nay" ---------- */
+/* Sao được tạo bằng JavaScript (starBurst). Ở đây chỉ định kiểu: màu trắng + quầng sáng để nổi trên nền sáng. */
+.fx-layer { position:fixed; inset:0; z-index:60; pointer-events:none; overflow:hidden; }
+.fx-star {
+  position:absolute; left:0; top:0; opacity:0; will-change:transform,opacity;
+  filter:drop-shadow(0 0 2px rgba(48,122,190,.65)) drop-shadow(0 0 7px rgba(255,255,255,.95));
+}
+.fx-star svg { display:block; }
+.fx-star path { fill:#fff; stroke:rgba(60,140,210,.55); stroke-width:.8; paint-order:stroke; stroke-linejoin:round; }
+.fx-star.big {
+  filter:drop-shadow(0 0 4px rgba(40,115,190,.8)) drop-shadow(0 0 14px rgba(255,255,255,1)) drop-shadow(0 0 28px rgba(140,200,250,.95));
+}
+/* vòng sáng lóe ra quanh nút lúc bấm */
+.fx-ring {
+  position:absolute; border-radius:14px; border:2px solid #fff; opacity:0; transform-origin:center;
+  box-shadow:0 0 0 1px rgba(110,180,230,.45), 0 0 20px rgba(255,255,255,.95), inset 0 0 14px rgba(255,255,255,.7);
+}
+@media (prefers-reduced-motion:reduce) { .fx-layer { display:none; } }
+
+/* Nền ô ngày: chỉ dùng ombre xanh da trời và tím pastel */
+.wk .day:not(.void) {
+  background: linear-gradient(145deg, #f4faff 0%, #e8f3ff 52%, #f1edff 100%);
+  border-color: #dce8fb;
+}
+.wk .day:not(.void):nth-child(4n + 2),
+.wk .day:not(.void):nth-child(4n + 3) {
+  background: linear-gradient(145deg, #faf8ff 0%, #f0edff 48%, #e7f2ff 100%);
+  border-color: #e5defa;
+}
+.wk .day.past:not(.void) {
+  background: linear-gradient(145deg, #f4f8fd 0%, #eaf0fa 55%, #f0edfb 100%);
+}
+.wk .day.today:not(.void) {
+  background: linear-gradient(145deg, #dff1ff 0%, #e9e7ff 100%);
+  border-color: #a8c9f5;
+}
+.wk .day.void { background: transparent; }
+
+/* trang trí nền */
+/* ==========================================
+   CONCEPT: PASTEL OCEAN — ĐẠI DƯƠNG ÊM DỊU
+   ========================================== */
+
+/* Nền đại dương xanh pastel */
+body {
+  background:
+    radial-gradient(ellipse at 12% 15%, rgba(119, 207, 246, .18), transparent 38%),
+    radial-gradient(ellipse at 88% 72%, rgba(99, 180, 238, .14), transparent 42%),
+    linear-gradient(180deg, #f2f9ff 0%, #eaf6ff 55%, #e4f3ff 100%);
+  background-attachment: fixed;
+}
+
+/* Lớp trang trí nằm sau nội dung */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+}
+
+/* Bong bóng nước: to, trong suốt, có ánh sáng */
+.bub {
+  position: absolute;
+  bottom: -60px;
+  left: var(--x);
+  width: calc(var(--s) * 1.5);
+  height: calc(var(--s) * 1.5);
+  border-radius: 50%;
+  opacity: 0;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(255, 255, 255, .95) 0%,
+      rgba(255, 255, 255, .32) 18%,
+      rgba(119, 207, 246, .12) 58%,
+      rgba(83, 169, 225, .08) 100%
+    );
+
+  border: 1px solid rgba(255, 255, 255, .8);
+
+  box-shadow:
+    inset -5px -7px 16px rgba(95, 183, 232, .08),
+    0 4px 18px rgba(90, 177, 230, .08);
+
+    will-change: transform, opacity;
+}
+
+/* Ánh sáng mặt nước chuyển động rất chậm */
+.bg::before {
+  content: "";
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  min-width: 420px;
+  min-height: 420px;
+  top: -35vw;
+  left: -15vw;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(116, 205, 245, .15) 0%,
+    rgba(164, 224, 249, .07) 42%,
+    transparent 70%
+  );
+
+  }
+
+.bg::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  min-width: 360px;
+  min-height: 360px;
+  right: -25vw;
+  bottom: -35vw;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(92, 184, 232, .12) 0%,
+    rgba(155, 220, 248, .06) 45%,
+    transparent 72%
+  );
+
+  }
+
+/* Giữ chuyển động nhẹ nhàng trên điện thoại */
+@media (max-width: 600px) {
+  .bub:nth-child(n+9) {
+    display: none;
+  }
+}
+
+/* ---------- 10. Biển cả hai bên trang (rong biển, cá, cua, rùa, mỏm đá, sao biển) ---------- */
+/* Chỉ hiện khi hai bên trang còn đủ chỗ trống (màn hình rộng từ ~1140px). Điện thoại/máy tính bảng thì ẩn.
+   Cả cảnh dùng MỘT màu (--sea-ink) với độ đậm nhạt khác nhau; mọi kích thước tính theo bề rộng chỗ trống (--gw). */
+
+/* =========================================================
+   10. UNDER THE SEA — ĐẠI DƯƠNG HAI BÊN TRANG
+   Phong cách: Minimal Ocean / Monochrome Blue
+   ========================================================= */
+
+:root, html, body, .sea, .sea-defs {
+  --sea-ink: #66b3e8;
+  --sea-ink-light: #93cff8;
+  --sea-ink-soft: #7cc0f0;
+  --sea-ink-deep: #529ed6;
+  --sea-light: rgba(102, 179, 232, .10);
+  --sea-mid: rgba(102, 179, 232, .24);
+  --sea-deep: rgba(102, 179, 232, .45);
+}
+
+/* SVG definitions */
+.sea-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.sea {
+  display: none;
+}
+
+@media (min-width: 1140px) {
+
+  /* ---------- KHUNG CẢNH ---------- */
+
+  .sea {
+    --gw: calc((100vw - 980px) / 2);
+
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: var(--gw);
+    display: block;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    isolation: isolate;
+    color: var(--sea-ink);
+
+    background:
+      radial-gradient(
+        ellipse at 50% 15%,
+        rgba(255,255,255,.7),
+        transparent 65%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(116,192,242,.04) 0%,
+        rgba(116,192,242,.08) 55%,
+        rgba(102,179,232,.15) 100%
+      );
+  }
+
+  .sea-l { left: 0; }
+
+  .sea-r { right: 0; }
+
+  .sea svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sea .it {
+    position: absolute;
+    will-change: transform;
+  }
+
+  /* Lớp mờ sát mép nội dung */
+  .sea-l {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      #000 0%,
+      #000 68%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      #000 0%,
+      #000 68%,
+      transparent 100%
+    );
+  }
+
+  .sea-r {
+    -webkit-mask-image: linear-gradient(
+      270deg,
+      #000 0%,
+      #000 68%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      270deg,
+      #000 0%,
+      #000 68%,
+      transparent 100%
+    );
+  }
+
+  /* Ánh sáng mặt nước chuyển động rất chậm */
+.bg::before {
+  content: "";
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  min-width: 420px;
+  min-height: 420px;
+  top: -35vw;
+  left: -15vw;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(116, 205, 245, .15) 0%,
+    rgba(164, 224, 249, .07) 42%,
+    transparent 70%
+  );
+
+  }
+
+.bg::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  min-width: 360px;
+  min-height: 360px;
+  right: -25vw;
+  bottom: -35vw;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(92, 184, 232, .12) 0%,
+    rgba(155, 220, 248, .06) 45%,
+    transparent 72%
+  );
+
+  }
+
+/* ---------- BỤI NƯỚC / BỌT KHÍ ---------- */
+
+  .sea .dust {
+    position: absolute;
+    bottom: -15px;
+    width: var(--s, 4px);
+    height: var(--s, 4px);
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(102,179,232,.28);
+    box-shadow: 0 0 8px rgba(255,255,255,.8);
+
+    opacity: 0;
+      }
+
+  /* ---------- ĐÁY BIỂN ---------- */
+
+  .sea::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: -15%;
+    right: -15%;
+    bottom: -20px;
+    height: 115px;
+
+    border-radius: 50% 50% 0 0 / 25% 25% 0 0;
+
+    background:
+      repeating-linear-gradient(
+        170deg,
+        rgba(255,255,255,.16) 0 2px,
+        transparent 2px 13px
+      ),
+      linear-gradient(
+        180deg,
+        rgba(118,194,244,.18),
+        rgba(102,179,232,.34)
+      );
+  }
+
+ /* ---------- MỎM ĐÁ MỞ RỘNG ---------- */
+
+.rock-b {
+  left: -12%;
+  bottom: -5px;
+  width: clamp(85px, calc(var(--gw) * .72), 165px);
+  opacity: .62;
+}
+
+.rock-a {
+  left: 12%;
+  bottom: -5px;
+  width: clamp(100px, calc(var(--gw) * .88), 195px);
+  opacity: .72;
+}
+
+/* Đảo chiều bên phải */
+.sea-r .rock-b {
+  left: auto;
+  right: -12%;
+  transform: scaleX(-1);
+}
+
+.sea-r .rock-a {
+  left: auto;
+  right: 12%;
+  transform: scaleX(-1);
+}
+
+/* Sỏi đá */
+.pebbles {
+  bottom: 3px;
+  width: clamp(60px, calc(var(--gw) * .42), 95px);
+  opacity: .72;
+}
+
+  /* ---------- RONG BIỂN ---------- */
+
+  .kelp {
+    bottom: -5px;
+    width: clamp(18px, calc(var(--gw) * .13), 34px);
+
+    transform-origin: 50% 100%;
+      }
+
+  .kelp svg {
+    transform: scaleY(var(--h, 1));
+    transform-origin: 50% 100%;
+  }
+
+  .kelp.far {
+    width: clamp(20px, calc(var(--gw) * .15), 38px);
+    opacity: .28;
+  }
+
+  .kelp.mid {
+    opacity: .55;
+  }
+
+  .grass {
+    bottom: -3px;
+    width: clamp(14px, calc(var(--gw) * .09), 24px);
+    opacity: .65;
+    transform-origin: 50% 100%;
+      }
+
+  /* ---------- SAO BIỂN ---------- */
+
+  .star {
+    bottom: 7px;
+    transform-origin: center;
+      }
+
+  .star.s1 {
+    width: clamp(18px, calc(var(--gw) * .11), 28px);
+    opacity: .7;
+    transform: rotate(-15deg);
+  }
+
+  .star.s2 {
+    width: clamp(13px, calc(var(--gw) * .075), 21px);
+    bottom: 12px;
+    opacity: .5;
+      }
+
+  /* ---------- CÁ BƠI ---------- */
+
+  .fish {
+    left: 7px;
+
+    --wd: clamp(17px, calc(var(--gw) * var(--f, .15)), 43px);
+    --sx: max(0px, calc(var(--gw) - var(--wd) - 14px));
+
+    width: var(--wd);
+    opacity: .7;
+
+      }
+
+  .fish.small {
+    opacity: .48;
+  }
+
+  .fish .tail {
+    transform-origin: 24px 25px;
+      }
+
+  .fish.slim .tail {
+    transform-origin: 28px 18px;
+  }
+
+  .fish.small .tail {
+    transform-origin: 14px 12px;
+      }
+
+  /* ---------- CUA BÒ ---------- */
+
+  .crab {
+    left: 6%;
+    bottom: 7px;
+
+    --cw: clamp(45px, calc(var(--gw) * .34), 82px);
+    --walk: max(0px, calc(var(--gw) - var(--cw) - 35px));
+
+    width: var(--cw);
+    opacity: .7;
+
+      }
+
+  .crab.small {
+    --cw: clamp(34px, calc(var(--gw) * .21), 58px);
+    left: auto;
+    right: 12%;
+    opacity: .48;
+      }
+
+  .crab .claw {
+    transform-box: view-box;
+  }
+
+  .crab .cl-l,
+  .crab .cl-r {
+    transform-origin: 12px 30px;
+      }
+
+  .crab .jaw {
+    transform-box: view-box;
+    transform-origin: 12px 24px;
+      }
+
+  .crab .legs {
+    transform-box: view-box;
+    transform-origin: 64px 60px;
+      }
+
+  /* ---------- RÙA BIỂN ---------- */
+
+  .turtle {
+    left: 7px;
+
+    --wd: clamp(75px, calc(var(--gw) * .57), 135px);
+    --sx: max(0px, calc(var(--gw) - var(--wd) - 14px));
+
+    width: var(--wd);
+    opacity: .7;
+
+      }
+
+  .turtle .fl {
+    transform-box: view-box;
+      }
+
+  .turtle .fl-n {
+    transform-origin: 88px 58px;
+  }
+
+  .turtle .fl-b {
+    transform-origin: 98px 52px;
+      }
+
+  .turtle .fl-r {
+    transform-origin: 36px 52px;
+      }
+
+  }
+
+/* ---------- TÔN TRỌNG GIẢM CHUYỂN ĐỘNG ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sea *,
+  .sea *::before,
+  .sea *::after {
+            transition-duration: .01ms !important;
+  }
+}
+
+/* =====================================================================
+   CHẾ ĐỘ TỐI (DARK MODE — ĐẠI DƯƠNG ĐÊM PASTEL)
+   Kích hoạt khi <html data-theme="dark">
+   ===================================================================== */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1522;
+  --card: #132235;
+  --text: #e6f1fc;
+  --muted: #8ca8c6;
+  --line: #213752;
+  --accent: #68b5f0;
+  --accent2: #89ccf9;
+  --accent-deep: #93cefa;
+  --ok: #46c3a4;
+  --bad: #f08297;
+  --past: #0f1c2d;
+  --today: #182e47;
+  --chip: #182b42;
+  --shadow: 0 4px 12px rgba(0, 0, 0, .30), 0 12px 30px rgba(0, 0, 0, .35);
+  --shadow-hover: 0 8px 22px rgba(0, 0, 0, .42), 0 18px 38px rgba(0, 0, 0, .46);
+  --focus: 0 0 0 3px rgba(104, 181, 240, .28);
+  --sea-ink: #7ec6f9;
+  --sea-ink-light: #a6dcff;
+  --sea-ink-soft: #88ccf9;
+  --sea-ink-deep: #5ca8e2;
+  --sea-light: rgba(126, 198, 249, .12);
+  --sea-mid: rgba(126, 198, 249, .26);
+  --sea-deep: rgba(126, 198, 249, .48);
+}
+
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at 12% 15%, rgba(102, 181, 238, .15), transparent 40%),
+    radial-gradient(ellipse at 88% 72%, rgba(84, 158, 220, .12), transparent 44%),
+    linear-gradient(180deg, #091320 0%, #0d1b2d 55%, #102136 100%);
+  background-attachment: fixed;
+  color: var(--text);
+}
+
+/* Thanh tiêu đề & nút công cụ */
+html[data-theme="dark"] .top {
+  background: rgba(11, 21, 34, .84);
+  border-bottom-color: rgba(35, 59, 88, .85);
+}
+html[data-theme="dark"] .pill,
+html[data-theme="dark"] .ibtn {
+  background: #15263b;
+  border-color: var(--line);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+html[data-theme="dark"] .ibtn:hover {
+  background: #1d334f;
+  border-color: #2f4f75;
+}
+
+/* Thẻ ngân sách chính & đồng cỏ */
+html[data-theme="dark"] .hero {
+  --scene-ink: rgba(182, 226, 255, .68);
+  background-image:
+    radial-gradient(circle at 12% 22%, rgba(255,255,255,.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 27% 76%, rgba(255,255,255,.14) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 33%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+    linear-gradient(135deg, #1d5585 0%, #266ca3 55%, #3583be 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .38);
+}
+html[data-theme="dark"] .hero.over {
+  --scene-ink: rgba(255, 192, 206, .72);
+  background: linear-gradient(135deg, #7c3346 0%, #984157 58%, #b05269 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .38);
+}
+
+/* Các thẻ, ô nhập liệu, nút bấm, chip */
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .row,
+html[data-theme="dark"] .sheet,
+html[data-theme="dark"] .wm-card {
+  background: var(--card);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .card h2 {
+  text-decoration-color: rgba(104, 181, 240, .25);
+}
+html[data-theme="dark"] .seg {
+  background: #0e1a29;
+  border-color: #1d314a;
+}
+html[data-theme="dark"] .seg button.on {
+  background: #1c324d;
+  color: #9cd3fc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .wm-search input {
+  background: #0e1a29;
+  color: var(--text);
+  border-color: var(--line);
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #5c7896;
+}
+html[data-theme="dark"] input:hover,
+html[data-theme="dark"] textarea:hover,
+html[data-theme="dark"] select:hover {
+  border-color: #315278;
+}
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] select:focus {
+  background: #122133;
+  border-color: var(--accent);
+}
+html[data-theme="dark"] select.psel option {
+  background: #132235;
+  color: var(--text);
+}
+html[data-theme="dark"] .chip {
+  background: #172a40;
+  border-color: #243e5c;
+  color: #9acbf2;
+}
+html[data-theme="dark"] .chip:hover {
+  background: #1f3754;
+  border-color: #32557d;
+  color: #bce0ff;
+}
+html[data-theme="dark"] .btn {
+  background: #172a40;
+  border-color: var(--line);
+  color: var(--text);
+}
+html[data-theme="dark"] .btn:hover {
+  background: #1f3754;
+  border-color: #32557d;
+}
+html[data-theme="dark"] .btn.primary {
+  background: linear-gradient(135deg, #3c86c4, #58a3df);
+  border-color: transparent;
+  color: #fff;
+}
+html[data-theme="dark"] .btn.danger {
+  background: #2c1822;
+  border-color: #4d2635;
+  color: #f48ea2;
+}
+html[data-theme="dark"] .btn.danger:hover {
+  background: #3b1e2b;
+  border-color: #633043;
+}
+
+/* Bảng tuần & ô ngày trong kỳ */
+html[data-theme="dark"] #calWrap {
+  border-color: var(--line);
+  background:
+    radial-gradient(circle, rgba(104, 181, 240, .18) 1.1px, transparent 1.7px) 0 0 / 16px 16px,
+    linear-gradient(180deg, rgba(19, 34, 53, .75), rgba(14, 26, 42, .55));
+}
+html[data-theme="dark"] .wk {
+  background: rgba(19, 34, 53, .82);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .wk.now {
+  border-color: #386593;
+  box-shadow: 0 0 0 1px rgba(104, 181, 240, .2), var(--shadow);
+}
+html[data-theme="dark"] .wk .day:not(.void) {
+  background: linear-gradient(145deg, #15263b 0%, #172940 52%, #1b2842 100%);
+  border-color: #233b57;
+}
+html[data-theme="dark"] .wk .day:not(.void):nth-child(4n + 2),
+html[data-theme="dark"] .wk .day:not(.void):nth-child(4n + 3) {
+  background: linear-gradient(145deg, #17263d 0%, #1a2742 48%, #162940 100%);
+  border-color: #273c59;
+}
+html[data-theme="dark"] .wk .day.past:not(.void),
+html[data-theme="dark"] .row.past {
+  background: linear-gradient(145deg, #101d2e 0%, #122033 55%, #142036 100%);
+  border-color: #1c2f47;
+}
+html[data-theme="dark"] .wk .day.today:not(.void),
+html[data-theme="dark"] .row.today {
+  background: linear-gradient(145deg, #1b3654 0%, #213759 100%);
+  border-color: #467eb5;
+}
+html[data-theme="dark"] .day.void {
+  background: transparent;
+  border-color: #1c2f47;
+}
+html[data-theme="dark"] .day:hover,
+html[data-theme="dark"] .row:hover {
+  border-color: #3c6794;
+}
+html[data-theme="dark"] .chk span {
+  background: #0e1a29;
+  border-color: #2b4766;
+}
+html[data-theme="dark"] .badge {
+  background: #1d3958;
+  color: #93cefa;
+}
+html[data-theme="dark"] .banner {
+  background: linear-gradient(100deg, #162b44, #132338);
+  border-color: #315880;
+}
+html[data-theme="dark"] .switch i {
+  background: #253d59;
+}
+html[data-theme="dark"] .xi {
+  background: #172a40;
+}
+html[data-theme="dark"] .xi:hover {
+  background: #1e3550;
+}
+html[data-theme="dark"] .xi.on {
+  background: #1f3a58;
+  border-color: var(--accent);
+}
+html[data-theme="dark"] .xdel:hover {
+  background: #331c26;
+}
+html[data-theme="dark"] .floaty {
+  background: #182d46;
+  color: #9ad2fc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .4);
+}
+html[data-theme="dark"] .sk {
+  background: linear-gradient(90deg, #132235 25%, #1c314b 37%, #132235 63%);
+  background-size: 400% 100%;
+}
+
+/* Mục Công việc (work.css) trong Dark Mode */
+html[data-theme="dark"] .wm-empty {
+  background: rgba(19, 34, 53, .6);
+  border-color: #284463;
+}
+html[data-theme="dark"] .wm-ib {
+  background: #182b42;
+  color: #93c6ed;
+}
+html[data-theme="dark"] .wm-ib:hover {
+  background: #213a57;
+}
+html[data-theme="dark"] .wm-ib.bad {
+  background: #2e1923;
+  color: var(--bad);
+}
+html[data-theme="dark"] .wm-ib.bad:hover {
+  background: #3d202e;
+}
+html[data-theme="dark"] .wm-grp {
+  background: #1b3450;
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-code {
+  color: #8ab8de;
+}
+html[data-theme="dark"] .wm-cover,
+html[data-theme="dark"] .wm-gal button,
+html[data-theme="dark"] .wm-ph {
+  background: linear-gradient(135deg, #16283d, #112030);
+}
+html[data-theme="dark"] .wm-count {
+  background: rgba(19, 34, 53, .92);
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-addph {
+  background: #142438;
+  border-color: #2b496b;
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-addph:hover {
+  background: #1a2f48;
+}
+html[data-theme="dark"] .wm-pwc {
+  background: #16283d;
+  border-color: #264363;
+  color: #a8d8ff;
+}
+html[data-theme="dark"] .wm-pwc:hover {
+  background: #1d344f;
+  border-color: #365d87;
+}
+html[data-theme="dark"] .wm-pastebox,
+html[data-theme="dark"] .wm-quick,
+html[data-theme="dark"] .wm-ck {
+  background: #15263a;
+  border-color: #243e5c;
+}
+html[data-theme="dark"] .wm-ck.ok {
+  background: #122b29;
+}
+html[data-theme="dark"] .wm-ck.bad,
+html[data-theme="dark"] .wm-err:not(:empty),
+html[data-theme="dark"] .wm-banner {
+  background: #2c1822;
+  border-color: #522738;
+  color: #f799ab;
+}
+html[data-theme="dark"] .wm-mon {
+  background: rgba(19, 34, 53, .9);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .wm-mon.now {
+  border-color: #3d6c9c;
+}
+html[data-theme="dark"] .wm-d:hover,
+html[data-theme="dark"] .wm-ui:hover {
+  background: #1b314b;
+}
+html[data-theme="dark"] .wm-ui {
+  border-bottom-color: #1c2f47;
+}
+html[data-theme="dark"] .wm-modal .sheet > .twin:last-child {
+  background: linear-gradient(180deg, rgba(19, 34, 53, 0), #132235 30%);
+}
+html[data-theme="dark"] .wm-cact button {
+  background: rgba(19, 34, 53, .94);
+  color: #9ad2fc;
+}
+
+/* Đại dương & bong bóng nền trong Dark Mode */
+html[data-theme="dark"] .bg .b1 { background: radial-gradient(circle, rgba(82, 162, 230, .26) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b2 { background: radial-gradient(circle, rgba(70, 148, 218, .22) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b3 { background: radial-gradient(circle, rgba(100, 180, 242, .20) 0%, transparent 70%); }
+html[data-theme="dark"] .bub {
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(215, 240, 255, .75) 0%,
+      rgba(145, 208, 252, .28) 22%,
+      rgba(95, 175, 235, .14) 58%,
+      rgba(65, 145, 210, .08) 100%
+    );
+  border-color: rgba(175, 224, 255, .48);
+  box-shadow:
+    inset -4px -6px 14px rgba(110, 190, 245, .15),
+    0 0 14px rgba(110, 190, 245, .14);
+}
+@media (min-width: 1140px) {
+  html[data-theme="dark"] .sea {
+    background:
+      radial-gradient(ellipse at 50% 15%, rgba(110, 188, 245, .12), transparent 65%),
+      linear-gradient(180deg, rgba(20, 44, 72, .25) 0%, rgba(16, 36, 60, .45) 55%, rgba(12, 28, 48, .7) 100%);
+  }
+  html[data-theme="dark"] .sea::after {
+    background:
+      repeating-linear-gradient(170deg, rgba(145, 208, 252, .08) 0 2px, transparent 2px 13px),
+      linear-gradient(180deg, rgba(58, 132, 196, .18), rgba(42, 104, 162, .34));
+  }
+}
+
+
+
+  /* ---------- Biểu đồ tròn (Pie Chart) tổng hợp các mục chi tiêu ---------- */
+  .pie-card { margin-top:18px; margin-bottom:18px; }
+  .pie-sub { font-size:12px; color:var(--muted); font-weight:650; }
+  .pie-wrap { display:grid; grid-template-columns:230px minmax(0,1fr); gap:22px; align-items:center; margin-top:8px; }
+  .pie-box { position:relative; width:210px; height:210px; margin:0 auto; display:grid; place-items:center; }
+  .pie-svg { width:100%; height:100%; overflow:visible; transform:rotate(-90deg); display:block; }
+  .pie-slice { cursor:pointer; transition:transform .22s cubic-bezier(.2,.8,.2,1), opacity .2s, filter .2s; transform-origin:100px 100px; stroke:var(--card); stroke-width:2px; stroke-linejoin:round; }
+  .pie-slice:hover, .pie-slice.on { transform:scale(1.045); filter:drop-shadow(0 4px 10px rgba(52,127,185,.28)); }
+  .pie-center { position:absolute; inset:38px; border-radius:50%; background:var(--card); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px; pointer-events:none; box-shadow:inset 0 2px 8px rgba(71,128,171,.08); }
+  .pie-clbl { font-size:11px; color:var(--muted); font-weight:650; max-width:118px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pie-cval { font-size:15.5px; font-weight:850; color:var(--text); margin-top:2px; font-variant-numeric:tabular-nums; letter-spacing:-.3px; }
+  .pie-cpct { font-size:11px; font-weight:750; color:var(--accent-deep); margin-top:1px; }
+  .pie-list { display:flex; flex-direction:column; gap:8px; max-height:290px; overflow:auto; padding-right:3px; }
+  .pie-item { display:grid; grid-template-columns:12px minmax(0,1fr) auto; gap:10px; align-items:center; padding:9px 12px; border-radius:14px; background:var(--chip); border:1px solid transparent; cursor:pointer; transition:background .16s, border-color .16s, transform .16s; }
+  .pie-item:hover, .pie-item.on { background:#e2f1fd; border-color:var(--accent); transform:translateY(-1px); }
+  .pie-dot { width:12px; height:12px; border-radius:4px; flex:none; }
+  .pie-info { min-width:0; }
+  .pie-top { display:flex; align-items:baseline; gap:6px; }
+  .pie-name { font-size:13.5px; font-weight:750; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pie-cnt { font-size:11px; color:var(--muted); font-weight:650; flex:none; }
+  .pie-bar { height:5px; background:rgba(102,174,232,.16); border-radius:99px; overflow:hidden; margin-top:5px; }
+  .pie-bar > i { display:block; height:100%; border-radius:99px; transition:width .45s cubic-bezier(.2,.8,.2,1); }
+  .pie-amt { text-align:right; font-variant-numeric:tabular-nums; }
+  .pie-amt b { display:block; font-size:13.5px; font-weight:800; color:var(--text); }
+  .pie-amt span { font-size:11px; font-weight:700; color:var(--accent-deep); }
+  .pie-foot { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; padding-top:11px; border-top:1px dashed var(--line); font-size:13px; color:var(--muted); }
+  .pie-foot b { font-size:14.5px; font-weight:850; color:var(--text); font-variant-numeric:tabular-nums; }
+  html[data-theme="dark"] .pie-item:hover, html[data-theme="dark"] .pie-item.on { background:#1d3552; border-color:var(--accent); }
+  @media (max-width:680px) {
+    .pie-wrap { grid-template-columns:1fr; gap:14px; }
+    .pie-box { width:190px; height:190px; }
+    .pie-center { inset:34px; }
+  }
 
 </style>
 <link rel="stylesheet" href="animations.css?v=9">
@@ -499,6 +1616,14 @@
       <div class="hint">Gõ số nhỏ hơn 1000 sẽ hiểu là nghìn (45 = 45.000). Muốn nhập đúng số đó, thêm chữ d: 45d.</div>
     </section>
 
+    <section class="card pie-card" id="pieCard">
+      <h2>
+        <span>Biểu đồ chi tiêu theo mục</span>
+        <span class="pie-sub" id="pieMeta"></span>
+      </h2>
+      <div id="pieBody"></div>
+    </section>
+
     <div class="lh">
       <h2>Các ngày trong kỳ</h2>
       <div style="display:flex;gap:6px;align-items:center">
@@ -574,7 +1699,10 @@
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/+esm';
 
-const CFG = window.APP_CONFIG || {};
+const CFG = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) ? window.APP_CONFIG : {
+  SUPABASE_URL: 'https://fggbniifqrcgdkasilcc.supabase.co',
+  SUPABASE_KEY: 'sb_publishable_qrCpF3obpFcaRyU2mBoqPA_oJxaPRx3'
+};
 const $ = (id) => document.getElementById(id);
 const DOW = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
 const REDUCE = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -836,6 +1964,123 @@ function cellHtml(x, tdy, idx, dim) {
     ' aria-label="Đã qua"><span>✓</span></label></div>' + full + cmp + '</div>';
 }
 
+
+const PIE_COLORS = ['#5aa9e6', '#8b73d9', '#46b899', '#f2a65a', '#e5738a', '#5ec2d6', '#7fc8f8', '#a389f4', '#68c481', '#94a8b8'];
+let PIE_ACTIVE = null;
+
+function renderPieChart() {
+  const body = $('pieBody'), meta = $('pieMeta');
+  if (!body || !S.period) return;
+  PIE_ACTIVE = null;
+
+  const groups = {};
+  let totalSpent = 0;
+  (S.expenses || []).forEach((e) => {
+    const amt = Number(e.amount) || 0;
+    if (amt <= 0) return;
+    totalSpent += amt;
+    const raw = String(e.note || '').trim();
+    const key = raw ? raw.toLowerCase() : '__none__';
+    if (!groups[key]) {
+      const label = raw ? (raw.charAt(0).toUpperCase() + raw.slice(1)) : 'Chưa ghi chú';
+      groups[key] = { key, label, amount: 0, count: 0 };
+    }
+    groups[key].amount += amt;
+    groups[key].count += 1;
+  });
+
+  const items = Object.keys(groups).map((k) => groups[k]).sort((a, b) => b.amount - a.amount);
+  if (meta) meta.textContent = items.length ? (items.length + ' mục · ' + S.expenses.length + ' khoản chi') : 'Chưa có khoản chi';
+
+  if (!items.length || totalSpent <= 0) {
+    body.innerHTML = '<div class="empty" style="padding:20px 0">Chưa có khoản chi nào trong kỳ này để hiển thị biểu đồ.</div>';
+    return;
+  }
+
+  items.forEach((it, idx) => {
+    it.color = PIE_COLORS[idx % PIE_COLORS.length];
+    it.pct = (it.amount / totalSpent) * 100;
+  });
+
+  const cx = 100, cy = 100, r = 88;
+  let angleAcc = 0;
+  const slicesHtml = items.map((it, idx) => {
+    const frac = it.amount / totalSpent;
+    const angle = frac * Math.PI * 2;
+    if (items.length === 1 || frac >= 0.9999) {
+      return '<circle class="pie-slice" data-idx="' + idx + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + it.color + '"><title>' + esc(it.label) + ': ' + money(it.amount) + ' ₫ (' + it.pct.toFixed(1) + '%)</title></circle>';
+    }
+    const a1 = angleAcc;
+    const a2 = angleAcc + angle;
+    angleAcc = a2;
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
+    const largeArc = angle > Math.PI ? 1 : 0;
+    const d = 'M ' + cx + ' ' + cy + ' L ' + x1.toFixed(2) + ' ' + y1.toFixed(2) +
+              ' A ' + r + ' ' + r + ' 0 ' + largeArc + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2) + ' Z';
+    return '<path class="pie-slice" data-idx="' + idx + '" d="' + d + '" fill="' + it.color + '"><title>' + esc(it.label) + ': ' + money(it.amount) + ' ₫ (' + it.pct.toFixed(1) + '%)</title></path>';
+  }).join('');
+
+  const listHtml = items.map((it, idx) => {
+    return '<div class="pie-item" data-idx="' + idx + '">' +
+      '<span class="pie-dot" style="background:' + it.color + '"></span>' +
+      '<div class="pie-info">' +
+        '<div class="pie-top"><span class="pie-name">' + esc(it.label) + '</span><span class="pie-cnt">· ' + it.count + ' lần</span></div>' +
+        '<div class="pie-bar"><i style="width:' + Math.max(3, it.pct).toFixed(1) + '%;background:' + it.color + '"></i></div>' +
+      '</div>' +
+      '<div class="pie-amt"><b>' + money(it.amount) + ' ₫</b><span>' + it.pct.toFixed(1) + '%</span></div>' +
+    '</div>';
+  }).join('');
+
+  body.innerHTML =
+    '<div class="pie-wrap">' +
+      '<div class="pie-box">' +
+        '<svg class="pie-svg" viewBox="0 0 200 200" aria-label="Biểu đồ tròn chi tiêu">' + slicesHtml + '</svg>' +
+        '<div class="pie-center">' +
+          '<span class="pie-clbl" id="pieCLbl">Tổng chi tiêu</span>' +
+          '<b class="pie-cval" id="pieCVal">' + money(totalSpent) + '</b>' +
+          '<span class="pie-cpct" id="pieCPct">100% (' + items.length + ' mục)</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pie-list" id="pieList">' + listHtml + '</div>' +
+    '</div>' +
+    '<div class="pie-foot">' +
+      '<span>Tổng tiền tất cả các mục (' + dmy(S.period.start_date) + ' – ' + dmy(S.period.end_date) + ')</span>' +
+      '<b>' + money(totalSpent) + ' ₫</b>' +
+    '</div>';
+
+  function setHighlight(idx) {
+    Array.prototype.forEach.call(body.querySelectorAll('.pie-slice'), (s) => {
+      s.classList.toggle('on', idx !== null && Number(s.getAttribute('data-idx')) === idx);
+    });
+    Array.prototype.forEach.call(body.querySelectorAll('.pie-item'), (r) => {
+      r.classList.toggle('on', idx !== null && Number(r.getAttribute('data-idx')) === idx);
+    });
+    const lbl = $('pieCLbl'), val = $('pieCVal'), pct = $('pieCPct');
+    if (!lbl || !val || !pct) return;
+    if (idx !== null && items[idx]) {
+      const it = items[idx];
+      lbl.textContent = it.label;
+      val.textContent = money(it.amount);
+      pct.textContent = it.pct.toFixed(1) + '% · ' + it.count + ' lần chi';
+    } else {
+      lbl.textContent = 'Tổng chi tiêu';
+      val.textContent = money(totalSpent);
+      pct.textContent = '100% (' + items.length + ' mục)';
+    }
+  }
+
+  Array.prototype.forEach.call(body.querySelectorAll('[data-idx]'), (el) => {
+    const idx = Number(el.getAttribute('data-idx'));
+    el.addEventListener('mouseenter', () => setHighlight(idx));
+    el.addEventListener('mouseleave', () => setHighlight(PIE_ACTIVE));
+    el.addEventListener('click', () => {
+      PIE_ACTIVE = PIE_ACTIVE === idx ? null : idx;
+      setHighlight(PIE_ACTIVE);
+    });
+  });
+}
+
 function render() {
   if (!S.user) return;
   if (!S.period) { show('empty'); return; }
@@ -889,6 +2134,7 @@ function render() {
   $('qGo').disabled = !can;
   $('qGo').textContent = can ? 'Thêm vào ' + (QDATE === 'today' ? 'hôm nay' : 'hôm qua') : 'Ngày này không nằm trong kỳ đang xem';
   fillChips('qNoteChips');
+  try { renderPieChart(); } catch (e) { console.error(e); }
 
   // bảng tuần: mỗi hàng là một tuần (Thứ 2 → Chủ nhật)
   const L = $('list'); L.classList.remove('enter');
