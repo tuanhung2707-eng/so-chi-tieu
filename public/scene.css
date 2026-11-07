@@ -1,0 +1,168 @@
+/* =====================================================================
+   scene.css – Cảnh "Hôm nay còn được tiêu" có màu, đổi theo giờ trong ngày
+   và theo tình hình chi tiêu; nền trang đổi màu theo buổi; parallax.
+   Được điều khiển bởi scene.js (gắn data-phase / data-mood lên #hero và <html>).
+   ===================================================================== */
+
+/* ---------- 1. Bảng màu theo buổi (sáng / trưa / chiều / tối) ---------- */
+#hero[data-phase] {
+  --sky: linear-gradient(165deg, #4f9fe3 0%, #78bdf0 55%, #b5e2f8 100%);
+  --far: #7fa9cf; --hill-a: #9fd59a; --hill-b: #74c070; --ground: #4f9f50;
+  --grass: #3e8f45; --trunk: #6e4b33; --leaf: #3f9a4f; --leaf-2: #5db866;
+  --cloud: rgba(255, 255, 255, .92); --flower-stem: #3e8f45;
+  --fall: #c9954f; --sun: #fff3b0; --sun-glow: rgba(255, 230, 130, .55);
+  background: var(--sky) !important;
+  box-shadow: 0 12px 30px rgba(60, 130, 200, .26);
+  transition: box-shadow .8s ease;
+}
+#hero[data-phase="dawn"] {
+  --sky: linear-gradient(165deg, #6c9bd6 0%, #a8b6e4 48%, #f5bba4 100%);
+  --far: #9497c6; --hill-a: #a9cf9e; --hill-b: #7fbb77; --ground: #5a9a57;
+  --grass: #4a8a4c; --leaf: #4a9653; --leaf-2: #6db66f;
+  --sun: #ffe0b0; --sun-glow: rgba(255, 190, 140, .6);
+  box-shadow: 0 12px 30px rgba(200, 140, 150, .24);
+}
+#hero[data-phase="dusk"] {
+  --sky: linear-gradient(165deg, #554f9f 0%, #b9679a 48%, #f39a68 100%);
+  --far: #8a6a9a; --hill-a: #7f8f63; --hill-b: #5f7c4c; --ground: #45663c;
+  --grass: #3d5c36; --trunk: #4f3424; --leaf: #3f6e3f; --leaf-2: #5a8a4c;
+  --cloud: rgba(255, 214, 200, .85); --flower-stem: #3d5c36;
+  --sun: #ffd08a; --sun-glow: rgba(255, 150, 90, .65);
+  box-shadow: 0 12px 30px rgba(170, 90, 130, .28);
+}
+#hero[data-phase="night"] {
+  --sky: linear-gradient(165deg, #121a3d 0%, #222c63 55%, #3a3a78 100%);
+  --far: #2b3466; --hill-a: #24404a; --hill-b: #1d363b; --ground: #172c2f;
+  --grass: #2b5248; --trunk: #2b2230; --leaf: #1f4a40; --leaf-2: #2c5f50;
+  --cloud: rgba(170, 180, 230, .35); --flower-stem: #2b5248; --fall: #8b7a5a;
+  box-shadow: 0 12px 30px rgba(20, 20, 60, .45);
+}
+html[data-theme="dark"] #hero[data-phase] { box-shadow: 0 12px 30px rgba(0, 0, 0, .42); }
+
+/* chữ luôn rõ trên mọi nền */
+#hero[data-phase] .lbl, #hero[data-phase] .big, #hero[data-phase] .row2 {
+  text-shadow: 0 1px 2px rgba(10, 30, 60, .25), 0 2px 12px rgba(10, 30, 60, .22);
+}
+#hero[data-phase] .bar { background: rgba(255, 255, 255, .34); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .08); }
+#hero[data-phase]:before, #hero[data-phase]:after { opacity: .55; }
+
+/* ---------- 2. Tô màu cảnh đồng cỏ có sẵn ---------- */
+#hero[data-phase] .hero-scene { color: var(--grass); }
+#hero[data-phase] .landscape { right: -12px; }
+#hero[data-phase] .clouds { fill: var(--cloud); }
+#hero[data-phase] .cloud-one, #hero[data-phase] .cloud-two, #hero[data-phase] .cloud-three { opacity: .85; }
+#hero[data-phase] .hill-a { fill: var(--hill-a); opacity: 1; }
+#hero[data-phase] .hill-b { fill: var(--hill-b); opacity: 1; }
+#hero[data-phase] .ground { fill: var(--ground); opacity: 1; }
+#hero[data-phase] .tufts { stroke: var(--grass); opacity: .9; }
+#hero[data-phase] .tree > path { fill: var(--trunk); opacity: 1; }
+#hero[data-phase] .limbs { stroke: var(--trunk); opacity: 1; }
+#hero[data-phase] .canopy-full { fill: var(--leaf); }
+#hero[data-phase] .canopy-full circle:nth-child(3n) { fill: var(--leaf-2); }
+#hero[data-phase] .canopy-sparse { fill: var(--leaf); }
+#hero[data-phase] .falling, #hero[data-phase] .ground-leaves { fill: var(--fall); }
+#hero[data-phase] .lfi path, #hero[data-phase] .ground-leaves path { transform-box: fill-box; transform-origin: center; scale: .75; }
+#hero[data-phase] .flowers { opacity: 1; }
+#hero[data-phase] .flowers > path { stroke: var(--flower-stem); }
+#hero[data-phase] .flowers > circle { fill: #ffd54d; }
+#hero[data-phase] .tree-tmt .tt-swing path { stroke: var(--trunk); }
+
+/* hoa thêm (scene.js chèn vào): cánh hoa khép lại khi sắp hết tiền / tiêu lố */
+.sc-fl .pt { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 1.2s cubic-bezier(.3,1.4,.5,1), opacity 1s ease; }
+.sc-fl .head { transform-box: fill-box; transform-origin: 50% 50%; transition: transform 1.2s cubic-bezier(.3,1.4,.5,1); }
+#hero[data-mood="low"] .sc-fl .head, #hero[data-mood="over"] .sc-fl .head { transform: scale(.45); }
+#hero[data-mood="over"] .sc-fl { opacity: .75; }
+
+/* ---------- 3. Các lớp cảnh mới (scene.js chèn vào .hero-scene) ---------- */
+.sc-layer { position: absolute; inset: 0; pointer-events: none; }
+.sc-sky { z-index: 0; }
+.sc-far { z-index: 0; }
+.hero-scene .landscape { z-index: 1; }
+.sc-fx { z-index: 2; }
+
+/* mặt trời / mặt trăng */
+.sc-sun, .sc-moon { position: absolute; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; transition: opacity 1.2s ease; }
+.sc-sun { background: radial-gradient(circle, #fff 0 28%, var(--sun) 52%, rgba(255, 255, 255, 0) 72%);
+  box-shadow: 0 0 34px 14px var(--sun-glow); }
+.sc-moon { width: 30px; height: 30px; margin: -15px 0 0 -15px; background: transparent;
+  box-shadow: 9px -6px 0 0 #f4f1d8; filter: drop-shadow(0 0 8px rgba(240, 236, 200, .55)); }
+#hero[data-phase="night"] .sc-sun, #hero:not([data-phase="night"]) .sc-moon { opacity: 0; }
+
+/* sao đêm */
+.sc-star { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px rgba(255, 255, 255, .9); opacity: 0; }
+.sc-star.b { width: 7px; height: 7px; border-radius: 0; box-shadow: none; background: #fff;
+  clip-path: polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%); }
+#hero:not([data-phase="night"]) .sc-stars { display: none; }
+
+/* dãy núi xa */
+.sc-far svg { position: absolute; left: -16px; right: -16px; bottom: 18%; width: calc(100% + 32px); height: 46%; }
+.sc-far path { fill: var(--far); transition: fill .8s ease; }
+.sc-far .haze { fill: #fff; opacity: .16; }
+#hero[data-phase="night"] .sc-far .haze { opacity: .05; }
+
+/* chim, bướm, đom đóm */
+.sc-bird { position: absolute; width: 16px; height: 8px; opacity: 0; color: rgba(40, 60, 90, .7); }
+#hero[data-phase="dusk"] .sc-bird { color: rgba(60, 30, 60, .75); }
+.sc-bird svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.sc-bf { position: absolute; width: 11px; height: 10px; opacity: 0; }
+.sc-bf svg { width: 100%; height: 100%; display: block; }
+.sc-ff { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff7a8; box-shadow: 0 0 6px 2px rgba(255, 240, 120, .8); opacity: 0; }
+#hero[data-phase="night"] .sc-bird, #hero[data-phase="night"] .sc-bf,
+#hero[data-mood="over"] .sc-bird, #hero[data-mood="over"] .sc-bf,
+#hero[data-mood="low"] .sc-bf { display: none; }
+#hero:not([data-phase="night"]) .sc-ff, #hero[data-mood="over"] .sc-ff { display: none; }
+
+/* màn sương/mây xám khi sắp hết tiền & tiêu lố */
+.sc-veil { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease;
+  background: linear-gradient(180deg, rgba(70, 80, 100, .55) 0%, rgba(90, 95, 115, .25) 55%, rgba(90, 95, 115, 0) 100%); }
+#hero[data-mood="low"] .sc-veil { opacity: .45; }
+#hero[data-mood="over"] .sc-veil { opacity: .8; background: linear-gradient(180deg, rgba(80, 60, 90, .6) 0%, rgba(110, 80, 100, .3) 60%, rgba(110, 80, 100, .08) 100%); }
+
+/* mưa (tiêu lố) */
+.sc-rain { position: absolute; left: -20%; right: -20%; top: -100%; height: 200%; opacity: 0; transition: opacity 1.2s ease;
+  background-image:
+    repeating-linear-gradient(103deg, transparent 0 30px, rgba(220, 235, 255, .55) 30px 31px, transparent 31px 48px),
+    repeating-linear-gradient(103deg, transparent 0 11px, rgba(220, 235, 255, .35) 11px 12px, transparent 12px 48px);
+  background-size: 100% 48px, 100% 48px; }
+#hero[data-mood="over"] .sc-rain { opacity: .75; }
+
+/* cầu vồng (tiêu ít hơn mức vào cuối ngày) */
+.sc-rainbow { position: absolute; right: 2%; bottom: 8%; width: 62%; aspect-ratio: 2 / 1; opacity: 0; transition: opacity 1.6s ease;
+  border-radius: 999px 999px 0 0;
+  background: radial-gradient(circle at 50% 100%, transparent 0 54%,
+    rgba(160, 110, 255, .5) 55% 58%, rgba(90, 160, 255, .5) 58% 61%, rgba(90, 210, 140, .5) 61% 64%,
+    rgba(255, 230, 90, .5) 64% 67%, rgba(255, 160, 70, .5) 67% 70%, rgba(255, 90, 90, .5) 70% 73%, transparent 74%);
+  -webkit-mask: linear-gradient(180deg, #000 55%, transparent 100%); mask: linear-gradient(180deg, #000 55%, transparent 100%); }
+#hero[data-rainbow="1"] .sc-rainbow { opacity: .85; }
+
+/* quả cà chua héo xanh khi tiêu lố */
+.tree-tmt image { transition: filter 1.2s ease; }
+#hero[data-mood="over"] .tree-tmt image { filter: hue-rotate(58deg) saturate(.65) brightness(.92) drop-shadow(0 2px 3px rgba(40, 60, 20, .35)); }
+
+/* thỏ ló đầu khỏi bụi cỏ */
+.sc-bunny { fill: #f3ede4; }
+#hero[data-phase="dusk"] .sc-bunny { fill: #e5c9c0; }
+#hero[data-phase="night"] .sc-bunny, #hero[data-mood="over"] .sc-bunny { display: none; }
+.sc-bunny .ear-in { fill: #f2b8c0; }
+.sc-bunny .eye { fill: #3a2a2a; }
+
+/* ---------- 4. Nền trang đổi màu theo buổi + vài ngôi sao bạc lấp lánh ---------- */
+.sky-wash { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5; transition: opacity 2s ease; }
+html[data-phase="dawn"] .sky-wash  { background: radial-gradient(ellipse at 80% -10%, rgba(255, 190, 160, .55), transparent 55%), radial-gradient(ellipse at 10% 0%, rgba(170, 180, 240, .35), transparent 50%); }
+html[data-phase="day"] .sky-wash   { background: radial-gradient(ellipse at 75% -10%, rgba(255, 240, 170, .45), transparent 50%), radial-gradient(ellipse at 15% 0%, rgba(150, 210, 250, .35), transparent 50%); }
+html[data-phase="dusk"] .sky-wash  { background: radial-gradient(ellipse at 85% -5%, rgba(255, 160, 110, .5), transparent 55%), radial-gradient(ellipse at 10% 5%, rgba(190, 120, 200, .35), transparent 55%); }
+html[data-phase="night"] .sky-wash { background: radial-gradient(ellipse at 80% -10%, rgba(90, 90, 200, .35), transparent 55%), radial-gradient(ellipse at 10% 0%, rgba(60, 70, 160, .3), transparent 55%); }
+html[data-theme="dark"] .sky-wash { opacity: .35; }
+.sky-sparkles { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.sky-sparkles .sp { position: absolute; will-change: transform, opacity; width: 8px; height: 8px; opacity: 0;
+  background: linear-gradient(135deg, #fff, #d8e6ff 45%, #f6d9ff);
+  clip-path: polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%); }
+
+@media (max-width: 600px) {
+  .sc-sun { width: 30px; height: 30px; margin: -15px 0 0 -15px; }
+  .sc-far svg { height: 40%; }
+}
+
+/* trời mưa / âm u thì mặt trời mờ đi */
+#hero[data-mood="low"] .sc-sun { opacity: .45; }
+#hero[data-mood="over"] .sc-sun, #hero[data-mood="over"] .sc-moon { opacity: .12; }

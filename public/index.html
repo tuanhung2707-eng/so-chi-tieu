@@ -1477,6 +1477,7 @@ html[data-theme="dark"] .bub {
 </style>
 <link rel="stylesheet" href="animations.css?v=9">
 <link rel="stylesheet" href="work.css?v=3">
+<link rel="stylesheet" href="scene.css?v=1">
 </head>
 <body>
 <div class="bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="bub" style="--x:6%;--s:16px;--d:17s;--w:-0s"></i><i class="bub" style="--x:15%;--s:10px;--d:23s;--w:-5s"></i><i class="bub" style="--x:26%;--s:22px;--d:19s;--w:-9s"></i><i class="bub" style="--x:38%;--s:12px;--d:26s;--w:-2s"></i><i class="bub" style="--x:50%;--s:18px;--d:21s;--w:-12s"></i><i class="bub" style="--x:62%;--s:9px;--d:24s;--w:-7s"></i><i class="bub" style="--x:73%;--s:20px;--d:18s;--w:-3s"></i><i class="bub" style="--x:84%;--s:13px;--d:27s;--w:-10s"></i><i class="bub" style="--x:92%;--s:24px;--d:20s;--w:-14s"></i><i class="bub" style="--x:45%;--s:8px;--d:29s;--w:-16s"></i></div>
@@ -1559,8 +1560,8 @@ html[data-theme="dark"] .bub {
             <g class="cloud cloud-two"><g transform="translate(272 22) scale(0.8)"><ellipse cx="0" cy="0" rx="19" ry="6"/><circle cx="-10" cy="-4" r="6.5"/><circle cx="0" cy="-9" r="9.5"/><circle cx="11" cy="-3.5" r="6.5"/></g></g>
             <g class="cloud cloud-three"><g transform="translate(160 68) scale(0.62)"><ellipse cx="0" cy="0" rx="19" ry="6"/><circle cx="-10" cy="-4" r="6.5"/><circle cx="0" cy="-9" r="9.5"/><circle cx="11" cy="-3.5" r="6.5"/></g></g>
           </g>
-          <path d="M-420 170 Q-330 150 -240 168 T-60 166 Q0 150 60 156 Q100 162 130 170 T270 164 T440 152 V210 H-420Z" fill="currentColor" opacity=".14"/>
-          <path d="M-420 186 Q-330 178 -240 188 T-60 184 Q0 180 90 176 Q135 180 180 187 T360 183 T440 180 V210 H-420Z" fill="currentColor" opacity=".28"/>
+          <path d="M-420 170 Q-330 150 -240 168 T-60 166 Q0 150 60 156 Q100 162 130 170 T270 164 T440 152 V210 H-420Z" class="hill-a" fill="currentColor" opacity=".14"/>
+          <path d="M-420 186 Q-330 178 -240 188 T-60 184 Q0 180 90 176 Q135 180 180 187 T360 183 T440 180 V210 H-420Z" class="hill-b" fill="currentColor" opacity=".28"/>
           <g class="tufts" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none" opacity=".55">
             <path class="tuft t0" d="M-400 192 q-2.3 -6.8 -5.7 -10.2 M-400 192 q1.1 -9.1 1.1 -13.7 M-400 192 q3.4 -5.7 6.8 -9.1"/>
             <path class="tuft t1" d="M-374 192 q-1.6 -4.8 -4.0 -7.2 M-374 192 q0.8 -6.4 0.8 -9.6 M-374 192 q2.4 -4.0 4.8 -6.4"/>
@@ -1600,7 +1601,7 @@ html[data-theme="dark"] .bub {
             <path d="M58 192V183M152 194V185M412 192V183" stroke="currentColor" stroke-width="1.3" fill="none"/>
             <circle cx="58" cy="181" r="2.4"/><circle cx="152" cy="183" r="2.4"/><circle cx="412" cy="181" r="2.4"/>
           </g>
-          <path d="M-420 202 Q-300 196 -180 201 T60 199 Q140 195 220 201 T440 198 V210 H-420Z" fill="currentColor" opacity=".40"/>
+          <path d="M-420 202 Q-300 196 -180 201 T60 199 Q140 195 220 201 T440 198 V210 H-420Z" class="ground" fill="currentColor" opacity=".40"/>
           <g class="tree" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M343 196 C347 170 346 143 342 116 L357 116 C356 143 360 172 367 196 Z" stroke="none" opacity=".88"/>
             <g class="limbs" fill="none" opacity=".88">
@@ -1745,6 +1746,7 @@ html[data-theme="dark"] .bub {
 <div class="toast" id="toast"></div>
 <script src="config.js"></script>
 <script src="animations.js?v=9"></script>
+<script src="scene.js?v=1"></script>
 <script>
 /* Cà chua Namuwu: nhún nhẹ, thỉnh thoảng lóe sao; rê chuột/chạm thì bung sao; quả trên cây đung đưa */
 (function () {
