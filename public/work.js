@@ -609,12 +609,14 @@ const PIXEL_HEART_SVG =
   '</svg>';
 const HEART_SVG = PIXEL_HEART_SVG;
 
-// Icon ngôi sao đỏ kiểu Pixel (8-bit crispEdges) cho nhãn "Quan trọng" (red)
+// Icon ngôi sao đỏ 5 cánh bo tròn viền trắng phát sáng cho nhãn "Quan trọng" (red)
 const PIXEL_STAR_RED_SVG =
-  '<svg viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">' +
-    '<path fill="#ffffff" d="M5 0h1v2h1v1h4v1h-1v1H9v1H8v1h1v3H8v1H7v-1H6V9H5v1H4v1H3v-1H2V7h1V6H2V5H1V4H0V3h4V2h1V0z"/>' +
-    '<path fill="#ef1d26" d="M5 1h1v2h1v1h3v1H8v1H7v1h1v3H7V9H6V8H5v1H4v1H3V7h1V6H3V5H1V4h3V3h1V1z"/>' +
-    '<path fill="#ff9ca0" d="M5 2h1v2H4V3h1V2zM3 4h2v1H3V4z"/>' +
+  '<svg viewBox="0 0 28 28" aria-hidden="true">' +
+    '<path d="M14 2.2l3.45 6.98 7.7.98-5.58 5.32 1.38 7.62L14 19.42l-6.95 3.68 1.38-7.62-5.58-5.32 7.7-.98L14 2.2z" ' +
+      'fill="#e61924" stroke="#ffffff" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" paint-order="stroke"/>' +
+    '<path d="M14 4.8l2.55 5.18 5.68.72-4.12 3.92.98 5.52L14 17.46l-5.09 2.68.98-5.52-4.12-3.92 5.68-.72L14 4.8z" ' +
+      'fill="#ff3340"/>' +
+    '<path d="M14 5.5l-1.9 3.9-4.2.55 2.1 2.0c1.6-2.4 3.8-4.1 6.1-4.6L14 5.5z" fill="#ffadb2" opacity="0.8"/>' +
   '</svg>';
 
 // Icon ngọn lửa xanh dương kiểu Pixel (8-bit crispEdges) cho nhãn "Công việc" (blue)
@@ -830,34 +832,23 @@ function buildPurpleNebulaFxHtml() {
    - hủy hết khi vẽ lại lịch (không chồng animation cũ lên mới),
    - tạm dừng khi lịch không hiện trên màn hình / chuyển tab / ẩn ứng dụng, chạy tiếp khi quay lại.
    Nhờ vậy trình duyệt không phải vẽ liên tục những thứ không ai nhìn thấy => hết giật, hết nháy màn. */
-const FX = { anims: [], onScreen: true, bound: false };
-function fxShouldRun() { return FX.onScreen && document.visibilityState === 'visible'; }
+const FX = { anims: [] };
 function fxAnim(el, keyframes, opts) {
-  const a = el.animate(keyframes, opts);
-  FX.anims.push(a);
-  if (!fxShouldRun()) { try { a.pause(); } catch (e) {} }
-  return a;
-}
-function fxSync() {
-  const run = fxShouldRun();
-  FX.anims.forEach((a) => { try { if (run) { if (a.playState === 'paused') a.play(); } else if (a.playState === 'running') a.pause(); } catch (e) {} });
+  if (!el || !el.animate) return null;
+  try {
+    const a = el.animate(keyframes, opts);
+    a.play();
+    FX.anims.push(a);
+    return a;
+  } catch (e) {
+    return null;
+  }
 }
 function fxReset() {
   FX.anims.forEach((a) => { try { a.cancel(); } catch (e) {} });
   FX.anims = [];
 }
-function fxBind() {
-  if (FX.bound) return;
-  FX.bound = true;
-  document.addEventListener('visibilitychange', fxSync);
-  const box = $('kMonths');
-  if (box && 'IntersectionObserver' in window) {
-    new IntersectionObserver((entries) => {
-      FX.onScreen = entries.some((en) => en.isIntersecting);
-      fxSync();
-    }).observe(box);
-  }
-}
+function fxBind() {}
 // Viền sáng "thở": chỉ đổi độ mờ (opacity) của một lớp sáng cố định, không vẽ lại bóng đổ mỗi khung hình
 function glowPulse(cell, duration) {
   const g = cell.querySelector('.wm-glow');
@@ -871,15 +862,7 @@ function animateMarkedCells(root) {
   const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   fxReset();
 
-  // Nhiều ngày có hiệu ứng (hoặc màn hình điện thoại): bớt một nửa hạt bay trong mỗi ô cho nhẹ máy
-  const fxCells = container.querySelectorAll('.wm-d.m-her, .wm-d.m-blue, .wm-d.m-red, .wm-d.m-amber, .wm-d.m-purple');
-  if (fxCells.length > 6 || window.innerWidth < 520) {
-    fxCells.forEach((cell) => {
-      cell.querySelectorAll('.her-h, .wf-ember, .red-st, .amb-bf, .oth-gem, .oth-sp').forEach((el, i) => {
-        if (i % 2) el.remove();
-      });
-    });
-  }
+
 
   // 1. Hiệu ứng trái tim bay cho các ô "Her" (m-her)
   const hearts = container.querySelectorAll('.wm-d.m-her .her-h');
@@ -1502,9 +1485,9 @@ function initCal() {
       .wm-legend .c-red.is-pixel,
       .wm-ui .c-red.is-pixel,
       .wm-cols .c-red b.is-pixel {
-        width: 15px !important;
-        height: 15px !important;
-        filter: drop-shadow(0 0 3px rgba(239, 29, 38, .85)) drop-shadow(0 0 6px rgba(255, 120, 120, .65));
+        width: 16px !important;
+        height: 16px !important;
+        filter: drop-shadow(0 0 3px rgba(239, 29, 38, .92)) drop-shadow(0 0 7px rgba(255, 95, 105, .75));
       }
       .wm-legend .c-red.is-pixel svg,
       .wm-ui .c-red.is-pixel svg,
