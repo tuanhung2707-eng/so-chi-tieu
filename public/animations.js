@@ -32,10 +32,29 @@
 .top h1::after {
   content:"✦";
   display:inline-block;
-  color:#79bce9;
-  font-size:.78em;
+  color:#2b95ff;
+  font-size:.86em;
   transform-origin:center;
-    text-shadow:0 2px 8px rgba(102,174,232,.28);
+  text-shadow:
+    0 0 4px rgba(255, 255, 255, .98),
+    0 0 10px rgba(68, 170, 255, .92),
+    0 0 20px rgba(45, 148, 255, .72),
+    0 0 32px rgba(45, 148, 255, .45);
+  filter:
+    drop-shadow(0 0 4px rgba(56, 162, 255, .82))
+    drop-shadow(0 0 10px rgba(82, 180, 255, .60));
+  will-change:transform, filter, text-shadow, opacity;
+}
+html[data-theme="dark"] .top h1::after {
+  color:#dcf2ff;
+  text-shadow:
+    0 0 6px #ffffff,
+    0 0 14px rgba(115, 205, 255, .98),
+    0 0 26px rgba(72, 172, 255, .85),
+    0 0 42px rgba(50, 145, 255, .62);
+  filter:
+    drop-shadow(0 0 6px rgba(135, 215, 255, .92))
+    drop-shadow(0 0 14px rgba(75, 175, 255, .75));
 }
 .hero {
   background-image:
@@ -1288,11 +1307,11 @@ html[data-theme="dark"] .bub {
   const KEYFRAMES = {
     // 2.1. Chi tiết trang trí nhẹ
     sparkleTurn: [
-      { transform: 'rotate(0deg) scale(1)', opacity: 0.85, offset: 0 },
-      { transform: 'rotate(0deg) scale(1)', opacity: 0.85, offset: 0.75 },
-      { transform: 'rotate(22deg) scale(1.22)', opacity: 1, offset: 0.82 },
-      { transform: 'rotate(-12deg) scale(1.08)', offset: 0.90 },
-      { transform: 'rotate(0deg) scale(1)', opacity: 0.85, offset: 1 }
+      { transform: 'rotate(0deg) scale(0.96)', opacity: 0.9, offset: 0 },
+      { transform: 'rotate(12deg) scale(1.16)', opacity: 1, offset: 0.35 },
+      { transform: 'rotate(-8deg) scale(1.04)', opacity: 0.94, offset: 0.65 },
+      { transform: 'rotate(24deg) scale(1.26)', opacity: 1, offset: 0.84 },
+      { transform: 'rotate(0deg) scale(0.96)', opacity: 0.9, offset: 1 }
     ],
     sparklePulse: [
       { opacity: 0.72, transform: 'scale(1)', offset: 0 },
@@ -1569,7 +1588,8 @@ html[data-theme="dark"] .bub {
     dynamicStyleEl.textContent = `
       /* Hoạt ảnh pseudo-elements & trạng thái liên tục do JS điều khiển */
       ${ambientOn ? `
-      .top h1::after { animation: jsSparkleTurn ${4.5 / sp}s ease-in-out infinite !important; }
+      .top h1::after { animation: jsSparkleTurn ${3.2 / sp}s ease-in-out infinite !important; }
+      html[data-theme="dark"] .top h1::after { animation: jsSparkleTurnDark ${3.2 / sp}s ease-in-out infinite !important; }
       .hero:before { animation: jsFloatDecor ${8 / sp}s ease-in-out infinite !important; }
       .hero:after { animation: jsFloatDecor ${7 / sp}s ease-in-out infinite reverse !important; }
       .hero .lbl::before { animation: jsSparklePulse ${2.8 / sp}s ease-in-out infinite !important; }
@@ -1590,9 +1610,96 @@ html[data-theme="dark"] .bub {
       ` : ''}
 
       @keyframes jsSparkleTurn {
-        0%,75%,100% { transform:rotate(0) scale(1); opacity:.85; }
-        82% { transform:rotate(22deg) scale(1.22); opacity:1; }
-        90% { transform:rotate(-12deg) scale(1.08); }
+        0%, 100% {
+          transform: rotate(0deg) scale(0.96);
+          opacity: 0.92;
+          color: #2b95ff;
+          text-shadow:
+            0 0 4px rgba(255, 255, 255, .95),
+            0 0 10px rgba(68, 170, 255, .88),
+            0 0 18px rgba(45, 148, 255, .65),
+            0 0 28px rgba(45, 148, 255, .38);
+          filter:
+            drop-shadow(0 0 3px rgba(56, 162, 255, .75))
+            drop-shadow(0 0 8px rgba(82, 180, 255, .52));
+        }
+        45% {
+          transform: rotate(14deg) scale(1.18);
+          opacity: 1;
+          color: #ffffff;
+          text-shadow:
+            0 0 6px #ffffff,
+            0 0 14px rgba(78, 182, 255, 1),
+            0 0 26px rgba(38, 145, 255, .95),
+            0 0 40px rgba(38, 145, 255, .72);
+          filter:
+            drop-shadow(0 0 6px rgba(45, 158, 255, .98))
+            drop-shadow(0 0 14px rgba(95, 192, 255, .85));
+        }
+        75% {
+          transform: rotate(-10deg) scale(1.05);
+          opacity: 0.95;
+          color: #5cb2ff;
+        }
+        88% {
+          transform: rotate(24deg) scale(1.26);
+          opacity: 1;
+          color: #ffffff;
+          text-shadow:
+            0 0 8px #ffffff,
+            0 0 16px rgba(78, 182, 255, 1),
+            0 0 30px rgba(38, 145, 255, .98),
+            0 0 44px rgba(38, 145, 255, .78);
+          filter:
+            drop-shadow(0 0 7px rgba(45, 158, 255, 1))
+            drop-shadow(0 0 16px rgba(95, 192, 255, .9));
+        }
+      }
+      @keyframes jsSparkleTurnDark {
+        0%, 100% {
+          transform: rotate(0deg) scale(0.96);
+          opacity: 0.92;
+          color: #ccebff;
+          text-shadow:
+            0 0 5px #ffffff,
+            0 0 12px rgba(115, 205, 255, .92),
+            0 0 24px rgba(72, 172, 255, .75),
+            0 0 38px rgba(50, 145, 255, .52);
+          filter:
+            drop-shadow(0 0 5px rgba(125, 210, 255, .85))
+            drop-shadow(0 0 12px rgba(72, 172, 255, .68));
+        }
+        45% {
+          transform: rotate(14deg) scale(1.18);
+          opacity: 1;
+          color: #ffffff;
+          text-shadow:
+            0 0 8px #ffffff,
+            0 0 18px rgba(145, 222, 255, 1),
+            0 0 32px rgba(85, 185, 255, .98),
+            0 0 50px rgba(60, 155, 255, .82);
+          filter:
+            drop-shadow(0 0 8px rgba(165, 230, 255, 1))
+            drop-shadow(0 0 18px rgba(95, 190, 255, .92));
+        }
+        75% {
+          transform: rotate(-10deg) scale(1.05);
+          opacity: 0.96;
+          color: #e3f5ff;
+        }
+        88% {
+          transform: rotate(24deg) scale(1.26);
+          opacity: 1;
+          color: #ffffff;
+          text-shadow:
+            0 0 9px #ffffff,
+            0 0 20px rgba(155, 226, 255, 1),
+            0 0 36px rgba(90, 190, 255, 1),
+            0 0 54px rgba(65, 160, 255, .88);
+          filter:
+            drop-shadow(0 0 9px rgba(175, 235, 255, 1))
+            drop-shadow(0 0 20px rgba(100, 195, 255, .95));
+        }
       }
       @keyframes jsSparklePulse {
         0%,100% { opacity:.72; transform:scale(1); }
