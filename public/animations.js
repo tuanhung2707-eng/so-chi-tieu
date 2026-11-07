@@ -32,29 +32,29 @@
 .top h1::after {
   content:"✦";
   display:inline-block;
-  color:#2b95ff;
+  color:#1a88ff;
   font-size:.86em;
   transform-origin:center;
   text-shadow:
-    0 0 4px rgba(255, 255, 255, .98),
-    0 0 10px rgba(68, 170, 255, .92),
-    0 0 20px rgba(45, 148, 255, .72),
-    0 0 32px rgba(45, 148, 255, .45);
+    0 0 5px rgba(43, 149, 255, .95),
+    0 0 12px rgba(26, 136, 255, .85),
+    0 0 22px rgba(26, 136, 255, .62),
+    0 0 34px rgba(20, 118, 240, .42);
   filter:
-    drop-shadow(0 0 4px rgba(56, 162, 255, .82))
-    drop-shadow(0 0 10px rgba(82, 180, 255, .60));
+    drop-shadow(0 0 4px rgba(26, 136, 255, .85))
+    drop-shadow(0 0 10px rgba(56, 162, 255, .65));
   will-change:transform, filter, text-shadow, opacity;
 }
 html[data-theme="dark"] .top h1::after {
-  color:#dcf2ff;
+  color:#38a4ff;
   text-shadow:
-    0 0 6px #ffffff,
-    0 0 14px rgba(115, 205, 255, .98),
-    0 0 26px rgba(72, 172, 255, .85),
-    0 0 42px rgba(50, 145, 255, .62);
+    0 0 6px rgba(56, 164, 255, 1),
+    0 0 14px rgba(30, 144, 255, .95),
+    0 0 26px rgba(20, 126, 255, .80),
+    0 0 42px rgba(15, 108, 240, .58);
   filter:
-    drop-shadow(0 0 6px rgba(135, 215, 255, .92))
-    drop-shadow(0 0 14px rgba(75, 175, 255, .75));
+    drop-shadow(0 0 5px rgba(56, 164, 255, .95))
+    drop-shadow(0 0 13px rgba(30, 144, 255, .78));
 }
 .hero {
   background-image:
@@ -1613,92 +1613,92 @@ html[data-theme="dark"] .bub {
         0%, 100% {
           transform: rotate(0deg) scale(0.96);
           opacity: 0.92;
-          color: #2b95ff;
+          color: #167ef2;
           text-shadow:
-            0 0 4px rgba(255, 255, 255, .95),
-            0 0 10px rgba(68, 170, 255, .88),
-            0 0 18px rgba(45, 148, 255, .65),
-            0 0 28px rgba(45, 148, 255, .38);
+            0 0 4px rgba(45, 152, 255, .90),
+            0 0 10px rgba(26, 136, 255, .78),
+            0 0 18px rgba(20, 118, 240, .52),
+            0 0 28px rgba(20, 118, 240, .30);
           filter:
-            drop-shadow(0 0 3px rgba(56, 162, 255, .75))
-            drop-shadow(0 0 8px rgba(82, 180, 255, .52));
+            drop-shadow(0 0 3px rgba(26, 136, 255, .75))
+            drop-shadow(0 0 8px rgba(56, 162, 255, .50));
         }
         45% {
           transform: rotate(14deg) scale(1.18);
           opacity: 1;
-          color: #ffffff;
+          color: #2f9cff;
           text-shadow:
-            0 0 6px #ffffff,
-            0 0 14px rgba(78, 182, 255, 1),
-            0 0 26px rgba(38, 145, 255, .95),
-            0 0 40px rgba(38, 145, 255, .72);
+            0 0 6px rgba(68, 172, 255, 1),
+            0 0 14px rgba(32, 144, 255, .98),
+            0 0 26px rgba(18, 122, 245, .88),
+            0 0 38px rgba(18, 122, 245, .62);
           filter:
-            drop-shadow(0 0 6px rgba(45, 158, 255, .98))
-            drop-shadow(0 0 14px rgba(95, 192, 255, .85));
+            drop-shadow(0 0 6px rgba(32, 144, 255, .95))
+            drop-shadow(0 0 13px rgba(68, 172, 255, .80));
         }
         75% {
           transform: rotate(-10deg) scale(1.05);
           opacity: 0.95;
-          color: #5cb2ff;
+          color: #1d88f8;
         }
         88% {
           transform: rotate(24deg) scale(1.26);
           opacity: 1;
-          color: #ffffff;
+          color: #3da8ff;
           text-shadow:
-            0 0 8px #ffffff,
-            0 0 16px rgba(78, 182, 255, 1),
-            0 0 30px rgba(38, 145, 255, .98),
-            0 0 44px rgba(38, 145, 255, .78);
+            0 0 7px rgba(82, 182, 255, 1),
+            0 0 16px rgba(36, 148, 255, 1),
+            0 0 28px rgba(18, 122, 245, .92),
+            0 0 42px rgba(18, 122, 245, .68);
           filter:
-            drop-shadow(0 0 7px rgba(45, 158, 255, 1))
-            drop-shadow(0 0 16px rgba(95, 192, 255, .9));
+            drop-shadow(0 0 7px rgba(36, 148, 255, 1))
+            drop-shadow(0 0 15px rgba(75, 178, 255, .85));
         }
       }
       @keyframes jsSparkleTurnDark {
         0%, 100% {
           transform: rotate(0deg) scale(0.96);
           opacity: 0.92;
-          color: #ccebff;
+          color: #2f9bff;
           text-shadow:
-            0 0 5px #ffffff,
-            0 0 12px rgba(115, 205, 255, .92),
-            0 0 24px rgba(72, 172, 255, .75),
-            0 0 38px rgba(50, 145, 255, .52);
+            0 0 5px rgba(64, 168, 255, .95),
+            0 0 12px rgba(30, 144, 255, .88),
+            0 0 24px rgba(20, 124, 245, .68),
+            0 0 38px rgba(15, 105, 235, .45);
           filter:
-            drop-shadow(0 0 5px rgba(125, 210, 255, .85))
-            drop-shadow(0 0 12px rgba(72, 172, 255, .68));
+            drop-shadow(0 0 4px rgba(45, 155, 255, .85))
+            drop-shadow(0 0 10px rgba(25, 135, 250, .65));
         }
         45% {
           transform: rotate(14deg) scale(1.18);
           opacity: 1;
-          color: #ffffff;
+          color: #52b4ff;
           text-shadow:
-            0 0 8px #ffffff,
-            0 0 18px rgba(145, 222, 255, 1),
-            0 0 32px rgba(85, 185, 255, .98),
-            0 0 50px rgba(60, 155, 255, .82);
+            0 0 7px rgba(88, 188, 255, 1),
+            0 0 16px rgba(45, 158, 255, 1),
+            0 0 30px rgba(24, 132, 250, .92),
+            0 0 46px rgba(15, 110, 240, .72);
           filter:
-            drop-shadow(0 0 8px rgba(165, 230, 255, 1))
-            drop-shadow(0 0 18px rgba(95, 190, 255, .92));
+            drop-shadow(0 0 7px rgba(68, 175, 255, 1))
+            drop-shadow(0 0 16px rgba(36, 148, 255, .88));
         }
         75% {
           transform: rotate(-10deg) scale(1.05);
           opacity: 0.96;
-          color: #e3f5ff;
+          color: #38a4ff;
         }
         88% {
           transform: rotate(24deg) scale(1.26);
           opacity: 1;
-          color: #ffffff;
+          color: #5ebcff;
           text-shadow:
-            0 0 9px #ffffff,
-            0 0 20px rgba(155, 226, 255, 1),
-            0 0 36px rgba(90, 190, 255, 1),
-            0 0 54px rgba(65, 160, 255, .88);
+            0 0 8px rgba(100, 195, 255, 1),
+            0 0 18px rgba(52, 164, 255, 1),
+            0 0 34px rgba(26, 138, 255, .95),
+            0 0 50px rgba(16, 115, 245, .78);
           filter:
-            drop-shadow(0 0 9px rgba(175, 235, 255, 1))
-            drop-shadow(0 0 20px rgba(100, 195, 255, .95));
+            drop-shadow(0 0 8px rgba(78, 182, 255, 1))
+            drop-shadow(0 0 18px rgba(42, 152, 255, .92));
         }
       }
       @keyframes jsSparklePulse {
