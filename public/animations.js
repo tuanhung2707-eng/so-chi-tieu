@@ -1181,6 +1181,7 @@ html[data-theme="dark"] .bub {
 
     // Cập nhật dải màu SVG sinh vật biển phù hợp với nền Sáng / Tối
     applyPastelBlueDefs(isDark);
+    if (typeof DayGlow !== 'undefined' && DayGlow && DayGlow.start) setTimeout(() => DayGlow.start(), 0);
 
     // Cập nhật biểu tượng nút #btnTheme
     const btn = document.getElementById('btnTheme');
@@ -1240,6 +1241,7 @@ html[data-theme="dark"] .bub {
       meadow: true,           // Cây đu đưa, mây trôi, ngọn cỏ lay, lá rơi trong thẻ ngân sách
       sea: true,              // Cảnh đại dương hai bên trang (cá, rùa, cua, rong biển, sao biển, bụi nước)
       daisy: true,            // Hoa cúc Daisy pastel nhiều kích cỡ, nổi lơ lửng chậm xung quanh bảng các ngày trong kỳ
+      dayGlow: true,          // Phát sáng nhẹ màu xanh dương mờ (dương tiền) & đỏ mờ (âm tiền) cho các ngày trong kỳ
       ui: true                // Nháy hàng vừa sửa, rung lắc khi tiêu lố, pháo hoa sao, chữ bay lên, thẻ hiện ra
     }
   };
@@ -2072,6 +2074,130 @@ html[data-theme="dark"] .bub {
     }
   };
 
+  // ========== 7.6. HIỆU ỨNG PHÁT SÁNG NHẸ Ô NGÀY DƯƠNG TIỀN (XANH DƯƠNG MỜ) & ÂM TIỀN (ĐỎ MỜ) ==========
+  function ensureDayGlowStyles() {
+    if (document.getElementById('dayGlowStyles')) return;
+    const st = document.createElement('style');
+    st.id = 'dayGlowStyles';
+    st.textContent = `
+      /* Ô ngày đã chốt DƯƠNG TIỀN (.pos): màu xanh dương mờ & phát sáng nhẹ */
+      #calWrap .wk .day.pos:not(.void) {
+        background: linear-gradient(145deg, rgba(158, 216, 255, .54) 0%, rgba(194, 231, 255, .42) 55%, rgba(216, 240, 255, .50) 100%) !important;
+        border-color: rgba(82, 168, 238, .78) !important;
+        box-shadow: 0 0 9px rgba(82, 170, 242, .25), inset 0 0 12px rgba(120, 195, 255, .20);
+      }
+      #calWrap .wk .day.pos:not(.void)::after {
+        background: linear-gradient(90deg, #4da3eb, #7cc4fa) !important;
+        box-shadow: 0 0 6px rgba(77, 163, 235, .65);
+      }
+      #calWrap .wk .day.pos:not(.void) .f.df,
+      #calWrap .wk .day.pos:not(.void) .c.df {
+        color: #1f6fb2 !important;
+      }
+
+      /* Ô ngày đã chốt ÂM TIỀN (.neg): màu đỏ mờ & phát sáng nhẹ */
+      #calWrap .wk .day.neg:not(.void) {
+        background: linear-gradient(145deg, rgba(255, 176, 192, .54) 0%, rgba(255, 202, 214, .42) 55%, rgba(255, 218, 226, .50) 100%) !important;
+        border-color: rgba(235, 100, 126, .78) !important;
+        box-shadow: 0 0 9px rgba(235, 95, 122, .25), inset 0 0 12px rgba(245, 120, 142, .18);
+      }
+      #calWrap .wk .day.neg:not(.void)::after {
+        background: linear-gradient(90deg, #e55c78, #f28a9f) !important;
+        box-shadow: 0 0 6px rgba(229, 92, 120, .65);
+      }
+      #calWrap .wk .day.neg:not(.void) .f.df,
+      #calWrap .wk .day.neg:not(.void) .c.df {
+        color: #c83e5b !important;
+      }
+
+      /* Chế độ Tối (Dark Mode) cho ô ngày Dương tiền & Âm tiền */
+      html[data-theme="dark"] #calWrap .wk .day.pos:not(.void) {
+        background: linear-gradient(145deg, rgba(34, 104, 172, .46) 0%, rgba(26, 82, 138, .36) 55%, rgba(22, 68, 120, .42) 100%) !important;
+        border-color: rgba(92, 182, 252, .75) !important;
+        box-shadow: 0 0 10px rgba(82, 175, 250, .30), inset 0 0 14px rgba(82, 175, 250, .20);
+      }
+      html[data-theme="dark"] #calWrap .wk .day.pos:not(.void) .f.df,
+      html[data-theme="dark"] #calWrap .wk .day.pos:not(.void) .c.df {
+        color: #82c8ff !important;
+      }
+
+      html[data-theme="dark"] #calWrap .wk .day.neg:not(.void) {
+        background: linear-gradient(145deg, rgba(158, 42, 68, .46) 0%, rgba(124, 32, 54, .36) 55%, rgba(102, 26, 46, .42) !important) !important;
+        background: linear-gradient(145deg, rgba(158, 42, 68, .46) 0%, rgba(124, 32, 54, .36) 55%, rgba(102, 26, 46, .42) 100%) !important;
+        border-color: rgba(245, 110, 136, .75) !important;
+        box-shadow: 0 0 10px rgba(242, 102, 128, .30), inset 0 0 14px rgba(242, 102, 128, .20);
+      }
+      html[data-theme="dark"] #calWrap .wk .day.neg:not(.void) .f.df,
+      html[data-theme="dark"] #calWrap .wk .day.neg:not(.void) .c.df {
+        color: #ff99ae !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  const DayGlow = {
+    anims: [],
+    start() {
+      this.stop();
+      ensureDayGlowStyles();
+      if (!CONFIG.enabled || CONFIG.reducedMotion || CONFIG.categories.dayGlow === false) return;
+
+      const calWrap = document.getElementById('calWrap');
+      if (!calWrap) return;
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+      // Khung hình phát sáng nhịp thở cho ngày dương tiền (xanh dương mờ)
+      const posFrames = isDark
+        ? [
+            { boxShadow: '0 0 8px rgba(82, 175, 250, .24), inset 0 0 10px rgba(82, 175, 250, .15)' },
+            { boxShadow: '0 0 16px rgba(98, 190, 255, .52), inset 0 0 18px rgba(98, 190, 255, .30)' }
+          ]
+        : [
+            { boxShadow: '0 0 7px rgba(82, 170, 242, .20), inset 0 0 10px rgba(120, 195, 255, .15)' },
+            { boxShadow: '0 0 15px rgba(72, 165, 245, .44), inset 0 0 16px rgba(120, 195, 255, .30)' }
+          ];
+
+      // Khung hình phát sáng nhịp thở cho ngày âm tiền (đỏ mờ)
+      const negFrames = isDark
+        ? [
+            { boxShadow: '0 0 8px rgba(242, 102, 128, .24), inset 0 0 10px rgba(242, 102, 128, .15)' },
+            { boxShadow: '0 0 16px rgba(252, 116, 142, .52), inset 0 0 18px rgba(252, 116, 142, .30)' }
+          ]
+        : [
+            { boxShadow: '0 0 7px rgba(235, 95, 122, .20), inset 0 0 10px rgba(245, 120, 142, .14)' },
+            { boxShadow: '0 0 15px rgba(235, 86, 114, .44), inset 0 0 16px rgba(245, 120, 142, .28)' }
+          ];
+
+      calWrap.querySelectorAll('.wk .day.pos:not(.void)').forEach((el, idx) => {
+        const a = runAnimation(el, posFrames, {
+          duration: 3200,
+          delay: -(idx * 310),
+          iterations: Infinity,
+          direction: 'alternate',
+          easing: 'ease-in-out'
+        }, 'dayGlow');
+        if (a) this.anims.push(a);
+      });
+
+      calWrap.querySelectorAll('.wk .day.neg:not(.void)').forEach((el, idx) => {
+        const a = runAnimation(el, negFrames, {
+          duration: 3200,
+          delay: -(idx * 310),
+          iterations: Infinity,
+          direction: 'alternate',
+          easing: 'ease-in-out'
+        }, 'dayGlow');
+        if (a) this.anims.push(a);
+      });
+    },
+
+    stop() {
+      this.anims.forEach((a) => a.cancel());
+      this.anims = [];
+    }
+  };
+
 
   // ========== 6. CẢNH ĐỒNG CỎ THẺ NGÂN SÁCH (HERO MEADOW) ==========
   const Meadow = {
@@ -2392,6 +2518,7 @@ html[data-theme="dark"] .bub {
           }
           if (target.id === 'list' || target.id === 'calWrap') {
             Daisy.start();
+            DayGlow.start();
           }
         } else if (m.type === 'childList' && m.addedNodes.length) {
           const target = m.target;
@@ -2399,6 +2526,9 @@ html[data-theme="dark"] .bub {
             Array.from(target.querySelectorAll('.chip')).forEach((chip, idx) => {
               UI.popIn(chip, Math.min(idx, 7) * 30);
             });
+          }
+          if (target && (target.id === 'list' || target.id === 'calWrap' || (target.closest && target.closest('#calWrap')))) {
+            DayGlow.start();
           }
         }
       }
@@ -2449,6 +2579,7 @@ html[data-theme="dark"] .bub {
     meadow: Meadow,
     sea: Sea,
     daisy: Daisy,
+    dayGlow: DayGlow,
 
     // Khởi động toàn bộ hoạt ảnh
     // Điều khiển Chế độ Sáng / Tối
@@ -2465,7 +2596,7 @@ html[data-theme="dark"] .bub {
       Meadow.start();
       Sea.start();
       Daisy.start();
-      Daisy.start();
+      DayGlow.start();
       setupObserver();
 
       // Cập nhật lại khoảng cách bơi khi co giãn kích thước màn hình
@@ -2485,6 +2616,8 @@ html[data-theme="dark"] .bub {
       Ocean.start();
       Meadow.start();
       Sea.start();
+      Daisy.start();
+      DayGlow.start();
     },
 
     // Tạm dừng toàn bộ hoạt ảnh
@@ -2523,6 +2656,7 @@ html[data-theme="dark"] .bub {
         if (category === 'meadow') isEnabled ? Meadow.start() : Meadow.stop();
         if (category === 'sea') isEnabled ? Sea.start() : Sea.stop();
         if (category === 'daisy') isEnabled ? Daisy.start() : Daisy.stop();
+        if (category === 'dayGlow') isEnabled ? DayGlow.start() : DayGlow.stop();
         updatePseudoStyles();
       }
     }
