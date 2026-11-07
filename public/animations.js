@@ -832,34 +832,23 @@ function buildPurpleNebulaFxHtml() {
    - hủy hết khi vẽ lại lịch (không chồng animation cũ lên mới),
    - tạm dừng khi lịch không hiện trên màn hình / chuyển tab / ẩn ứng dụng, chạy tiếp khi quay lại.
    Nhờ vậy trình duyệt không phải vẽ liên tục những thứ không ai nhìn thấy => hết giật, hết nháy màn. */
-const FX = { anims: [], onScreen: true, bound: false };
-function fxShouldRun() { return FX.onScreen && document.visibilityState === 'visible'; }
+const FX = { anims: [] };
 function fxAnim(el, keyframes, opts) {
-  const a = el.animate(keyframes, opts);
-  FX.anims.push(a);
-  if (!fxShouldRun()) { try { a.pause(); } catch (e) {} }
-  return a;
-}
-function fxSync() {
-  const run = fxShouldRun();
-  FX.anims.forEach((a) => { try { if (run) { if (a.playState === 'paused') a.play(); } else if (a.playState === 'running') a.pause(); } catch (e) {} });
+  if (!el || !el.animate) return null;
+  try {
+    const a = el.animate(keyframes, opts);
+    a.play();
+    FX.anims.push(a);
+    return a;
+  } catch (e) {
+    return null;
+  }
 }
 function fxReset() {
   FX.anims.forEach((a) => { try { a.cancel(); } catch (e) {} });
   FX.anims = [];
 }
-function fxBind() {
-  if (FX.bound) return;
-  FX.bound = true;
-  document.addEventListener('visibilitychange', fxSync);
-  const box = $('kMonths');
-  if (box && 'IntersectionObserver' in window) {
-    new IntersectionObserver((entries) => {
-      FX.onScreen = entries.some((en) => en.isIntersecting);
-      fxSync();
-    }).observe(box);
-  }
-}
+function fxBind() {}
 // Viền sáng "thở": chỉ đổi độ mờ (opacity) của một lớp sáng cố định, không vẽ lại bóng đổ mỗi khung hình
 function glowPulse(cell, duration) {
   const g = cell.querySelector('.wm-glow');
@@ -873,15 +862,7 @@ function animateMarkedCells(root) {
   const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   fxReset();
 
-  // Nhiều ngày có hiệu ứng (hoặc màn hình điện thoại): bớt một nửa hạt bay trong mỗi ô cho nhẹ máy
-  const fxCells = container.querySelectorAll('.wm-d.m-her, .wm-d.m-blue, .wm-d.m-red, .wm-d.m-amber, .wm-d.m-purple');
-  if (fxCells.length > 6 || window.innerWidth < 520) {
-    fxCells.forEach((cell) => {
-      cell.querySelectorAll('.her-h, .wf-ember, .red-st, .amb-bf, .oth-gem, .oth-sp').forEach((el, i) => {
-        if (i % 2) el.remove();
-      });
-    });
-  }
+
 
   // 1. Hiệu ứng trái tim bay cho các ô "Her" (m-her)
   const hearts = container.querySelectorAll('.wm-d.m-her .her-h');
