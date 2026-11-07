@@ -1181,7 +1181,7 @@ html[data-theme="dark"] .bub {
 
     // Cập nhật dải màu SVG sinh vật biển phù hợp với nền Sáng / Tối
     applyPastelBlueDefs(isDark);
-    if (typeof DayGlow !== 'undefined' && DayGlow && DayGlow.start) setTimeout(() => DayGlow.start(), 0);
+    if (DayGlow && DayGlow.start) setTimeout(() => DayGlow.start(), 0);
 
     // Cập nhật biểu tượng nút #btnTheme
     const btn = document.getElementById('btnTheme');
@@ -2135,7 +2135,7 @@ html[data-theme="dark"] .bub {
     (document.head || document.documentElement).appendChild(st);
   }
 
-  const DayGlow = {
+  var DayGlow = {
     anims: [],
     start() {
       this.stop();
