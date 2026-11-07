@@ -1447,7 +1447,7 @@ html[data-theme="dark"] .bub {
   }
 
 </style>
-
+<link rel="stylesheet" href="animations.css?v=9">
 <link rel="stylesheet" href="work.css?v=3">
 </head>
 <body>
@@ -1645,7 +1645,7 @@ html[data-theme="dark"] .bub {
       <div class="dow"><span data-f="Thứ 2" data-s="T2"></span><span data-f="Thứ 3" data-s="T3"></span><span data-f="Thứ 4" data-s="T4"></span><span data-f="Thứ 5" data-s="T5"></span><span data-f="Thứ 6" data-s="T6"></span><span data-f="Thứ 7" data-s="T7"></span><span data-f="Chủ nhật" data-s="CN"></span></div>
       <div class="cal" id="list"></div>
     </section>
-    <p class="sub" style="margin:10px 2px">Bấm vào ô ngày để thêm, sửa, xóa khoản chi và đánh dấu đã qua. Ngày đã có khoản chi hoặc đã đánh dấu "đã qua" sẽ được chốt, tiền dư/lố chia đều cho các ngày sau.</p>
+    <p class="sub" style="margin:10px 2px">Bấm vào ô ngày để thêm, sửa, xóa khoản chi. Các ngày đã qua theo ngày thực tế sẽ tự động được chốt, tiền dư/lố chia đều cho các ngày sau.</p>
   </main>
   <p class="sub" id="ver" style="margin:14px 2px"></p>
 </div>
@@ -1663,7 +1663,6 @@ html[data-theme="dark"] .bub {
   <div class="chips" id="eNoteChips" data-target="eNote"></div>
   <button class="btn primary block" id="eSave" type="button">Thêm khoản chi</button>
   <button class="btn block hidden" id="eCancel" type="button">Hủy sửa</button>
-  <label class="switchrow"><span>Đánh dấu đã qua</span><span class="switch"><input type="checkbox" id="ePass"><i></i></span></label>
   <div class="twin"><button class="btn" id="eClose" type="button">Đóng</button></div>
 </div></div>
 
@@ -1902,12 +1901,13 @@ function compute() {
   S.expenses.forEach((e) => { (by[e.spent_on] = by[e.spent_on] || []).push(e); });
   let carry = 0, total = 0, settledN = 0;
   const days = [];
+  const tdy = todayStr();
   for (let i = 0; i < N; i++) {
     const date = addD(p.start_date, i);
     const list = by[date] || [];
     const spent = list.reduce((a, e) => a + Number(e.amount), 0);
-    const passed = !!S.marks[date];
-    const settled = list.length > 0 || passed;   // ngày có khoản chi hoặc đã đánh dấu "đã qua" thì chốt
+    const passed = date < tdy;
+    const settled = list.length > 0 || passed;   // ngày đã qua theo ngày thực tế hoặc đã có khoản chi thì chốt
     const allowed = base + carry;
     let diff = null, adj = null;
     if (settled) {
@@ -1970,8 +1970,7 @@ function cellHtml(x, tdy, idx, dim) {
     (x.diff === null ? '' : '<div class="c df ' + dcls + '">' + fmtKs(x.diff) + '</div>') +
     (x.note ? '<i class="c dotn">✎</i>' : '');
   return '<div class="' + cls + '" data-date="' + esc(x.date) + '" style="--i:' + idx + '">' +
-    '<div class="top2"><span class="dn">' + dn + '</span><label class="chk"><input type="checkbox" ' + (x.passed ? 'checked' : '') +
-    ' aria-label="Đã qua"><span>✓</span></label></div>' + full + cmp + '</div>';
+    '<div class="top2"><span class="dn">' + dn + '</span></div>' + full + cmp + '</div>';
 }
 
 
@@ -2268,7 +2267,6 @@ function renderDaySheet() {
     '</b><span>' + (e.note ? esc(e.note) : '<i>không ghi chú</i>') + '</span></div>' +
     '<button type="button" class="xdel" data-del="' + esc(e.id) + '" aria-label="Xóa khoản chi">✕</button></div>').join('')
     : '<div class="hint" style="margin:8px 0 0">Ngày này chưa có khoản chi nào.</div>';
-  $('ePass').checked = !!S.marks[EDIT];
   $('eSave').textContent = EDIT_EXP ? 'Cập nhật khoản chi' : 'Thêm khoản chi';
   $('eCancel').classList.toggle('hidden', !EDIT_EXP);
 }
@@ -2390,12 +2388,7 @@ function bind() {
   ['qAmt', 'qNote'].forEach((id) => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') quickSubmit(); }));
 
   // bảng tuần
-  $('list').addEventListener('change', (e) => {
-    const cell = e.target.closest('.day'); if (!cell || e.target.type !== 'checkbox') return;
-    buzz(); setPassed(cell.getAttribute('data-date'), e.target.checked);
-  });
   $('list').addEventListener('click', (e) => {
-    if (e.target.closest('.chk')) return;
     const cell = e.target.closest('.day'); if (!cell || cell.classList.contains('void')) return;
     openDay(cell.getAttribute('data-date'));
   });
@@ -2417,7 +2410,6 @@ function bind() {
     EDIT_EXP = null; $('eAmt').value = ''; $('eNote').value = ''; previewAmt('eAmt', 'ePrev', true); renderDaySheet();
   };
   $('eCancel').onclick = () => { EDIT_EXP = null; $('eAmt').value = ''; $('eNote').value = ''; previewAmt('eAmt', 'ePrev', true); renderDaySheet(); };
-  $('ePass').addEventListener('change', () => { if (EDIT) setPassed(EDIT, $('ePass').checked); });
   $('eClose').onclick = () => closeModal('mDay');
 
   // cài đặt
