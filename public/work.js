@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v9 · 08/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v10 · 08/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -1709,7 +1709,7 @@ function renderCal() {
     const key = ym + '-' + pad2(d), x = K.days[key];
     const mark = x && x.mark ? x.mark : '';
     const icon = MARK_ICON[mark] ? '<i class="wm-ic' + (mark === 'her' ? ' her' : '') + '" aria-hidden="true">' + MARK_ICON[mark]() + '</i>' : '';
-    cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
+    cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (icon ? ' data-mk="' + mark + '"' : '') + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
       '<span class="wm-n">' + d + '</span>' + icon + '</button>';
   }
