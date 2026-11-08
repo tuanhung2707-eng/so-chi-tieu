@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v8 · 06/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v9 · 08/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -645,6 +645,8 @@ const PIXEL_GEM_PURPLE_SVG =
     '<path fill="#f5edff" d="M7 1h1v1H7V1zM3 1h1v1H3V1z"/>' +
   '</svg>';
 
+const MARK_ICON = { her: () => PIXEL_HEART_SVG, red: () => PIXEL_STAR_RED_SVG, blue: () => PIXEL_FLAME_BLUE_SVG, amber: () => PIXEL_BUTTERFLY_GOLD_SVG, purple: () => PIXEL_GEM_PURPLE_SVG };
+
 function markDotHtml(code) {
   if (code === 'her') {
     return '<b class="c-her is-pixel">' + PIXEL_HEART_SVG + '</b>';
@@ -856,11 +858,45 @@ function glowPulse(cell, duration) {
   fxAnim(g, [{ opacity: 0.25 }, { opacity: 1 }], { duration: duration, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
 }
 
+// Lấy các ô khớp selector, kể cả khi container chính là một ô
+function cellsIn(container, sel) {
+  return container.matches && container.matches(sel) ? [container] : Array.prototype.slice.call(container.querySelectorAll(sel));
+}
+
+/* Ô lịch "tĩnh": bình thường chỉ có nền pastel + icon nhỏ; hiệu ứng đầy đủ chỉ bật khi rê chuột,
+   khi vừa mở tháng (khoảng 2 giây) và ở ô hôm nay. */
+const FX_BUILD = { her: () => buildHerFxHtml(), blue: () => buildWorkFireFxHtml(), red: () => buildRedStarFxHtml(), amber: () => buildAmberButterflyFxHtml(), purple: () => buildPurpleNebulaFxHtml() };
+const FX_NODES = '.her-fx,.work-fx,.red-fx,.amber-fx,.oth-fx,.wm-glow';
+function fxOn(cell) {
+  if (!cell) return;
+  clearTimeout(cell._fxT);
+  cell.classList.remove('fx-out');
+  if (cell.classList.contains('fx-on')) return;
+  const build = FX_BUILD[cell.getAttribute('data-mk')];
+  if (!build) return;
+  cell.insertAdjacentHTML('afterbegin', build() + '<i class="wm-glow" aria-hidden="true"></i>');
+  cell.classList.add('fx-on');
+  animateMarkedCells(cell);
+}
+function fxOff(cell) {
+  if (!cell || !cell.classList.contains('fx-on') || cell.classList.contains('fx-keep')) return;
+  cell.classList.add('fx-out');
+  clearTimeout(cell._fxT);
+  cell._fxT = setTimeout(() => {
+    cell.querySelectorAll(FX_NODES).forEach((n) => {
+      (n.getAnimations ? n.getAnimations({ subtree: true }) : []).forEach((a) => { try { a.cancel(); } catch (e) {} });
+      n.remove();
+    });
+    FX.anims = FX.anims.filter((a) => a.playState !== 'idle');
+    cell.classList.remove('fx-on', 'fx-out');
+  }, 420);
+}
+
 function animateMarkedCells(root) {
   const container = root || $('kMonths');
   if (!container) return;
   const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  fxReset();
+  if (container === $('kMonths')) fxReset();
 
 
 
@@ -891,13 +927,13 @@ function animateMarkedCells(root) {
     });
   });
 
-  container.querySelectorAll('.wm-d.m-her').forEach((cell) => {
+  cellsIn(container, '.wm-d.m-her').forEach((cell) => {
     if (!cell.animate || reduce) return;
     glowPulse(cell, 2200);
   });
 
   // 2. Hiệu ứng lửa xanh dương ở thanh dưới cho các ô "Công việc" (m-blue)
-  container.querySelectorAll('.wm-d.m-blue').forEach((cell) => {
+  cellsIn(container, '.wm-d.m-blue').forEach((cell) => {
     if (!cell.animate || reduce) return;
 
     const botOuter = cell.querySelector('.wf-outer');
@@ -945,7 +981,7 @@ function animateMarkedCells(root) {
   });
 
   // 3. Hiệu ứng ngôi sao đỏ viền trắng trên nền caro đỏ-hồng cho các ô "Quan trọng" (m-red)
-  container.querySelectorAll('.wm-d.m-red').forEach((cell) => {
+  cellsIn(container, '.wm-d.m-red').forEach((cell) => {
     if (!cell.animate || reduce) return;
 
     const grid = cell.querySelector('.red-grid');
@@ -975,7 +1011,7 @@ function animateMarkedCells(root) {
   });
 
   // 4. Hiệu ứng đàn bướm vàng kim phát sáng bay lượn cho các ô "Hẹn / nhắc" (m-amber)
-  container.querySelectorAll('.wm-d.m-amber').forEach((cell) => {
+  cellsIn(container, '.wm-d.m-amber').forEach((cell) => {
     if (!cell.animate || reduce) return;
 
     cell.querySelectorAll('.amb-bf').forEach((bf) => {
@@ -1008,7 +1044,7 @@ function animateMarkedCells(root) {
   });
 
   // 5. Hiệu ứng tinh vân tím + pha lê thạch anh tím + tia lấp lánh cho các ô "Khác" (m-purple)
-  container.querySelectorAll('.wm-d.m-purple').forEach((cell) => {
+  cellsIn(container, '.wm-d.m-purple').forEach((cell) => {
     if (!cell.animate || reduce) return;
 
     const neb = cell.querySelector('.oth-neb');
@@ -1575,6 +1611,18 @@ function initCal() {
     '<div class="wm-legend" id="kLegend">' + MARKS.map((m) => '<span>' + markDotHtml(m[0]) + m[1] + '</span>').join('') + '<em>Bấm vào một ngày để đánh dấu và ghi chú</em></div>' +
     '<div class="wm-months" id="kMonths"></div><div class="card wm-up" id="kList"></div>';
 
+  // rê chuột vào ô có nhãn thì bật hiệu ứng đầy đủ, rời chuột thì trở về dạng tĩnh
+  $('kMonths').addEventListener('pointerover', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const c = e.target.closest('.wm-d[data-mk]');
+    if (c) fxOn(c);
+  });
+  $('kMonths').addEventListener('pointerout', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const c = e.target.closest('.wm-d[data-mk]');
+    if (c && !c.contains(e.relatedTarget)) fxOff(c);
+  });
+
   $('kMonthSel').addEventListener('change', (e) => {
     setMonthYear(K.year, parseInt(e.target.value, 10));
   });
@@ -1660,16 +1708,34 @@ function renderCal() {
   for (let d = 1; d <= dim; d++) {
     const key = ym + '-' + pad2(d), x = K.days[key];
     const mark = x && x.mark ? x.mark : '';
-    const fxHtml = mark === 'her' ? buildHerFxHtml() : (mark === 'blue' ? buildWorkFireFxHtml() : (mark === 'red' ? buildRedStarFxHtml() : (mark === 'amber' ? buildAmberButterflyFxHtml() : (mark === 'purple' ? buildPurpleNebulaFxHtml() : ''))));
+    const icon = MARK_ICON[mark] ? '<i class="wm-ic' + (mark === 'her' ? ' her' : '') + '" aria-hidden="true">' + MARK_ICON[mark]() + '</i>' : '';
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + (x && x.note ? ' has' : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
-      '" data-day="' + key + '"' + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
-      fxHtml + (fxHtml ? '<i class="wm-glow" aria-hidden="true"></i>' : '') +
-      '<span>' + d + '</span></button>';
+      '" data-day="' + key + '"' + (icon ? ' data-mk="' + mark + '"' : '') + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
+      '<span class="wm-n">' + d + '</span>' + icon + '</button>';
   }
   const isCurrentMonth = (K.year === now.getFullYear() && m === now.getMonth());
   $('kMonths').innerHTML = '<section class="wm-mon' + (isCurrentMonth ? ' now' : '') + '"><h4>' + MONTH_NAMES[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
   fxBind();
-  animateMarkedCells($('kMonths'));
+  fxReset();
+  clearTimeout(K.introT);
+  const km = $('kMonths');
+  const reduceCal = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  // Trái tim "Her" nhấp nháy phát sáng dưới số ngày
+  km.querySelectorAll('.wm-ic.her').forEach((ic) => {
+    if (reduceCal) return;
+    fxAnim(ic, [{ opacity: 0.4, transform: 'scale(.82)' }, { opacity: 1, transform: 'scale(1.12)' }],
+      { duration: 820, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+  });
+  if (!reduceCal) {
+    const marked = Array.prototype.slice.call(km.querySelectorAll('.wm-d[data-mk]'));
+    const todayCell = km.querySelector('.wm-d.today[data-mk]');
+    if (todayCell) todayCell.classList.add('fx-keep');
+    // vừa mở tháng: cho các ô "trình diễn" khoảng 2 giây rồi trở về dạng tĩnh
+    marked.forEach(fxOn);
+    K.introT = setTimeout(() => {
+      marked.forEach((c) => { if (!c.matches(':hover')) fxOff(c); });
+    }, 2200);
+  }
 
   const prefix = ym + '-';
   const list = Object.keys(K.days).filter((k) => k.startsWith(prefix)).sort().map((k) => K.days[k]).filter((x) => x.note || x.mark);

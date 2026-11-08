@@ -182,3 +182,51 @@ select:focus { border-color:var(--accent); box-shadow:var(--focus); background:#
 
 /* dòng báo lỗi đỏ ở đầu mục Linh kiện khi bảng dữ liệu chưa sẵn sàng */
 .wm-banner { margin:0 0 14px; padding:12px 14px; background:#fff1f4; border:1px solid #f6c9d3; border-radius:14px; color:#9b2c45; font-size:13.5px; line-height:1.55; font-weight:650; }
+
+/* ---------- Lịch năm: ô có nhãn ở dạng TĨNH (nền pastel + icon nhỏ) ----------
+   Hiệu ứng đầy đủ (.fx-on) chỉ bật khi rê chuột, khi vừa mở tháng và ở ô hôm nay. */
+#kMonths .wm-d[data-mk] { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; }
+#kMonths .wm-d[data-mk] > .wm-n { position:relative; z-index:2; line-height:1; }
+#kMonths .wm-d[data-mk] > .wm-ic { position:absolute; z-index:3; top:4px; right:4px; width:11px; height:11px; pointer-events:none; transition:opacity .3s ease; }
+#kMonths .wm-d[data-mk] > .wm-ic svg { width:100%; height:100%; display:block; }
+#kMonths .wm-d.fx-on > .wm-ic:not(.her) { opacity:0; }
+/* trái tim "Her": nằm dưới số, nhấp nháy phát sáng */
+#kMonths .wm-d[data-mk] > .wm-ic.her { position:relative; top:auto; right:auto; width:12px; height:11px; margin-top:3px;
+  filter:drop-shadow(0 0 3px rgba(255,92,214,.95)) drop-shadow(0 0 6px rgba(235,30,180,.7)); }
+#kMonths .wm-d.m-her.has::after { bottom:auto; top:4px; left:auto; right:4px; margin:0; }
+
+#kMonths .wm-d[data-mk]:not(.fx-on) { box-shadow:none !important; transition:background-color .3s ease; }
+#kMonths .wm-d.m-red:not(.fx-on)    { background:#ffe8ea !important; border:1.5px solid #f5a3ad !important; }
+#kMonths .wm-d.m-blue:not(.fx-on)   { background:#e3f0ff !important; border:1.5px solid #9cc4f2 !important; }
+#kMonths .wm-d.m-amber:not(.fx-on)  { background:#fff4d6 !important; border:1.5px solid #f2cf72 !important; }
+#kMonths .wm-d.m-purple:not(.fx-on) { background:#efe8ff !important; border:1.5px solid #bfa8f3 !important; }
+#kMonths .wm-d.m-her:not(.fx-on)    { background:#ffe6f6 !important; border:1.5px solid #f7a8de !important; }
+#kMonths .wm-d[data-mk]:not(.fx-on) > .wm-n { text-shadow:none !important; font-weight:800; }
+#kMonths .wm-d.m-red:not(.fx-on) > .wm-n    { color:#b4232f !important; }
+#kMonths .wm-d.m-blue:not(.fx-on) > .wm-n   { color:#1f5aa0 !important; }
+#kMonths .wm-d.m-amber:not(.fx-on) > .wm-n  { color:#8c5d00 !important; }
+#kMonths .wm-d.m-purple:not(.fx-on) > .wm-n { color:#5530a8 !important; }
+#kMonths .wm-d.m-her:not(.fx-on) > .wm-n    { color:#b0227f !important; }
+#kMonths .wm-d[data-mk]:not(.fx-on).has::after { background:currentColor !important; box-shadow:none !important; opacity:.5; }
+#kMonths .wm-d.m-red:not(.fx-on)    { color:#b4232f; }
+#kMonths .wm-d.m-blue:not(.fx-on)   { color:#1f5aa0; }
+#kMonths .wm-d.m-amber:not(.fx-on)  { color:#8c5d00; }
+#kMonths .wm-d.m-purple:not(.fx-on) { color:#5530a8; }
+#kMonths .wm-d.m-her:not(.fx-on)    { color:#b0227f; }
+
+html[data-theme="dark"] #kMonths .wm-d.m-red:not(.fx-on)    { background:rgba(239,80,95,.16) !important; border-color:rgba(245,130,145,.55) !important; color:#ffb3bc; }
+html[data-theme="dark"] #kMonths .wm-d.m-blue:not(.fx-on)   { background:rgba(80,150,240,.16) !important; border-color:rgba(120,175,245,.55) !important; color:#a9d0ff; }
+html[data-theme="dark"] #kMonths .wm-d.m-amber:not(.fx-on)  { background:rgba(240,190,70,.15) !important; border-color:rgba(242,200,100,.55) !important; color:#ffe09a; }
+html[data-theme="dark"] #kMonths .wm-d.m-purple:not(.fx-on) { background:rgba(160,120,250,.17) !important; border-color:rgba(185,155,250,.55) !important; color:#d6c6ff; }
+html[data-theme="dark"] #kMonths .wm-d.m-her:not(.fx-on)    { background:rgba(255,90,210,.15) !important; border-color:rgba(255,140,225,.55) !important; color:#ffb8ec; }
+html[data-theme="dark"] #kMonths .wm-d.m-red:not(.fx-on) > .wm-n    { color:#ffb3bc !important; }
+html[data-theme="dark"] #kMonths .wm-d.m-blue:not(.fx-on) > .wm-n   { color:#a9d0ff !important; }
+html[data-theme="dark"] #kMonths .wm-d.m-amber:not(.fx-on) > .wm-n  { color:#ffe09a !important; }
+html[data-theme="dark"] #kMonths .wm-d.m-purple:not(.fx-on) > .wm-n { color:#d6c6ff !important; }
+html[data-theme="dark"] #kMonths .wm-d.m-her:not(.fx-on) > .wm-n    { color:#ffb8ec !important; }
+
+/* hiệu ứng tắt dần khi trở về dạng tĩnh */
+#kMonths .wm-d.fx-on .her-fx, #kMonths .wm-d.fx-on .work-fx, #kMonths .wm-d.fx-on .red-fx,
+#kMonths .wm-d.fx-on .amber-fx, #kMonths .wm-d.fx-on .oth-fx, #kMonths .wm-d.fx-on .wm-glow { transition:opacity .4s ease; }
+#kMonths .wm-d.fx-out .her-fx, #kMonths .wm-d.fx-out .work-fx, #kMonths .wm-d.fx-out .red-fx,
+#kMonths .wm-d.fx-out .amber-fx, #kMonths .wm-d.fx-out .oth-fx, #kMonths .wm-d.fx-out .wm-glow { opacity:0; }
