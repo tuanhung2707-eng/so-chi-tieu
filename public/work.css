@@ -230,3 +230,6 @@ html[data-theme="dark"] #kMonths .wm-d.m-her:not(.fx-on) > .wm-n    { color:#ffb
 #kMonths .wm-d.fx-on .amber-fx, #kMonths .wm-d.fx-on .oth-fx, #kMonths .wm-d.fx-on .wm-glow { transition:opacity .4s ease; }
 #kMonths .wm-d.fx-out .her-fx, #kMonths .wm-d.fx-out .work-fx, #kMonths .wm-d.fx-out .red-fx,
 #kMonths .wm-d.fx-out .amber-fx, #kMonths .wm-d.fx-out .oth-fx, #kMonths .wm-d.fx-out .wm-glow { opacity:0; }
+
+/* Bỏ dấu chấm báo "có ghi chú" trong ô lịch */
+#kMonths .wm-d.has::after { display:none !important; }
