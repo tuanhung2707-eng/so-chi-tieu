@@ -1256,9 +1256,9 @@ html[data-theme="dark"] .bub {
     reducedMotion: false,     // Tự động kiểm tra prefers-reduced-motion, có thể ghi đè bằng tay
     categories: {
       ambient: true,          // Lấp lánh (✦, ✧), sáng viền nút, vệt sáng thanh tiến độ
-      ocean: true,            // Bong bóng nổi & ánh sáng mặt nước chuyển động
+      ocean: false,            // Bong bóng nổi & ánh sáng mặt nước chuyển động
       meadow: true,           // Cây đu đưa, mây trôi, ngọn cỏ lay, lá rơi trong thẻ ngân sách
-      sea: true,              // Cảnh đại dương hai bên trang (cá, rùa, cua, rong biển, sao biển, bụi nước)
+      sea: false,              // Cảnh đại dương hai bên trang (cá, rùa, cua, rong biển, sao biển, bụi nước)
       daisy: true,            // Hoa cúc Daisy pastel nhiều kích cỡ, nổi lơ lửng chậm xung quanh bảng các ngày trong kỳ
       dayGlow: true,          // Phát sáng nhẹ màu xanh dương mờ (dương tiền) & đỏ mờ (âm tiền) cho các ngày trong kỳ
       ui: true                // Nháy hàng vừa sửa, rung lắc khi tiêu lố, pháo hoa sao, chữ bay lên, thẻ hiện ra

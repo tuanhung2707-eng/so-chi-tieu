@@ -13,7 +13,7 @@
 
   var pausedByUs = new WeakSet();
   // Vùng chứa: hoạt ảnh của một phần tử được xét theo vùng lớn chứa nó (phần tử con có thể bay ra ngoài khung)
-  var ZONES = '.sea, #hero, #kMonths, .wm-panel, .modal, .wm-modal, .daisy-field, .sky-sparkles, .top, #work, #app';
+  var ZONES = '.mbg, .sea, #hero, #kMonths, .wm-panel, .modal, .wm-modal, .daisy-field, .sky-sparkles, .top, #work, #app';
 
   function zoneOf(el) {
     return (el.closest && el.closest(ZONES)) || el;

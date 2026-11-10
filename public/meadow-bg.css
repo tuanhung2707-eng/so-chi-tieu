@@ -1,0 +1,104 @@
+/* =====================================================================
+   meadow-bg.css – Nền đồng cỏ toàn trang (đứng yên khi cuộn)
+   Trên: bầu trời xanh pastel – trắng, mây nhiều lớp, mặt trời (sáng) / trăng + sao (tối)
+   Giữa: lá bay, bụi sáng, đom đóm (tối), hạt bồ công anh lơ lửng
+   Dưới: đồi cỏ nhiều lớp, hoa, cây & bụi cây hai bên, bồ công anh đung đưa
+   Sáng/tối theo nút chuyển giao diện (html[data-theme="dark"]).
+   ===================================================================== */
+
+.mbg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  contain: strict;
+  --sky-1: #a8d5f4; --sky-2: #c7e5f9; --sky-3: #e6f3fc; --sky-4: #f7fbfe;
+  --cl-top: #ffffff; --cl-mid: #f3f8fd; --cl-bot: #d4e7f7; --cl-op: .96;
+  --h-far: #b9e0b4; --h-mid: #93cf8c; --h-near: #6dba68; --h-front: #58a956;
+  --trunk: #8a6446; --tree-1: #5fae5c; --tree-2: #4a9a4c; --tree-3: #7cc277;
+  --bush: #5aa957; --grass: #3f8f43;
+  --dan-stem: #6aa865; --dan-seed: #ffffff;
+  --leaf-1: #8cc96f; --leaf-2: #e8c25a; --leaf-3: #6fb86a;
+  --mote: 255, 250, 225;
+}
+html[data-theme="dark"] .mbg {
+  --sky-1: #0b1430; --sky-2: #14214a; --sky-3: #1d3060; --sky-4: #24406e;
+  --cl-top: #6f7fb3; --cl-mid: #4f5f94; --cl-bot: #34426f; --cl-op: .38;
+  --h-far: #1e3a4a; --h-mid: #193342; --h-near: #142b37; --h-front: #10232d;
+  --trunk: #2d2430; --tree-1: #1d3d3a; --tree-2: #173331; --tree-3: #24493f;
+  --bush: #1a3836; --grass: #234a3f;
+  --dan-stem: #3d6a58; --dan-seed: #dfe7ff;
+  --leaf-1: #4f7f5c; --leaf-2: #8c7a4a; --leaf-3: #3f6e55;
+  --mote: 210, 225, 255;
+}
+.mbg > * { position: absolute; }
+
+/* bầu trời */
+.mbg-sky { inset: 0; background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 32%, var(--sky-3) 62%, var(--sky-4) 100%); }
+
+/* mặt trời (sáng) */
+.mbg-sun { top: 7vh; right: 11vw; width: 96px; height: 96px; border-radius: 50%;
+  background: radial-gradient(circle, #fffef4 0 30%, #fff3b8 46%, rgba(255, 236, 160, .55) 58%, rgba(255, 236, 160, 0) 72%);
+  box-shadow: 0 0 80px 40px rgba(255, 240, 180, .45); }
+.mbg-halo { top: calc(7vh - 90px); right: calc(11vw - 90px); width: 276px; height: 276px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 248, 210, .5) 0%, rgba(255, 248, 210, 0) 65%); }
+/* trăng & sao (tối) */
+.mbg-moon { top: 8vh; right: 12vw; width: 64px; height: 64px; border-radius: 50%; background: transparent;
+  box-shadow: 16px -10px 0 0 #f5f1d6; filter: drop-shadow(0 0 14px rgba(245, 240, 200, .55)); }
+.mbg-moonglow { top: calc(8vh - 70px); right: calc(12vw - 80px); width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 210, 255, .22) 0%, rgba(200, 210, 255, 0) 65%); }
+.mbg-stars { inset: 0 0 35% 0; }
+.mbg-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 4px 1px rgba(255, 255, 255, .7); opacity: .8; }
+.mbg-star.big { width: 9px; height: 9px; border-radius: 0; box-shadow: none; background: #fff;
+  clip-path: polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%); }
+html:not([data-theme="dark"]) .mbg-moon, html:not([data-theme="dark"]) .mbg-moonglow, html:not([data-theme="dark"]) .mbg-stars,
+html[data-theme="dark"] .mbg-sun, html[data-theme="dark"] .mbg-halo { display: none; }
+
+/* mây */
+.mbg-cloud { left: 0; opacity: var(--cl-op); filter: drop-shadow(0 8px 14px rgba(110, 160, 210, .14)); }
+html[data-theme="dark"] .mbg-cloud { filter: none; }
+.mbg-cloud svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* đồng cỏ phía dưới */
+.mbg-land { left: 0; right: 0; bottom: 0; height: clamp(150px, 30vh, 280px); }
+.mbg-land svg { width: 100%; height: 100%; display: block; }
+.mbg-land .far { fill: var(--h-far); } .mbg-land .mid { fill: var(--h-mid); }
+.mbg-land .near { fill: var(--h-near); } .mbg-land .front { fill: var(--h-front); }
+.mbg-land .trunk { fill: var(--trunk); }
+.mbg-land .t1 { fill: var(--tree-1); } .mbg-land .t2 { fill: var(--tree-2); } .mbg-land .t3 { fill: var(--tree-3); }
+.mbg-land .bush { fill: var(--bush); }
+.mbg-land .grass { stroke: var(--grass); fill: none; stroke-width: 2; stroke-linecap: round; }
+html[data-theme="dark"] .mbg-land .fl { opacity: .55; }
+
+/* bồ công anh trên đồng cỏ (đung đưa) */
+.mbg-dan { bottom: 0; transform-origin: 50% 100%; }
+.mbg-dan svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.mbg-dan .stem { stroke: var(--dan-stem); }
+.mbg-dan .seed { stroke: var(--dan-seed); }
+.mbg-dan .tip { fill: var(--dan-seed); }
+html[data-theme="dark"] .mbg-dan { filter: drop-shadow(0 0 4px rgba(200, 215, 255, .35)); }
+
+/* tầng giữa: hạt bồ công anh, lá, bụi sáng, đom đóm */
+.mbg-seed, .mbg-leaf, .mbg-mote, .mbg-ff { left: 0; top: 0; will-change: transform, opacity; }
+.mbg-seed { width: 16px; height: 22px; opacity: 0; }
+.mbg-seed svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.mbg-seed .seed { stroke: var(--dan-seed); } .mbg-seed .tip { fill: var(--dan-seed); }
+html:not([data-theme="dark"]) .mbg-seed { filter: drop-shadow(0 1px 1px rgba(90, 130, 170, .35)); }
+.mbg-leaf { width: 14px; height: 14px; opacity: 0; }
+.mbg-leaf svg { width: 100%; height: 100%; display: block; }
+.mbg-mote { width: 5px; height: 5px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, rgba(var(--mote), 1) 0%, rgba(var(--mote), .5) 45%, rgba(var(--mote), 0) 72%); }
+.mbg-ff { width: 6px; height: 6px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, #fbffc9 0%, #e9ff8a 40%, rgba(220, 255, 120, 0) 72%);
+  box-shadow: 0 0 10px 3px rgba(220, 255, 130, .35); }
+html:not([data-theme="dark"]) .mbg-ff { display: none; }
+
+/* điện thoại: chỉ bụi sáng & hạt bồ công anh chuyển động; lá & đom đóm ẩn */
+@media (max-width: 700px) {
+  .mbg-leaf, .mbg-ff { display: none; }
+  .mbg-sun { width: 64px; height: 64px; right: 8vw; }
+  .mbg-halo { display: none; }
+  .mbg-moon { width: 46px; height: 46px; right: 9vw; box-shadow: 12px -7px 0 0 #f5f1d6; }
+  .mbg-moonglow { display: none; }
+}
+
+/* nội dung nằm trên nền */
+.wrap { position: relative; z-index: 1; }
+html[data-theme="dark"] .mbg-cloud .hl { display: none; }

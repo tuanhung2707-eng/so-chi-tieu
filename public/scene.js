@@ -1,10 +1,9 @@
 /* =====================================================================
    scene.js – Cảnh "Hôm nay còn được tiêu" sinh động
-   1. Bầu trời & màu cảnh đổi theo giờ thật: sáng (5–8h) · trưa (8–17h) · chiều (17–19h) · tối (19–5h)
+   1. Bầu trời & màu cảnh theo nút sáng/tối: ban ngày (mặt trời, chim, bướm) · ban đêm (trăng, sao, đom đóm)
       mặt trời / mặt trăng đi theo giờ, sao đêm, đom đóm, chim bay, bướm, thỏ ló đầu.
    2. Cảnh phản ứng theo số tiền hôm nay: còn nhiều → hoa nở; sắp hết → trời âm u, hoa khép;
-      tiêu lố → mưa, cà chua héo xanh; chiều mà mới tiêu ít → cầu vồng.
-   3. Nền trang đổi màu theo buổi + vài ngôi sao bạc lấp lánh.
+      tiêu lố → mưa, cà chua héo xanh; ban ngày mà mới tiêu dưới 50% → cầu vồng.
    4. Parallax: các lớp cảnh lệch nhau theo chuột (máy tính) hoặc khi nghiêng điện thoại.
    Mọi hoạt ảnh chỉ dùng transform/opacity và tự dừng khi thẻ không hiện trên màn hình.
    ===================================================================== */
@@ -190,47 +189,22 @@
     if (!bunnyMove.animate || REDUCE) bunnyMove.setAttribute('transform', 'translate(0 20)');
   }
 
-  /* ---------- 3. Nền trang theo buổi + sao bạc lấp lánh ---------- */
-  var wash = el('div', 'sky-wash');
-  wash.setAttribute('aria-hidden', 'true');
-  document.body.insertBefore(wash, document.body.firstChild);
-  // sao bạc nằm ở lớp riêng, trong suốt: không bắt trình duyệt vẽ lại cả lớp nền mỗi khung hình
-  var sparkles = el('div', 'sky-sparkles');
-  sparkles.setAttribute('aria-hidden', 'true');
-  document.body.insertBefore(sparkles, wash.nextSibling);
-  [[6, 18], [93, 12], [3, 62], [96, 54], [12, 90], [88, 86], [50, 4]].forEach(function (p, i) {
-    var s = el('i', 'sp', sparkles, 'left:' + p[0] + '%;top:' + p[1] + '%');
-    anim(s, [
-      { opacity: 0, transform: 'scale(0) rotate(0deg)' },
-      { opacity: 0, transform: 'scale(0) rotate(0deg)', offset: .72 },
-      { opacity: .9, transform: 'scale(1.15) rotate(45deg)', offset: .84 },
-      { opacity: 0, transform: 'scale(0) rotate(90deg)' }
-    ], { duration: 6000 + i * 900, delay: -i * 1300, iterations: Infinity, easing: 'ease-in-out' });
-  });
-
-  /* ---------- 4. Buổi trong ngày ---------- */
-  function phaseOf(h) {
-    if (h >= 5 && h < 8) return 'dawn';
-    if (h >= 8 && h < 17) return 'day';
-    if (h >= 17 && h < 19) return 'dusk';
-    return 'night';
-  }
+  /* ---------- 3. Sáng / tối theo nút chuyển giao diện (nền trang là meadow-bg.js) ---------- */
   function placeBody(node, t) {
     // t: 0 → 1 dọc theo cung trời; né góc trái phía trên (nơi có chữ)
     var x = 40 + t * 46, y = 12 + (1 - Math.sin(Math.PI * t)) * 30;
     node.style.left = x.toFixed(1) + '%';
     node.style.top = y.toFixed(1) + '%';
   }
-  var lastPhase = '';
-  function updateTime() {
-    var now = new Date(), h = now.getHours() + now.getMinutes() / 60, ph = phaseOf(Math.floor(h));
+  placeBody(sun, .62);
+  placeBody(moon, .66);
+  function updateTheme() {
+    var ph = document.documentElement.getAttribute('data-theme') === 'dark' ? 'night' : 'day';
+    if (hero.getAttribute('data-phase') === ph) return;
     hero.setAttribute('data-phase', ph);
-    document.documentElement.setAttribute('data-phase', ph);
-    placeBody(sun, Math.min(1, Math.max(0, (h - 5) / 14)));
-    var tn = h >= 19 ? (h - 19) / 10 : (h + 5) / 10;
-    placeBody(moon, Math.min(1, Math.max(0, tn)));
-    if (ph !== lastPhase) { lastPhase = ph; updateMood(); }
+    updateMood();
   }
+  new MutationObserver(updateTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   /* ---------- 5. Tâm trạng của cảnh theo số tiền hôm nay ---------- */
   var bar = document.getElementById('hBar');
@@ -240,16 +214,15 @@
     var mood = over ? 'over' : pct >= 80 ? 'low' : pct >= 50 ? 'normal' : 'lush';
     if (hero.getAttribute('data-mood') !== mood) hero.setAttribute('data-mood', mood);
     setRain(mood === 'over');
-    var rb = !over && pct < 60 && hero.getAttribute('data-phase') === 'dusk' ? '1' : '0';
+    var rb = !over && pct < 50 && hero.getAttribute('data-phase') === 'day' ? '1' : '0';
     if (hero.getAttribute('data-rainbow') !== rb) hero.setAttribute('data-rainbow', rb);
   }
   new MutationObserver(updateMood).observe(hero, { attributes: true, attributeFilter: ['class'] });
   if (bar) new MutationObserver(updateMood).observe(bar, { attributes: true, attributeFilter: ['style'] });
 
-  updateTime();
+  updateTheme();
   updateMood();
   flyBirds();
-  setInterval(updateTime, 60000);
   var rz = null;
   window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(flyBirds, 300); });
 
