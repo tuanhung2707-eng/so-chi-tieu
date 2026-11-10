@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f1f8ff">
 <title>Sổ chi tiêu</title>
-<link rel="icon" type="image/png" href="/favicon.png?v=5">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
 <style>
   :root {
     color-scheme: light;
-    --bg:#f1f8ff;
+    --bg:#ebf6f0;
     --card:#ffffff;
     --text:#20364d;
     --muted:#71869b;
@@ -21,8 +20,8 @@
     --ok:#369b83;
     --bad:#d96f83;
     --past:#f4f8fc;
-    --today:#e6f4ff;
-    --chip:#edf6fd;
+    --today:#e2f5ea;
+    --chip:#e4f4ec;
     --shadow:0 3px 8px rgba(71,128,171,.06),0 10px 28px rgba(71,128,171,.08);
     --shadow-hover:0 7px 18px rgba(71,128,171,.13),0 16px 34px rgba(71,128,171,.10);
     --focus:0 0 0 3px rgba(102,174,232,.20);
@@ -31,7 +30,7 @@
   html { scroll-behavior:smooth; }
   body {
     margin:0; font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    background:radial-gradient(ellipse at top left,rgba(194,229,252,.42),transparent 42%),var(--bg);
+    background:radial-gradient(ellipse at top left,rgba(162,228,195,.35),transparent 45%),radial-gradient(ellipse at bottom right,rgba(186,232,252,.30),transparent 50%),var(--bg);
     color:var(--text); touch-action:manipulation; padding-bottom:env(safe-area-inset-bottom);
     -webkit-font-smoothing:antialiased;
   }
@@ -335,33 +334,6 @@
   *,*::before,*::after {  transition:none !important; scroll-behavior:auto !important; }
 }
 
-/* ---------- Cà chua Namuwu: huy hiệu cạnh tiêu đề + quả treo trên cây ---------- */
-.ttl { display:flex; align-items:center; gap:9px; }
-.tmt { position:relative; flex:none; width:34px; height:34px; display:grid; place-items:center; border-radius:50%;
-  text-decoration:none; -webkit-tap-highlight-color:transparent; outline-offset:3px; }
-.tmt img { width:32px; height:32px; display:block; filter:drop-shadow(0 3px 5px rgba(190,40,30,.28));
-  transition:transform .35s cubic-bezier(.34,1.56,.64,1), filter .35s ease; }
-.tmt:hover img, .tmt:focus-visible img { transform:rotate(-14deg) scale(1.14); filter:drop-shadow(0 4px 9px rgba(230,60,40,.45)); }
-.tmt:active img { transform:rotate(-6deg) scale(.94); }
-.tmt-tw, .tmt-sp { position:absolute; pointer-events:none; width:9px; height:9px; opacity:0;
-  background:#fff; clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);
-  filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 4px rgba(170,200,255,.9)); }
-.tmt-tw { top:7px; left:16px; }
-.tmt-sp { left:50%; top:50%; margin:-4px 0 0 -4px; width:8px; height:8px; }
-.tmt::after { content:attr(data-tip); position:absolute; left:50%; top:calc(100% + 8px); transform:translate(-50%,-4px);
-  white-space:nowrap; font-size:12px; font-weight:700; padding:5px 10px; border-radius:10px; pointer-events:none;
-  color:#fff; background:rgba(40,52,70,.92); box-shadow:0 6px 16px rgba(20,40,70,.22); opacity:0;
-  transition:opacity .2s ease, transform .2s ease; z-index:30; }
-.tmt:hover::after, .tmt:focus-visible::after { opacity:1; transform:translate(-50%,0); }
-@media (hover:none) { .tmt::after { display:none; } }
-/* quả cà chua treo trên cây trong thẻ "Hôm nay còn được tiêu": bấm được dù cảnh nền không nhận chuột */
-.hero > :not(.hero-scene) { pointer-events:none; }
-.tree-tmt { pointer-events:auto; cursor:pointer; }
-.tree-tmt .tt-hit { fill:transparent; stroke:none; }
-.tree-tmt image { filter:drop-shadow(0 2px 3px rgba(120,20,10,.35)); }
-.tt-swing { transform-origin:402px 128px; }
-.tree-tmt:hover image { filter:drop-shadow(0 0 5px rgba(255,235,200,.95)) drop-shadow(0 2px 3px rgba(120,20,10,.35)); }
-
 /* ---------- Chi tiết trang trí & hoạt ảnh nhẹ ---------- */
 .top h1 {
   display:inline-flex;
@@ -453,19 +425,19 @@
   border-radius: 50%;
   filter: blur(48px);
   pointer-events: none;
-  opacity: .45;
+  opacity: .42;
 }
-.bg .b1 { width: 460px; height: 460px; top: -120px; left: -100px; background: radial-gradient(circle, #a8dcfa 0%, rgba(168,220,250,0) 70%); }
-.bg .b2 { width: 420px; height: 420px; bottom: -110px; right: -90px; background: radial-gradient(circle, #9ad4f8 0%, rgba(154,212,248,0) 70%); }
-.bg .b3 { width: 360px; height: 360px; top: 38%; left: 50%; transform: translateX(-50%); background: radial-gradient(circle, #bce4fc 0%, rgba(188,228,252,0) 70%); }
+.bg .b1 { width: 460px; height: 460px; top: -120px; left: -100px; background: radial-gradient(circle, #bbf7d0 0%, rgba(187,247,208,0) 70%); }
+.bg .b2 { width: 420px; height: 420px; bottom: -110px; right: -90px; background: radial-gradient(circle, #bae6fd 0%, rgba(186,230,253,0) 70%); }
+.bg .b3 { width: 360px; height: 360px; top: 38%; left: 50%; transform: translateX(-50%); background: radial-gradient(circle, #cbf6de 0%, rgba(203,246,222,0) 70%); }
 
 .bg { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
 .wrap { position:relative; z-index:1; }
 
-.bub { position:absolute; bottom:-40px; left:var(--x); width: calc(var(--s) * 1.5); height: calc(var(--s) * 1.5); border-radius:50%; opacity:0;
-       background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95),rgba(255,255,255,.2) 58%),rgba(139,201,243,.28);
-       border:1px solid rgba(255,255,255,.75); box-shadow:0 2px 8px rgba(102,174,232,.12);
-        will-change:transform,opacity; }
+.bub { position:absolute; bottom:-40px; left:var(--x); width: calc(var(--s) * 0.95); height: calc(var(--s) * 0.95); border-radius:50%; opacity:0;
+       background:radial-gradient(circle at 35% 35%,rgba(255,255,240,.98) 0%,rgba(254,240,138,.85) 40%,rgba(245,158,11,.22) 80%);
+       border:1px solid rgba(255,255,255,.8); box-shadow:0 0 8px rgba(250,204,21,.5),0 0 16px rgba(251,191,36,.25);
+       will-change:transform,opacity; }
 @media (max-width:600px) {
   .b1 { width:340px; height:340px; } .b2 { width:300px; height:300px; } .b3 { width:300px; height:300px; }
   .bub:nth-child(n+9) { display:none; }
@@ -692,18 +664,21 @@ body {
    Cả cảnh dùng MỘT màu (--sea-ink) với độ đậm nhạt khác nhau; mọi kích thước tính theo bề rộng chỗ trống (--gw). */
 
 /* =========================================================
-   10. UNDER THE SEA — ĐẠI DƯƠNG HAI BÊN TRANG
-   Phong cách: Minimal Ocean / Monochrome Blue
+   10. MEADOW VALLEY — THUNG LŨNG ĐỒNG CỎ & ĐOM ĐÓM HAI BÊN TRANG
+   Phong cách: Lush Meadow, Rolling Hills & Fireflies
    ========================================================= */
 
 :root, html, body, .sea, .sea-defs {
-  --sea-ink: #66b3e8;
-  --sea-ink-light: #93cff8;
-  --sea-ink-soft: #7cc0f0;
-  --sea-ink-deep: #529ed6;
-  --sea-light: rgba(102, 179, 232, .10);
-  --sea-mid: rgba(102, 179, 232, .24);
-  --sea-deep: rgba(102, 179, 232, .45);
+  --sea-ink: #3f9c63;
+  --sea-ink-light: #6bc28c;
+  --sea-ink-soft: #53b077;
+  --sea-ink-deep: #287a49;
+  --val-hill-far: #9bd2af;
+  --val-hill-near: #68bc86;
+  --val-canopy: #5fb87e;
+  --val-canopy-deep: #3f9c63;
+  --val-trunk: #7a593d;
+  --val-butterfly: #fbbf24;
 }
 
 /* SVG definitions */
@@ -720,7 +695,7 @@ body {
 
 @media (min-width: 1140px) {
 
-  /* ---------- KHUNG CẢNH ---------- */
+  /* ---------- KHUNG CẢNH HAI BÊN ---------- */
 
   .sea {
     --gw: calc((100vw - 980px) / 2);
@@ -738,20 +713,19 @@ body {
 
     background:
       radial-gradient(
-        ellipse at 50% 15%,
-        rgba(255,255,255,.7),
+        ellipse at 50% 12%,
+        rgba(255, 255, 255, .82) 0%,
         transparent 65%
       ),
       linear-gradient(
         180deg,
-        rgba(116,192,242,.04) 0%,
-        rgba(116,192,242,.08) 55%,
-        rgba(102,179,232,.15) 100%
+        rgba(235, 248, 255, .45) 0%,
+        rgba(238, 253, 244, .60) 50%,
+        rgba(215, 247, 228, .75) 100%
       );
   }
 
   .sea-l { left: 0; }
-
   .sea-r { right: 0; }
 
   .sea svg {
@@ -771,13 +745,13 @@ body {
     -webkit-mask-image: linear-gradient(
       90deg,
       #000 0%,
-      #000 68%,
+      #000 70%,
       transparent 100%
     );
     mask-image: linear-gradient(
       90deg,
       #000 0%,
-      #000 68%,
+      #000 70%,
       transparent 100%
     );
   }
@@ -786,292 +760,138 @@ body {
     -webkit-mask-image: linear-gradient(
       270deg,
       #000 0%,
-      #000 68%,
+      #000 70%,
       transparent 100%
     );
     mask-image: linear-gradient(
       270deg,
       #000 0%,
-      #000 68%,
+      #000 70%,
       transparent 100%
     );
   }
 
-  /* Ánh sáng mặt nước chuyển động rất chậm */
-.bg::before {
-  content: "";
-  position: absolute;
-  width: 70vw;
-  height: 70vw;
-  min-width: 420px;
-  min-height: 420px;
-  top: -35vw;
-  left: -15vw;
-  border-radius: 50%;
-
-  background: radial-gradient(
-    circle,
-    rgba(116, 205, 245, .15) 0%,
-    rgba(164, 224, 249, .07) 42%,
-    transparent 70%
-  );
-
-  }
-
-.bg::after {
-  content: "";
-  position: absolute;
-  width: 60vw;
-  height: 60vw;
-  min-width: 360px;
-  min-height: 360px;
-  right: -25vw;
-  bottom: -35vw;
-  border-radius: 50%;
-
-  background: radial-gradient(
-    circle,
-    rgba(92, 184, 232, .12) 0%,
-    rgba(155, 220, 248, .06) 45%,
-    transparent 72%
-  );
-
-  }
-
-/* ---------- BỤI NƯỚC / BỌT KHÍ ---------- */
-
-  .sea .dust {
+  /* Vệt nắng mai xuyên qua thung lũng */
+  .sea .rays {
     position: absolute;
-    bottom: -15px;
-    width: var(--s, 4px);
-    height: var(--s, 4px);
-    border-radius: 50%;
-
-    background: rgba(255,255,255,.9);
-    border: 1px solid rgba(102,179,232,.28);
-    box-shadow: 0 0 8px rgba(255,255,255,.8);
-
-    opacity: 0;
-      }
-
-  /* ---------- ĐÁY BIỂN ---------- */
-
-  .sea::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    left: -15%;
-    right: -15%;
-    bottom: -20px;
-    height: 115px;
-
-    border-radius: 50% 50% 0 0 / 25% 25% 0 0;
-
+    inset: -30% -30% 0 -30%;
+    pointer-events: none;
+    opacity: .45;
     background:
+      radial-gradient(ellipse at 35% 0%, rgba(255, 255, 255, .85) 0%, transparent 55%),
       repeating-linear-gradient(
-        170deg,
-        rgba(255,255,255,.16) 0 2px,
-        transparent 2px 13px
-      ),
-      linear-gradient(
-        180deg,
-        rgba(118,194,244,.18),
-        rgba(102,179,232,.34)
+        -32deg,
+        transparent 0,
+        transparent 38px,
+        rgba(255, 255, 255, .18) 38px,
+        rgba(255, 255, 255, .18) 72px
+      );
+    mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+  }
+
+  .sea-r .rays {
+    background:
+      radial-gradient(ellipse at 65% 0%, rgba(255, 255, 255, .85) 0%, transparent 55%),
+      repeating-linear-gradient(
+        32deg,
+        transparent 0,
+        transparent 38px,
+        rgba(255, 255, 255, .18) 38px,
+        rgba(255, 255, 255, .18) 72px
       );
   }
 
- /* ---------- MỎM ĐÁ MỞ RỘNG ---------- */
-
-.rock-b {
-  left: -12%;
-  bottom: -5px;
-  width: clamp(85px, calc(var(--gw) * .72), 165px);
-  opacity: .62;
-}
-
-.rock-a {
-  left: 12%;
-  bottom: -5px;
-  width: clamp(100px, calc(var(--gw) * .88), 195px);
-  opacity: .72;
-}
-
-/* Đảo chiều bên phải */
-.sea-r .rock-b {
-  left: auto;
-  right: -12%;
-  transform: scaleX(-1);
-}
-
-.sea-r .rock-a {
-  left: auto;
-  right: 12%;
-  transform: scaleX(-1);
-}
-
-/* Sỏi đá */
-.pebbles {
-  bottom: 3px;
-  width: clamp(60px, calc(var(--gw) * .42), 95px);
-  opacity: .72;
-}
-
-  /* ---------- RONG BIỂN ---------- */
-
-  .kelp {
-    bottom: -5px;
-    width: clamp(18px, calc(var(--gw) * .13), 34px);
-
-    transform-origin: 50% 100%;
-      }
-
-  .kelp svg {
-    transform: scaleY(var(--h, 1));
-    transform-origin: 50% 100%;
+  /* Hạt phấn hoa vàng óng bay trong nắng */
+  .sea .dust {
+    position: absolute;
+    bottom: -20px;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle at 35% 35%, #fff 0%, #fde047 60%, rgba(245, 158, 11, .5) 100%);
+    box-shadow: 0 0 6px rgba(250, 204, 21, .6), 0 0 12px rgba(251, 191, 36, .3);
+    opacity: 0;
   }
 
-  .kelp.far {
-    width: clamp(20px, calc(var(--gw) * .15), 38px);
-    opacity: .28;
+  /* Dãy núi phía xa */
+  .sea .mtn {
+    bottom: 110px;
+    left: -5%;
+    width: 115%;
+    pointer-events: none;
+    opacity: .75;
+    filter: drop-shadow(0 4px 12px rgba(100, 160, 130, .12));
   }
 
-  .kelp.mid {
-    opacity: .55;
+  /* Đồi thoải nhấp nhô */
+  .sea .hill-b {
+    bottom: 50px;
+    left: -10%;
+    width: 125%;
+    opacity: .88;
   }
 
-  .grass {
-    bottom: -3px;
-    width: clamp(14px, calc(var(--gw) * .09), 24px);
-    opacity: .65;
-    transform-origin: 50% 100%;
-      }
+  .sea .hill-a {
+    bottom: 0;
+    left: -10%;
+    width: 125%;
+  }
 
-  /* ---------- SAO BIỂN ---------- */
+  /* Cây xanh đồng cỏ */
+  .sea .val-tree {
+    bottom: 35px;
+    transform-origin: bottom center;
+  }
 
-  .star {
-    bottom: 7px;
+  .sea .val-tree .tree-trunk {
+    transform-origin: bottom center;
+  }
+
+  .sea .val-tree .tree-crown {
+    transform-origin: 50% 60%;
+  }
+
+  /* Bụi cỏ & hoa dại */
+  .sea .wildflowers {
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  .sea .tuft {
+    transform-origin: bottom center;
+  }
+
+  .sea .flower-stem {
+    transform-origin: bottom center;
+  }
+
+  /* Mây trôi */
+  .sea .cloud {
+    top: 8%;
+    pointer-events: none;
+    opacity: .78;
+    color: #fff;
+    filter: drop-shadow(0 2px 6px rgba(100, 150, 130, .10));
+  }
+
+  /* Bướm lượn dập dờn */
+  .sea .butterfly {
+    pointer-events: none;
     transform-origin: center;
-      }
-
-  .star.s1 {
-    width: clamp(18px, calc(var(--gw) * .11), 28px);
-    opacity: .7;
-    transform: rotate(-15deg);
+    perspective: 400px;
+    filter: drop-shadow(0 2px 4px rgba(60, 120, 80, .18));
   }
 
-  .star.s2 {
-    width: clamp(13px, calc(var(--gw) * .075), 21px);
-    bottom: 12px;
-    opacity: .5;
-      }
-
-  /* ---------- CÁ BƠI ---------- */
-
-  .fish {
-    left: 7px;
-
-    --wd: clamp(17px, calc(var(--gw) * var(--f, .15)), 43px);
-    --sx: max(0px, calc(var(--gw) - var(--wd) - 14px));
-
-    width: var(--wd);
-    opacity: .7;
-
-      }
-
-  .fish.small {
-    opacity: .48;
+  .sea .butterfly .wing-l {
+    transform-origin: right center;
+    will-change: transform;
   }
 
-  .fish .tail {
-    transform-origin: 24px 25px;
-      }
-
-  .fish.slim .tail {
-    transform-origin: 28px 18px;
-  }
-
-  .fish.small .tail {
-    transform-origin: 14px 12px;
-      }
-
-  /* ---------- CUA BÒ ---------- */
-
-  .crab {
-    left: 6%;
-    bottom: 7px;
-
-    --cw: clamp(45px, calc(var(--gw) * .34), 82px);
-    --walk: max(0px, calc(var(--gw) - var(--cw) - 35px));
-
-    width: var(--cw);
-    opacity: .7;
-
-      }
-
-  .crab.small {
-    --cw: clamp(34px, calc(var(--gw) * .21), 58px);
-    left: auto;
-    right: 12%;
-    opacity: .48;
-      }
-
-  .crab .claw {
-    transform-box: view-box;
-  }
-
-  .crab .cl-l,
-  .crab .cl-r {
-    transform-origin: 12px 30px;
-      }
-
-  .crab .jaw {
-    transform-box: view-box;
-    transform-origin: 12px 24px;
-      }
-
-  .crab .legs {
-    transform-box: view-box;
-    transform-origin: 64px 60px;
-      }
-
-  /* ---------- RÙA BIỂN ---------- */
-
-  .turtle {
-    left: 7px;
-
-    --wd: clamp(75px, calc(var(--gw) * .57), 135px);
-    --sx: max(0px, calc(var(--gw) - var(--wd) - 14px));
-
-    width: var(--wd);
-    opacity: .7;
-
-      }
-
-  .turtle .fl {
-    transform-box: view-box;
-      }
-
-  .turtle .fl-n {
-    transform-origin: 88px 58px;
-  }
-
-  .turtle .fl-b {
-    transform-origin: 98px 52px;
-      }
-
-  .turtle .fl-r {
-    transform-origin: 36px 52px;
-      }
-
-  }
-
-/* ---------- TÔN TRỌNG GIẢM CHUYỂN ĐỘNG ---------- */
-
-@media (prefers-reduced-motion: reduce) {
-  .sea *,
-  .sea *::before,
-  .sea *::after {
-            transition-duration: .01ms !important;
+  .sea .butterfly .wing-r {
+    transform-origin: left center;
+    will-change: transform;
   }
 }
 
@@ -1081,36 +901,39 @@ body {
    ===================================================================== */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0b1522;
-  --card: #132235;
-  --text: #e6f1fc;
-  --muted: #8ca8c6;
-  --line: #213752;
-  --accent: #68b5f0;
-  --accent2: #89ccf9;
-  --accent-deep: #93cefa;
+  --bg: #0d1e22;
+  --card: #132a2f;
+  --text: #e6f6f1;
+  --muted: #7ca89d;
+  --line: #1c3b42;
+  --accent: #4ecdc4;
+  --accent2: #72e4db;
+  --accent-deep: #7de8e0;
   --ok: #46c3a4;
   --bad: #f08297;
-  --past: #0f1c2d;
-  --today: #182e47;
-  --chip: #182b42;
-  --shadow: 0 4px 12px rgba(0, 0, 0, .30), 0 12px 30px rgba(0, 0, 0, .35);
-  --shadow-hover: 0 8px 22px rgba(0, 0, 0, .42), 0 18px 38px rgba(0, 0, 0, .46);
-  --focus: 0 0 0 3px rgba(104, 181, 240, .28);
-  --sea-ink: #7ec6f9;
-  --sea-ink-light: #a6dcff;
-  --sea-ink-soft: #88ccf9;
-  --sea-ink-deep: #5ca8e2;
-  --sea-light: rgba(126, 198, 249, .12);
-  --sea-mid: rgba(126, 198, 249, .26);
-  --sea-deep: rgba(126, 198, 249, .48);
+  --past: #102429;
+  --today: #17383e;
+  --chip: #163238;
+  --shadow: 0 4px 12px rgba(0, 0, 0, .32), 0 12px 30px rgba(0, 0, 0, .38);
+  --shadow-hover: 0 8px 22px rgba(0, 0, 0, .44), 0 18px 38px rgba(0, 0, 0, .48);
+  --focus: 0 0 0 3px rgba(78, 205, 196, .28);
+  --sea-ink: #4fae79;
+  --sea-ink-light: #79ce9f;
+  --sea-ink-soft: #60be89;
+  --sea-ink-deep: #328657;
+  --val-hill-far: #224d40;
+  --val-hill-near: #2e6654;
+  --val-canopy: #387c66;
+  --val-canopy-deep: #215143;
+  --val-trunk: #4a3828;
+  --val-butterfly: #bef264;
 }
 
 html[data-theme="dark"] body {
   background:
-    radial-gradient(ellipse at 12% 15%, rgba(102, 181, 238, .15), transparent 40%),
-    radial-gradient(ellipse at 88% 72%, rgba(84, 158, 220, .12), transparent 44%),
-    linear-gradient(180deg, #091320 0%, #0d1b2d 55%, #102136 100%);
+    radial-gradient(ellipse at 15% 18%, rgba(52, 136, 102, .18), transparent 45%),
+    radial-gradient(ellipse at 85% 72%, rgba(36, 104, 98, .16), transparent 48%),
+    linear-gradient(180deg, #09181b 0%, #0e2227 55%, #132c32 100%);
   background-attachment: fixed;
   color: var(--text);
 }
@@ -1401,33 +1224,67 @@ html[data-theme="dark"] .wm-cact button {
 }
 
 /* Đại dương & bong bóng nền trong Dark Mode */
-html[data-theme="dark"] .bg .b1 { background: radial-gradient(circle, rgba(82, 162, 230, .26) 0%, transparent 70%); }
-html[data-theme="dark"] .bg .b2 { background: radial-gradient(circle, rgba(70, 148, 218, .22) 0%, transparent 70%); }
-html[data-theme="dark"] .bg .b3 { background: radial-gradient(circle, rgba(100, 180, 242, .20) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b1 { background: radial-gradient(circle, rgba(56, 142, 110, .25) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b2 { background: radial-gradient(circle, rgba(46, 128, 120, .22) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b3 { background: radial-gradient(circle, rgba(78, 205, 196, .18) 0%, transparent 70%); }
+
+/* ĐOM ĐÓM PHÁT SÁNG LUNG LINH TRONG ĐÊM (DARK MODE FIREFLIES) */
 html[data-theme="dark"] .bub {
-  background:
-    radial-gradient(
-      circle at 30% 25%,
-      rgba(215, 240, 255, .75) 0%,
-      rgba(145, 208, 252, .28) 22%,
-      rgba(95, 175, 235, .14) 58%,
-      rgba(65, 145, 210, .08) 100%
-    );
-  border-color: rgba(175, 224, 255, .48);
+  width: calc(var(--s) * 0.75);
+  height: calc(var(--s) * 0.75);
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d9f99d 40%, #84cc16 75%, rgba(101, 163, 13, .3) 100%);
+  border: 1px solid rgba(217, 249, 157, .85);
   box-shadow:
-    inset -4px -6px 14px rgba(110, 190, 245, .15),
-    0 0 14px rgba(110, 190, 245, .14);
+    0 0 10px #bef264,
+    0 0 22px rgba(163, 230, 53, .75),
+    0 0 36px rgba(132, 204, 22, .45);
 }
+
 @media (min-width: 1140px) {
   html[data-theme="dark"] .sea {
     background:
-      radial-gradient(ellipse at 50% 15%, rgba(110, 188, 245, .12), transparent 65%),
-      linear-gradient(180deg, rgba(20, 44, 72, .25) 0%, rgba(16, 36, 60, .45) 55%, rgba(12, 28, 48, .7) 100%);
+      radial-gradient(
+        ellipse at 50% 15%,
+        rgba(78, 205, 196, .12) 0%,
+        transparent 65%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(10, 24, 27, .75) 0%,
+        rgba(14, 34, 38, .85) 55%,
+        rgba(18, 44, 49, .95) 100%
+      );
   }
-  html[data-theme="dark"] .sea::after {
+
+  html[data-theme="dark"] .sea .rays {
+    opacity: .25;
     background:
-      repeating-linear-gradient(170deg, rgba(145, 208, 252, .08) 0 2px, transparent 2px 13px),
-      linear-gradient(180deg, rgba(58, 132, 196, .18), rgba(42, 104, 162, .34));
+      radial-gradient(ellipse at 35% 0%, rgba(132, 225, 200, .4) 0%, transparent 55%),
+      repeating-linear-gradient(
+        -32deg,
+        transparent 0,
+        transparent 38px,
+        rgba(100, 220, 180, .08) 38px,
+        rgba(100, 220, 180, .08) 72px
+      );
+  }
+
+  html[data-theme="dark"] .sea-r .rays {
+    background:
+      radial-gradient(ellipse at 65% 0%, rgba(132, 225, 200, .4) 0%, transparent 55%),
+      repeating-linear-gradient(
+        32deg,
+        transparent 0,
+        transparent 38px,
+        rgba(100, 220, 180, .08) 38px,
+        rgba(100, 220, 180, .08) 72px
+      );
+  }
+
+  /* Đom đóm trong khung cảnh 2 bên */
+  html[data-theme="dark"] .sea .dust {
+    background: radial-gradient(circle at 35% 35%, #fff 0%, #d9f99d 50%, #84cc16 85%);
+    box-shadow: 0 0 8px #bef264, 0 0 16px rgba(163, 230, 53, .8);
   }
 }
 
@@ -1475,29 +1332,326 @@ html[data-theme="dark"] .bub {
   }
 
 </style>
-<link rel="stylesheet" href="work.css?v=5">
-<link rel="stylesheet" href="scene.css?v=1">
+<link rel="stylesheet" href="animations.css?v=9">
+<link rel="stylesheet" href="work.css?v=3">
 </head>
 <body>
 <div class="bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="bub" style="--x:6%;--s:16px;--d:17s;--w:-0s"></i><i class="bub" style="--x:15%;--s:10px;--d:23s;--w:-5s"></i><i class="bub" style="--x:26%;--s:22px;--d:19s;--w:-9s"></i><i class="bub" style="--x:38%;--s:12px;--d:26s;--w:-2s"></i><i class="bub" style="--x:50%;--s:18px;--d:21s;--w:-12s"></i><i class="bub" style="--x:62%;--s:9px;--d:24s;--w:-7s"></i><i class="bub" style="--x:73%;--s:20px;--d:18s;--w:-3s"></i><i class="bub" style="--x:84%;--s:13px;--d:27s;--w:-10s"></i><i class="bub" style="--x:92%;--s:24px;--d:20s;--w:-14s"></i><i class="bub" style="--x:45%;--s:8px;--d:29s;--w:-16s"></i></div>
 <svg class="sea-defs" aria-hidden="true" focusable="false"><defs>
-<linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sea-ink);stop-opacity:.96"/><stop offset="1" style="stop-color:var(--sea-ink);stop-opacity:.56"/></linearGradient>
-<linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sea-ink);stop-opacity:.74"/><stop offset="1" style="stop-color:var(--sea-ink);stop-opacity:.38"/></linearGradient>
-<linearGradient id="gRock" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" style="stop-color:var(--sea-ink);stop-opacity:.86"/><stop offset=".6" style="stop-color:var(--sea-ink);stop-opacity:.58"/><stop offset="1" style="stop-color:var(--sea-ink);stop-opacity:.4"/></linearGradient>
-<linearGradient id="gKelp" x1="0" y1="1" x2="0" y2="0"><stop offset="0" style="stop-color:var(--sea-ink);stop-opacity:.5"/><stop offset="1" style="stop-color:var(--sea-ink);stop-opacity:.95"/></linearGradient>
-<linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sea-ink);stop-opacity:.3"/><stop offset="1" style="stop-color:var(--sea-ink);stop-opacity:.1"/></linearGradient>
+<linearGradient id="gMtnFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#a8ddc2;stop-opacity:.70"/><stop offset="1" style="stop-color:#c2eed6;stop-opacity:.25"/></linearGradient>
+<linearGradient id="gMtnNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#84cca5;stop-opacity:.85"/><stop offset="1" style="stop-color:#ace3c6;stop-opacity:.40"/></linearGradient>
+<linearGradient id="gHillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#a2dfb8;stop-opacity:.92"/><stop offset="1" style="stop-color:#7bc996;stop-opacity:.70"/></linearGradient>
+<linearGradient id="gHillNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#7fd49b;stop-opacity:.96"/><stop offset="1" style="stop-color:#53b274;stop-opacity:.80"/></linearGradient>
+<linearGradient id="gTrunk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:#6e4f35;stop-opacity:.95"/><stop offset="1" style="stop-color:#8e6646;stop-opacity:.95"/></linearGradient>
+<linearGradient id="gCanopy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#76d695;stop-opacity:.95"/><stop offset="1" style="stop-color:#48ab69;stop-opacity:.88"/></linearGradient>
+<linearGradient id="gButterflyWing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:#fde047;stop-opacity:.96"/><stop offset="1" style="stop-color:#f97316;stop-opacity:.92"/></linearGradient>
+<linearGradient id="gFlowerPink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#fbcfe8;stop-opacity:.95"/><stop offset="1" style="stop-color:#f472b6;stop-opacity:.90"/></linearGradient>
+<linearGradient id="gFlowerBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#bae6fd;stop-opacity:.95"/><stop offset="1" style="stop-color:#38bdf8;stop-opacity:.90"/></linearGradient>
+<linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#76d695;stop-opacity:.95"/><stop offset="1" style="stop-color:#48ab69;stop-opacity:.88"/></linearGradient>
+<linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#a2dfb8;stop-opacity:.85"/><stop offset="1" style="stop-color:#7bc996;stop-opacity:.50"/></linearGradient>
+<linearGradient id="gRock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#84cca5;stop-opacity:.85"/><stop offset="1" style="stop-color:#ace3c6;stop-opacity:.45"/></linearGradient>
+<linearGradient id="gKelp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#7fd49b;stop-opacity:.85"/><stop offset="1" style="stop-color:#53b274;stop-opacity:.50"/></linearGradient>
+<linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#bbf7d0;stop-opacity:.35"/><stop offset="1" style="stop-color:#dcfce7;stop-opacity:.12"/></linearGradient>
 </defs></svg>
-<div class="sea sea-l" aria-hidden="true"><i class="rays"></i><i class="dust" style="left:34%;--s:4px;--t:21s;--dl:-19s"></i><i class="dust" style="left:64%;--s:3px;--t:25s;--dl:-0s"></i><i class="dust" style="left:64%;--s:5px;--t:24s;--dl:-7s"></i><i class="dust" style="left:28%;--s:6px;--t:24s;--dl:-26s"></i><i class="dust" style="left:74%;--s:6px;--t:22s;--dl:-20s"></i><i class="dust" style="left:23%;--s:4px;--t:26s;--dl:-4s"></i><i class="dust" style="left:70%;--s:6px;--t:27s;--dl:-0s"></i><i class="dust" style="left:89%;--s:3px;--t:18s;--dl:-24s"></i><i class="dust" style="left:79%;--s:3px;--t:20s;--dl:-24s"></i><div class="it kelp far" style="left:6%;--t:9s;--dl:-2s;--h:.95"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp far" style="left:40%;--t:11s;--dl:-5s;--h:1.1"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp far" style="left:70%;--t:10s;--dl:-8s;--h:.85"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it rock-b"><svg viewBox="0 0 150 250"><path d="M0 250L6 176C10 146 28 130 36 100C44 66 62 42 84 40C104 38 108 68 116 92C126 122 146 140 150 180L150 250Z" fill="url(#gRock)"/><path d="M60 250L66 190C70 168 86 156 96 138C102 126 114 124 122 134C130 146 134 188 136 250Z" fill="url(#gBody)" opacity=".85"/><path d="M38 104C46 70 64 46 84 42M98 140C104 128 114 126 120 134" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2.4" stroke-linecap="round"/><path d="M56 130C64 152 58 176 62 200M84 80C88 96 82 108 86 124M20 170C26 184 22 196 26 210" fill="none" stroke="#fff" stroke-opacity=".26" stroke-width="1.8" stroke-linecap="round"/><circle cx="112" cy="184" r="3" fill="#fff" fill-opacity=".3"/><circle cx="120" cy="196" r="2.2" fill="#fff" fill-opacity=".3"/><circle cx="72" cy="104" r="2.4" fill="#fff" fill-opacity=".3"/></svg></div><div class="it rock-a"><svg viewBox="0 0 220 150"><path d="M0 150C2 108 24 78 58 68C70 42 106 30 134 46C164 38 202 66 214 108C218 124 220 138 220 150Z" fill="url(#gRock)"/><path d="M70 150C74 118 96 100 126 100C160 100 196 112 214 130L220 150Z" fill="var(--sea-ink)" fill-opacity=".3"/><path d="M60 70C72 46 106 34 134 49" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2.6" stroke-linecap="round"/><path d="M96 62C92 80 98 94 94 110M150 58C154 74 148 88 152 100M30 110C36 120 34 132 38 142" fill="none" stroke="#fff" stroke-opacity=".26" stroke-width="1.8" stroke-linecap="round"/><circle cx="176" cy="92" r="3" fill="#fff" fill-opacity=".3"/><circle cx="184" cy="100" r="2.2" fill="#fff" fill-opacity=".3"/><circle cx="46" cy="96" r="2.4" fill="#fff" fill-opacity=".3"/></svg></div><div class="it kelp mid" style="left:16%;--t:7.2s;--dl:-1s;--h:1.0"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:30%;--t:8.6s;--dl:-4s;--h:0.75"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:52%;--t:6.6s;--dl:-3s;--h:1.15"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:66%;--t:9.2s;--dl:-6s;--h:0.9"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:80%;--t:7.8s;--dl:-2s;--h:0.7"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it grass" style="left:4%;--t:5s;--dl:-1s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:24%;--t:6s;--dl:-3s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:48%;--t:5.5s;--dl:-2s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:72%;--t:6.5s;--dl:-4s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:88%;--t:5s;--dl:-1s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it pebbles" style="left:12%"><svg viewBox="0 0 120 30"><ellipse cx="18" cy="22" rx="16" ry="8" fill="url(#gRock)"/><ellipse cx="50" cy="24" rx="12" ry="6" fill="url(#gRock)" opacity=".8"/><ellipse cx="82" cy="21" rx="18" ry="9" fill="url(#gRock)"/><ellipse cx="108" cy="25" rx="9" ry="5" fill="url(#gRock)" opacity=".8"/><path d="M8 17C12 14 18 14 22 16M72 15C78 12 86 12 92 15" stroke="#fff" stroke-opacity=".35" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div><div class="it star s1" style="left:31%"><svg viewBox="0 0 64 64"><path d="M32.0 3.0 L39.3 21.9 L59.6 23.0 L43.9 35.9 L49.0 55.5 L32.0 44.5 L15.0 55.5 L20.1 35.9 L4.4 23.0 L24.7 21.9Z" fill="url(#gBody)" stroke="var(--sea-ink)" stroke-opacity=".7" stroke-width="5" stroke-linejoin="round"/><circle cx="32.0" cy="22.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="16.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="10.0" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="41.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="47.2" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="52.9" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="37.9" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="41.4" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="44.9" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="26.1" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="22.6" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="19.1" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="22.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="16.8" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="11.1" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="32" cy="32" r="3.4" fill="#fff" fill-opacity=".45"/></svg></div><div class="it star s2" style="left:66%"><svg viewBox="0 0 64 64"><path d="M32.0 3.0 L39.3 21.9 L59.6 23.0 L43.9 35.9 L49.0 55.5 L32.0 44.5 L15.0 55.5 L20.1 35.9 L4.4 23.0 L24.7 21.9Z" fill="url(#gBody)" stroke="var(--sea-ink)" stroke-opacity=".7" stroke-width="5" stroke-linejoin="round"/><circle cx="32.0" cy="22.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="16.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="10.0" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="41.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="47.2" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="52.9" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="37.9" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="41.4" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="44.9" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="26.1" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="22.6" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="19.1" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="22.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="16.8" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="11.1" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="32" cy="32" r="3.4" fill="#fff" fill-opacity=".45"/></svg></div><div class="it crab" style="--t:34s;--dl:-8s"><svg viewBox="0 0 128 90"><g class="legs"><path d="M38 56C26 52 14 57 8 68M37 62C25 64 17 72 14 82M42 67C34 73 31 80 33 86" fill="none" stroke="var(--sea-ink)" stroke-opacity=".8" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(128 0) scale(-1 1)"><path d="M38 56C26 52 14 57 8 68M37 62C25 64 17 72 14 82M42 67C34 73 31 80 33 86" fill="none" stroke="var(--sea-ink)" stroke-opacity=".8" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/></g></g><g class="claw cl-l"><path d="M34 47C20 45 10 35 12 22" fill="none" stroke="var(--sea-ink)" stroke-opacity=".85" stroke-width="5.5" stroke-linecap="round"/><path d="M3 20C0 8 10 0 21 4C16 8 14 13 13 20Z" fill="url(#gBody)"/><g class="jaw"><path d="M4 24C7 28 15 28 21 24C23 31 17 37 9 36C3 35 0 29 4 24Z" fill="url(#gBody)"/></g></g><g transform="translate(128 0) scale(-1 1)"><g class="claw cl-r"><path d="M34 47C20 45 10 35 12 22" fill="none" stroke="var(--sea-ink)" stroke-opacity=".85" stroke-width="5.5" stroke-linecap="round"/><path d="M3 20C0 8 10 0 21 4C16 8 14 13 13 20Z" fill="url(#gBody)"/><g class="jaw"><path d="M4 24C7 28 15 28 21 24C23 31 17 37 9 36C3 35 0 29 4 24Z" fill="url(#gBody)"/></g></g></g><path d="M54 32V21M74 32V21" stroke="var(--sea-ink)" stroke-opacity=".85" stroke-width="3.2" stroke-linecap="round"/><path d="M26 58C22 40 38 30 64 30C90 30 106 40 102 58C98 72 82 78 64 78C46 78 30 72 26 58Z" fill="url(#gBody)"/><path d="M38 42C48 35 80 35 90 42" stroke="#fff" stroke-opacity=".36" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="50" cy="58" r="2.4" fill="#fff" fill-opacity=".3"/><circle cx="64" cy="64" r="2.8" fill="#fff" fill-opacity=".3"/><circle cx="78" cy="58" r="2.4" fill="#fff" fill-opacity=".3"/><circle cx="57" cy="49" r="2" fill="#fff" fill-opacity=".3"/><circle cx="71" cy="49" r="2" fill="#fff" fill-opacity=".3"/><circle cx="54" cy="18" r="4.4" fill="#fff"/><circle cx="55.1" cy="18.4" r="2.2" fill="var(--sea-ink)"/><circle cx="56.0" cy="16.7" r="0.9" fill="#fff"/><circle cx="74" cy="18" r="4.4" fill="#fff"/><circle cx="75.1" cy="18.4" r="2.2" fill="var(--sea-ink)"/><circle cx="76.0" cy="16.7" r="0.9" fill="#fff"/></svg></div><div class="it fish trop" style="top:14%;--f:0.2;--t:36s;--dl:-9s"><svg viewBox="0 0 84 50"><g class="tail"><path d="M24 25C16 15 9 8 2 5C7 17 7 33 2 45C9 42 16 35 24 25Z" fill="url(#gSoft)"/><path d="M15 25L6 14M15 25L5 25M15 25L6 36" stroke="#fff" stroke-opacity=".35" stroke-width="1" fill="none" stroke-linecap="round"/></g><path d="M36 11C42-1 58-1 64 9C54 7 44 8 36 11Z" fill="url(#gSoft)"/><path d="M22 25C29 9 56 4 72 19C79 23 80 27 75 31C60 48 30 44 22 25Z" fill="url(#gBody)"/><path d="M30 32C42 41 58 41 69 32C58 45 38 45 30 32Z" fill="#fff" fill-opacity=".22"/><path d="M42 13C36 24 36 33 42 41M54 11C48 22 48 32 54 43" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 28C52 36 47 37 42 35C47 33 52 31 56 28Z" fill="#fff" fill-opacity=".4"/><path d="M46 40C48 48 56 50 61 46C57 44 52 42 50 38Z" fill="url(#gSoft)"/><circle cx="66" cy="21" r="3.6" fill="#fff"/><circle cx="66.9" cy="21.4" r="1.8" fill="var(--sea-ink)"/><circle cx="67.6" cy="19.9" r="0.7" fill="#fff"/></svg></div><div class="it fish slim" style="top:26%;--f:0.24;--t:30s;--dl:-3s"><svg viewBox="0 0 96 36"><g class="tail"><path d="M28 18C18 11 9 5 2 2C7 11 7 25 2 34C9 31 18 25 28 18Z" fill="url(#gSoft)"/></g><path d="M44 6C50 0 60 0 66 5C58 4 50 4 44 6Z" fill="url(#gSoft)"/><path d="M26 18C38 4 70 2 92 15C94 16.500 94 19.500 92 21C70 34 38 32 26 18Z" fill="url(#gBody)"/><path d="M36 24C52 31 74 29 88 21C74 33 50 34 36 24Z" fill="#fff" fill-opacity=".2"/><path d="M44 8L46 15M54 7L56 14M64 7L66 14M74 9L76 15" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" stroke-linecap="round"/><path d="M50 28C52 33 58 34 62 31C58 30 54 29 52 26Z" fill="url(#gSoft)"/><circle cx="82" cy="15" r="2.8" fill="#fff"/><circle cx="82.7" cy="15.3" r="1.4" fill="var(--sea-ink)"/><circle cx="83.3" cy="14.2" r="0.6" fill="#fff"/></svg></div><div class="it fish trop" style="top:52%;--f:0.16;--t:42s;--dl:-22s"><svg viewBox="0 0 84 50"><g class="tail"><path d="M24 25C16 15 9 8 2 5C7 17 7 33 2 45C9 42 16 35 24 25Z" fill="url(#gSoft)"/><path d="M15 25L6 14M15 25L5 25M15 25L6 36" stroke="#fff" stroke-opacity=".35" stroke-width="1" fill="none" stroke-linecap="round"/></g><path d="M36 11C42-1 58-1 64 9C54 7 44 8 36 11Z" fill="url(#gSoft)"/><path d="M22 25C29 9 56 4 72 19C79 23 80 27 75 31C60 48 30 44 22 25Z" fill="url(#gBody)"/><path d="M30 32C42 41 58 41 69 32C58 45 38 45 30 32Z" fill="#fff" fill-opacity=".22"/><path d="M42 13C36 24 36 33 42 41M54 11C48 22 48 32 54 43" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 28C52 36 47 37 42 35C47 33 52 31 56 28Z" fill="#fff" fill-opacity=".4"/><path d="M46 40C48 48 56 50 61 46C57 44 52 42 50 38Z" fill="url(#gSoft)"/><circle cx="66" cy="21" r="3.6" fill="#fff"/><circle cx="66.9" cy="21.4" r="1.8" fill="var(--sea-ink)"/><circle cx="67.6" cy="19.9" r="0.7" fill="#fff"/></svg></div><div class="it fish slim" style="top:66%;--f:0.2;--t:33s;--dl:-12s"><svg viewBox="0 0 96 36"><g class="tail"><path d="M28 18C18 11 9 5 2 2C7 11 7 25 2 34C9 31 18 25 28 18Z" fill="url(#gSoft)"/></g><path d="M44 6C50 0 60 0 66 5C58 4 50 4 44 6Z" fill="url(#gSoft)"/><path d="M26 18C38 4 70 2 92 15C94 16.500 94 19.500 92 21C70 34 38 32 26 18Z" fill="url(#gBody)"/><path d="M36 24C52 31 74 29 88 21C74 33 50 34 36 24Z" fill="#fff" fill-opacity=".2"/><path d="M44 8L46 15M54 7L56 14M64 7L66 14M74 9L76 15" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" stroke-linecap="round"/><path d="M50 28C52 33 58 34 62 31C58 30 54 29 52 26Z" fill="url(#gSoft)"/><circle cx="82" cy="15" r="2.8" fill="#fff"/><circle cx="82.7" cy="15.3" r="1.4" fill="var(--sea-ink)"/><circle cx="83.3" cy="14.2" r="0.6" fill="#fff"/></svg></div><div class="it fish small" style="top:41%;--f:0.075;--t:31s;--dl:-2s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:43.5%;--f:0.075;--t:31s;--dl:-2.9s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:39%;--f:0.075;--t:31s;--dl:-3.7s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:45%;--f:0.075;--t:31s;--dl:-4.6s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:40.5%;--f:0.075;--t:31s;--dl:-5.4s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div></div>
-<div class="sea sea-r" aria-hidden="true"><i class="rays"></i><i class="dust" style="left:83%;--s:5px;--t:27s;--dl:-11s"></i><i class="dust" style="left:92%;--s:3px;--t:29s;--dl:-14s"></i><i class="dust" style="left:35%;--s:3px;--t:30s;--dl:-5s"></i><i class="dust" style="left:18%;--s:5px;--t:23s;--dl:-27s"></i><i class="dust" style="left:35%;--s:6px;--t:24s;--dl:-3s"></i><i class="dust" style="left:77%;--s:4px;--t:16s;--dl:-23s"></i><i class="dust" style="left:31%;--s:6px;--t:20s;--dl:-5s"></i><i class="dust" style="left:53%;--s:4px;--t:28s;--dl:-25s"></i><i class="dust" style="left:13%;--s:4px;--t:25s;--dl:-19s"></i><div class="it kelp far" style="left:6%;--t:9s;--dl:-2s;--h:.95"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp far" style="left:40%;--t:11s;--dl:-5s;--h:1.1"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp far" style="left:70%;--t:10s;--dl:-8s;--h:.85"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it rock-b"><svg viewBox="0 0 150 250"><path d="M0 250L6 176C10 146 28 130 36 100C44 66 62 42 84 40C104 38 108 68 116 92C126 122 146 140 150 180L150 250Z" fill="url(#gRock)"/><path d="M60 250L66 190C70 168 86 156 96 138C102 126 114 124 122 134C130 146 134 188 136 250Z" fill="url(#gBody)" opacity=".85"/><path d="M38 104C46 70 64 46 84 42M98 140C104 128 114 126 120 134" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2.4" stroke-linecap="round"/><path d="M56 130C64 152 58 176 62 200M84 80C88 96 82 108 86 124M20 170C26 184 22 196 26 210" fill="none" stroke="#fff" stroke-opacity=".26" stroke-width="1.8" stroke-linecap="round"/><circle cx="112" cy="184" r="3" fill="#fff" fill-opacity=".3"/><circle cx="120" cy="196" r="2.2" fill="#fff" fill-opacity=".3"/><circle cx="72" cy="104" r="2.4" fill="#fff" fill-opacity=".3"/></svg></div><div class="it rock-a"><svg viewBox="0 0 220 150"><path d="M0 150C2 108 24 78 58 68C70 42 106 30 134 46C164 38 202 66 214 108C218 124 220 138 220 150Z" fill="url(#gRock)"/><path d="M70 150C74 118 96 100 126 100C160 100 196 112 214 130L220 150Z" fill="var(--sea-ink)" fill-opacity=".3"/><path d="M60 70C72 46 106 34 134 49" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2.6" stroke-linecap="round"/><path d="M96 62C92 80 98 94 94 110M150 58C154 74 148 88 152 100M30 110C36 120 34 132 38 142" fill="none" stroke="#fff" stroke-opacity=".26" stroke-width="1.8" stroke-linecap="round"/><circle cx="176" cy="92" r="3" fill="#fff" fill-opacity=".3"/><circle cx="184" cy="100" r="2.2" fill="#fff" fill-opacity=".3"/><circle cx="46" cy="96" r="2.4" fill="#fff" fill-opacity=".3"/></svg></div><div class="it kelp mid" style="left:10%;--t:8s;--dl:-3s;--h:0.8"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:26%;--t:7s;--dl:-5s;--h:1.1"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:44%;--t:9s;--dl:-1s;--h:0.7"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:58%;--t:6.8s;--dl:-7s;--h:1.0"><svg viewBox="0 0 44 240"><g><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it kelp mid" style="left:76%;--t:8.4s;--dl:-2s;--h:0.85"><svg viewBox="0 0 44 240"><g transform="translate(44 0) scale(-1 1)"><path d="M20 240C10 208 30 188 20 156C10 122 32 98 21 62C16 44 22 22 28 0C31 24 36 44 32 66C26 100 46 126 34 160C26 190 40 212 30 240Z" fill="url(#gKelp)"/><path d="M25 238C16 206 34 186 26 156C16 122 36 96 27 62C23 44 26 22 28 6" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1.4" stroke-linecap="round"/></g></svg></div><div class="it grass" style="left:2%;--t:6s;--dl:-2s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:20%;--t:5s;--dl:-1s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:38%;--t:6.5s;--dl:-3s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:64%;--t:5.5s;--dl:-2s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it grass" style="left:86%;--t:5s;--dl:-4s"><svg viewBox="0 0 46 100"><path d="M8 100C-2 65.0 18 44.0 2.0 30C-1.0 51.0 12 72.0 13 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M14 100C20 54.0 8 26.39999999999999 17.6 8C24.2 35.60000000000001 18 63.199999999999996 19 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M20 100C14 70.0 26 52.0 16.4 40C15.8 58.0 24 76.0 25 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/><path d="M26 100C36 58.0 16 32.8 32.0 16C41.0 41.2 30 66.4 31 100Z" fill="url(#gKelp)" opacity="0.7"/><path d="M32 100C24 67.0 40 47.199999999999996 27.2 34C25.4 53.800000000000004 36 73.6 37 100Z" fill="url(#gKelp)" opacity="0.75"/><path d="M38 100C45 62.0 31 39.199999999999996 42.2 24C49.4 46.800000000000004 42 69.6 43 100Z" fill="url(#gKelp)" opacity="0.7999999999999999"/></svg></div><div class="it pebbles" style="left:56%"><svg viewBox="0 0 120 30"><ellipse cx="18" cy="22" rx="16" ry="8" fill="url(#gRock)"/><ellipse cx="50" cy="24" rx="12" ry="6" fill="url(#gRock)" opacity=".8"/><ellipse cx="82" cy="21" rx="18" ry="9" fill="url(#gRock)"/><ellipse cx="108" cy="25" rx="9" ry="5" fill="url(#gRock)" opacity=".8"/><path d="M8 17C12 14 18 14 22 16M72 15C78 12 86 12 92 15" stroke="#fff" stroke-opacity=".35" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div><div class="it star s1" style="left:44%"><svg viewBox="0 0 64 64"><path d="M32.0 3.0 L39.3 21.9 L59.6 23.0 L43.9 35.9 L49.0 55.5 L32.0 44.5 L15.0 55.5 L20.1 35.9 L4.4 23.0 L24.7 21.9Z" fill="url(#gBody)" stroke="var(--sea-ink)" stroke-opacity=".7" stroke-width="5" stroke-linejoin="round"/><circle cx="32.0" cy="22.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="16.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="10.0" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="41.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="47.2" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="52.9" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="37.9" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="41.4" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="44.9" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="26.1" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="22.6" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="19.1" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="22.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="16.8" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="11.1" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="32" cy="32" r="3.4" fill="#fff" fill-opacity=".45"/></svg></div><div class="it star s2" style="left:12%"><svg viewBox="0 0 64 64"><path d="M32.0 3.0 L39.3 21.9 L59.6 23.0 L43.9 35.9 L49.0 55.5 L32.0 44.5 L15.0 55.5 L20.1 35.9 L4.4 23.0 L24.7 21.9Z" fill="url(#gBody)" stroke="var(--sea-ink)" stroke-opacity=".7" stroke-width="5" stroke-linejoin="round"/><circle cx="32.0" cy="22.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="16.0" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="32.0" cy="10.0" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="41.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="47.2" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="52.9" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="37.9" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="41.4" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="44.9" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="26.1" cy="40.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="22.6" cy="44.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="19.1" cy="49.8" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="22.5" cy="28.9" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="16.8" cy="27.1" r="1.5" fill="#fff" fill-opacity=".5"/><circle cx="11.1" cy="25.2" r="1.1" fill="#fff" fill-opacity=".5"/><circle cx="32" cy="32" r="3.4" fill="#fff" fill-opacity=".45"/></svg></div><div class="it turtle" style="top:30%"><svg viewBox="0 0 150 96"><path class="fl fl-b" d="M96 56C106 74 122 82 136 76C128 62 114 52 98 50Z" fill="url(#gSoft)" opacity=".8"/><path class="fl fl-r" d="M38 58C28 70 14 74 6 70C10 58 24 50 38 48Z" fill="url(#gSoft)"/><path d="M24 56L9 60L24 64Z" fill="url(#gSoft)"/><path d="M20 58H126C120 68 96 72 73 72C50 72 26 68 20 58Z" fill="url(#gSoft)"/><path d="M22 58C22 22 112 14 124 58Z" fill="url(#gBody)"/><path d="M22 58H124" stroke="#fff" stroke-opacity=".35" stroke-width="2"/><clipPath id="turtleShellClip"><path d="M22 58C22 22 112 14 124 58Z"/></clipPath><g clip-path="url(#turtleShellClip)"><path d="M64 34L82 34L91 44L82 54L64 54L55 44Z" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.7" stroke-linejoin="round"/><path d="M64 34L58 24M82 34L88 24M91 44L108 44M55 44L42 44M82 54L86 60M64 54L60 60" stroke="#fff" stroke-opacity=".4" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M36 49C41 39 52 32 66 31" stroke="#fff" stroke-opacity=".4" stroke-width="2.4" stroke-linecap="round" fill="none"/></g><path d="M104 56C108 48 114 46 118 48L118 62C112 62 106 60 104 56Z" fill="url(#gBody)"/><path d="M112 48C120 38 136 38 144 46C148 52 142 62 130 62C120 62 110 56 112 48Z" fill="url(#gBody)"/><path d="M131 57C135 59 140 58 143 55" stroke="var(--sea-ink)" stroke-opacity=".5" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="136" cy="49" r="3.2" fill="#fff"/><circle cx="136.8" cy="49.3" r="1.6" fill="var(--sea-ink)"/><circle cx="137.4" cy="48.0" r="0.6" fill="#fff"/><path class="fl fl-n" d="M86 60C96 80 114 90 132 84C124 68 106 56 90 54Z" fill="url(#gBody)"/></svg></div><div class="it crab small" style="--t:42s;--dl:-16s"><svg viewBox="0 0 128 90"><g class="legs"><path d="M38 56C26 52 14 57 8 68M37 62C25 64 17 72 14 82M42 67C34 73 31 80 33 86" fill="none" stroke="var(--sea-ink)" stroke-opacity=".8" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(128 0) scale(-1 1)"><path d="M38 56C26 52 14 57 8 68M37 62C25 64 17 72 14 82M42 67C34 73 31 80 33 86" fill="none" stroke="var(--sea-ink)" stroke-opacity=".8" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/></g></g><g class="claw cl-l"><path d="M34 47C20 45 10 35 12 22" fill="none" stroke="var(--sea-ink)" stroke-opacity=".85" stroke-width="5.5" stroke-linecap="round"/><path d="M3 20C0 8 10 0 21 4C16 8 14 13 13 20Z" fill="url(#gBody)"/><g class="jaw"><path d="M4 24C7 28 15 28 21 24C23 31 17 37 9 36C3 35 0 29 4 24Z" fill="url(#gBody)"/></g></g><g transform="translate(128 0) scale(-1 1)"><g class="claw cl-r"><path d="M34 47C20 45 10 35 12 22" fill="none" stroke="var(--sea-ink)" stroke-opacity=".85" stroke-width="5.5" stroke-linecap="round"/><path d="M3 20C0 8 10 0 21 4C16 8 14 13 13 20Z" fill="url(#gBody)"/><g class="jaw"><path d="M4 24C7 28 15 28 21 24C23 31 17 37 9 36C3 35 0 29 4 24Z" fill="url(#gBody)"/></g></g></g><path d="M54 32V21M74 32V21" stroke="var(--sea-ink)" stroke-opacity=".85" stroke-width="3.2" stroke-linecap="round"/><path d="M26 58C22 40 38 30 64 30C90 30 106 40 102 58C98 72 82 78 64 78C46 78 30 72 26 58Z" fill="url(#gBody)"/><path d="M38 42C48 35 80 35 90 42" stroke="#fff" stroke-opacity=".36" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="50" cy="58" r="2.4" fill="#fff" fill-opacity=".3"/><circle cx="64" cy="64" r="2.8" fill="#fff" fill-opacity=".3"/><circle cx="78" cy="58" r="2.4" fill="#fff" fill-opacity=".3"/><circle cx="57" cy="49" r="2" fill="#fff" fill-opacity=".3"/><circle cx="71" cy="49" r="2" fill="#fff" fill-opacity=".3"/><circle cx="54" cy="18" r="4.4" fill="#fff"/><circle cx="55.1" cy="18.4" r="2.2" fill="var(--sea-ink)"/><circle cx="56.0" cy="16.7" r="0.9" fill="#fff"/><circle cx="74" cy="18" r="4.4" fill="#fff"/><circle cx="75.1" cy="18.4" r="2.2" fill="var(--sea-ink)"/><circle cx="76.0" cy="16.7" r="0.9" fill="#fff"/></svg></div><div class="it fish trop" style="top:16%;--f:0.18;--t:32s;--dl:-13s"><svg viewBox="0 0 84 50"><g class="tail"><path d="M24 25C16 15 9 8 2 5C7 17 7 33 2 45C9 42 16 35 24 25Z" fill="url(#gSoft)"/><path d="M15 25L6 14M15 25L5 25M15 25L6 36" stroke="#fff" stroke-opacity=".35" stroke-width="1" fill="none" stroke-linecap="round"/></g><path d="M36 11C42-1 58-1 64 9C54 7 44 8 36 11Z" fill="url(#gSoft)"/><path d="M22 25C29 9 56 4 72 19C79 23 80 27 75 31C60 48 30 44 22 25Z" fill="url(#gBody)"/><path d="M30 32C42 41 58 41 69 32C58 45 38 45 30 32Z" fill="#fff" fill-opacity=".22"/><path d="M42 13C36 24 36 33 42 41M54 11C48 22 48 32 54 43" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 28C52 36 47 37 42 35C47 33 52 31 56 28Z" fill="#fff" fill-opacity=".4"/><path d="M46 40C48 48 56 50 61 46C57 44 52 42 50 38Z" fill="url(#gSoft)"/><circle cx="66" cy="21" r="3.6" fill="#fff"/><circle cx="66.9" cy="21.4" r="1.8" fill="var(--sea-ink)"/><circle cx="67.6" cy="19.9" r="0.7" fill="#fff"/></svg></div><div class="it fish slim" style="top:50%;--f:0.22;--t:27s;--dl:-4s"><svg viewBox="0 0 96 36"><g class="tail"><path d="M28 18C18 11 9 5 2 2C7 11 7 25 2 34C9 31 18 25 28 18Z" fill="url(#gSoft)"/></g><path d="M44 6C50 0 60 0 66 5C58 4 50 4 44 6Z" fill="url(#gSoft)"/><path d="M26 18C38 4 70 2 92 15C94 16.500 94 19.500 92 21C70 34 38 32 26 18Z" fill="url(#gBody)"/><path d="M36 24C52 31 74 29 88 21C74 33 50 34 36 24Z" fill="#fff" fill-opacity=".2"/><path d="M44 8L46 15M54 7L56 14M64 7L66 14M74 9L76 15" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" stroke-linecap="round"/><path d="M50 28C52 33 58 34 62 31C58 30 54 29 52 26Z" fill="url(#gSoft)"/><circle cx="82" cy="15" r="2.8" fill="#fff"/><circle cx="82.7" cy="15.3" r="1.4" fill="var(--sea-ink)"/><circle cx="83.3" cy="14.2" r="0.6" fill="#fff"/></svg></div><div class="it fish trop" style="top:72%;--f:0.15;--t:38s;--dl:-18s"><svg viewBox="0 0 84 50"><g class="tail"><path d="M24 25C16 15 9 8 2 5C7 17 7 33 2 45C9 42 16 35 24 25Z" fill="url(#gSoft)"/><path d="M15 25L6 14M15 25L5 25M15 25L6 36" stroke="#fff" stroke-opacity=".35" stroke-width="1" fill="none" stroke-linecap="round"/></g><path d="M36 11C42-1 58-1 64 9C54 7 44 8 36 11Z" fill="url(#gSoft)"/><path d="M22 25C29 9 56 4 72 19C79 23 80 27 75 31C60 48 30 44 22 25Z" fill="url(#gBody)"/><path d="M30 32C42 41 58 41 69 32C58 45 38 45 30 32Z" fill="#fff" fill-opacity=".22"/><path d="M42 13C36 24 36 33 42 41M54 11C48 22 48 32 54 43" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 28C52 36 47 37 42 35C47 33 52 31 56 28Z" fill="#fff" fill-opacity=".4"/><path d="M46 40C48 48 56 50 61 46C57 44 52 42 50 38Z" fill="url(#gSoft)"/><circle cx="66" cy="21" r="3.6" fill="#fff"/><circle cx="66.9" cy="21.4" r="1.8" fill="var(--sea-ink)"/><circle cx="67.6" cy="19.9" r="0.7" fill="#fff"/></svg></div><div class="it fish slim" style="top:84%;--f:0.18;--t:35s;--dl:-9s"><svg viewBox="0 0 96 36"><g class="tail"><path d="M28 18C18 11 9 5 2 2C7 11 7 25 2 34C9 31 18 25 28 18Z" fill="url(#gSoft)"/></g><path d="M44 6C50 0 60 0 66 5C58 4 50 4 44 6Z" fill="url(#gSoft)"/><path d="M26 18C38 4 70 2 92 15C94 16.500 94 19.500 92 21C70 34 38 32 26 18Z" fill="url(#gBody)"/><path d="M36 24C52 31 74 29 88 21C74 33 50 34 36 24Z" fill="#fff" fill-opacity=".2"/><path d="M44 8L46 15M54 7L56 14M64 7L66 14M74 9L76 15" stroke="#fff" stroke-opacity=".42" stroke-width="2.2" stroke-linecap="round"/><path d="M50 28C52 33 58 34 62 31C58 30 54 29 52 26Z" fill="url(#gSoft)"/><circle cx="82" cy="15" r="2.8" fill="#fff"/><circle cx="82.7" cy="15.3" r="1.4" fill="var(--sea-ink)"/><circle cx="83.3" cy="14.2" r="0.6" fill="#fff"/></svg></div><div class="it fish small" style="top:62%;--f:0.07;--t:28s;--dl:-1s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:64.5%;--f:0.07;--t:28s;--dl:-1.8s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:60%;--f:0.07;--t:28s;--dl:-2.6s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:66%;--f:0.07;--t:28s;--dl:-3.5s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div><div class="it fish small" style="top:61.5%;--f:0.07;--t:28s;--dl:-4.3s"><svg viewBox="0 0 44 24"><g class="tail"><path d="M14 12L2 3C4 9 4 15 2 21Z" fill="url(#gSoft)"/></g><path d="M12 12C18 3 34 2 42 11C43 12 43 13 42 14C34 22 18 21 12 12Z" fill="url(#gBody)"/><path d="M18 16C26 20 34 19 40 14C34 22 24 22 18 16Z" fill="#fff" fill-opacity=".22"/><circle cx="36" cy="10.5" r="1.9" fill="#fff"/><circle cx="36.5" cy="10.7" r="0.9" fill="var(--sea-ink)"/><circle cx="36.9" cy="9.9" r="0.4" fill="#fff"/></svg></div></div>
+<div class="sea sea-l" aria-hidden="true">
+  <i class="rays"></i>
+  <i class="dust" style="left:34%;--s:4px;--t:21s;--dl:-19s"></i>
+  <i class="dust" style="left:64%;--s:3px;--t:25s;--dl:-0s"></i>
+  <i class="dust" style="left:52%;--s:5px;--t:24s;--dl:-7s"></i>
+  <i class="dust" style="left:28%;--s:6px;--t:24s;--dl:-26s"></i>
+  <i class="dust" style="left:74%;--s:6px;--t:22s;--dl:-20s"></i>
+  <i class="dust" style="left:23%;--s:4px;--t:26s;--dl:-4s"></i>
+  <i class="dust" style="left:70%;--s:6px;--t:27s;--dl:-0s"></i>
+  <i class="dust" style="left:86%;--s:3px;--t:18s;--dl:-24s"></i>
+
+  <div class="it cloud c-1" style="left:12%;top:9%;width:120px;">
+    <svg viewBox="0 0 80 36">
+      <ellipse cx="40" cy="24" rx="28" ry="10"/>
+      <circle cx="26" cy="18" r="10"/>
+      <circle cx="42" cy="12" r="14"/>
+      <circle cx="58" cy="19" r="10"/>
+    </svg>
+  </div>
+  <div class="it cloud c-2" style="left:58%;top:18%;width:88px;">
+    <svg viewBox="0 0 80 36">
+      <ellipse cx="40" cy="24" rx="28" ry="10"/>
+      <circle cx="26" cy="18" r="10"/>
+      <circle cx="42" cy="12" r="14"/>
+      <circle cx="58" cy="19" r="10"/>
+    </svg>
+  </div>
+
+  <div class="it mtn">
+    <svg viewBox="0 0 360 180" preserveAspectRatio="none">
+      <path d="M0 180 L0 100 L50 62 L105 108 L160 48 L220 95 L285 38 L335 88 L360 66 L360 180 Z" fill="url(#gMtnFar)"/>
+      <path d="M0 180 L0 126 L65 92 L125 138 L190 82 L260 132 L315 88 L360 122 L360 180 Z" fill="url(#gMtnNear)"/>
+    </svg>
+  </div>
+
+  <div class="it hill hill-b">
+    <svg viewBox="0 0 360 160" preserveAspectRatio="none">
+      <path d="M-20 160 Q60 75 160 110 T340 85 T400 125 L400 160 L-20 160 Z" fill="url(#gHillFar)"/>
+    </svg>
+  </div>
+  <div class="it hill hill-a">
+    <svg viewBox="0 0 360 140" preserveAspectRatio="none">
+      <path d="M-20 140 Q80 55 190 90 T380 70 L400 140 L-20 140 Z" fill="url(#gHillNear)"/>
+    </svg>
+  </div>
+
+  <div class="it val-tree tree-sub" style="left:10%;bottom:55px;width:120px;height:170px;">
+    <svg viewBox="0 0 160 220">
+      <path class="tree-trunk" d="M74 220 C77 190 76 160 73 130 L87 130 C86 160 89 190 95 220 Z" fill="url(#gTrunk)"/>
+      <g class="tree-crown">
+        <circle cx="60" cy="98" r="24" fill="url(#gCanopy)"/>
+        <circle cx="80" cy="72" r="30" fill="url(#gCanopy)"/>
+        <circle cx="104" cy="90" r="25" fill="url(#gCanopy)"/>
+        <circle cx="70" cy="115" r="22" fill="url(#gCanopy)"/>
+        <circle cx="95" cy="112" r="22" fill="url(#gCanopy)"/>
+        <circle cx="78" cy="50" r="18" fill="url(#gCanopy)"/>
+        <circle cx="76" cy="68" r="10" fill="#fff" opacity=".18"/>
+        <circle cx="98" cy="85" r="8" fill="#fff" opacity=".18"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="it val-tree tree-main" style="left:38%;bottom:35px;width:185px;height:245px;">
+    <svg viewBox="0 0 160 220">
+      <path class="tree-trunk" d="M72 220 C76 185 75 150 71 116 L89 116 C88 150 92 185 98 220 Z" fill="url(#gTrunk)"/>
+      <g class="limbs" stroke="url(#gTrunk)" stroke-linecap="round" fill="none">
+        <path d="M78 128 Q60 110 46 88 M82 122 Q104 104 118 80 M79 116 Q74 94 76 70" stroke-width="5"/>
+        <path d="M56 100 Q48 94 40 92 M106 94 Q118 90 128 92" stroke-width="2.5"/>
+      </g>
+      <g class="tree-crown">
+        <g class="canopy-full">
+          <circle cx="46" cy="82" r="22" fill="url(#gCanopy)"/>
+          <circle cx="66" cy="58" r="26" fill="url(#gCanopy)"/>
+          <circle cx="94" cy="54" r="25" fill="url(#gCanopy)"/>
+          <circle cx="118" cy="74" r="21" fill="url(#gCanopy)"/>
+          <circle cx="78" cy="82" r="28" fill="url(#gCanopy)"/>
+          <circle cx="48" cy="108" r="16" fill="url(#gCanopy)"/>
+          <circle cx="122" cy="100" r="17" fill="url(#gCanopy)"/>
+          <circle cx="96" cy="98" r="22" fill="url(#gCanopy)"/>
+          <circle cx="68" cy="104" r="18" fill="url(#gCanopy)"/>
+          <circle cx="82" cy="38" r="18" fill="url(#gCanopy)"/>
+        </g>
+        <g class="canopy-highlights" fill="#fff" opacity=".22">
+          <circle cx="62" cy="54" r="8"/>
+          <circle cx="90" cy="50" r="9"/>
+          <circle cx="114" cy="70" r="7"/>
+          <circle cx="74" cy="76" r="10"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="it wildflowers" style="left:8%;bottom:6px;width:260px;height:95px;">
+    <svg viewBox="0 0 260 95">
+      <path class="tuft t0" d="M20 95 Q14 62 8 45 M20 95 Q22 55 24 38 M20 95 Q28 62 34 48" stroke="url(#gHillNear)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t1" d="M60 95 Q54 60 48 42 M60 95 Q62 50 65 32 M60 95 Q70 58 76 44" stroke="url(#gHillNear)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t2" d="M110 95 Q104 65 98 48 M110 95 Q112 55 115 36 M110 95 Q120 62 126 50" stroke="url(#gHillNear)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t0" d="M165 95 Q158 62 152 46 M165 95 Q168 52 172 35 M165 95 Q176 60 182 48" stroke="url(#gHillNear)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t1" d="M215 95 Q208 65 202 50 M215 95 Q218 56 220 38 M215 95 Q226 62 232 52" stroke="url(#gHillNear)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+      <g class="flower-stem">
+        <path d="M42 95 Q40 68 38 52" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="38" cy="50" r="3.2" fill="#fff"/>
+        <circle cx="38" cy="50" r="1.6" fill="#facc15"/>
+      </g>
+      <g class="flower-stem">
+        <path d="M88 95 Q90 65 92 46" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="92" cy="44" r="4.2" fill="url(#gFlowerPink)"/>
+        <circle cx="92" cy="44" r="1.8" fill="#fef08a"/>
+      </g>
+      <g class="flower-stem">
+        <path d="M140 95 Q138 68 136 50" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="136" cy="48" r="3.4" fill="#fff"/>
+        <circle cx="136" cy="48" r="1.7" fill="#facc15"/>
+      </g>
+      <g class="flower-stem">
+        <path d="M190 95 Q192 64 194 45" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="194" cy="43" r="4" fill="url(#gFlowerBlue)"/>
+        <circle cx="194" cy="43" r="1.8" fill="#fef08a"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="it butterfly bf-1" style="left:52%;top:38%;width:38px;height:30px;">
+    <svg viewBox="0 0 48 36">
+      <ellipse cx="24" cy="18" rx="2" ry="7" fill="var(--sea-ink-deep)"/>
+      <path d="M23 11 Q20 5 17 6 M25 11 Q28 5 31 6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <g class="wing-l">
+        <path d="M22 16 C12 5 2 9 4 19 C6 27 18 23 22 17 Z M22 18 C14 21 8 29 14 33 C20 35 22 25 22 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+      <g class="wing-r">
+        <path d="M26 16 C36 5 46 9 44 19 C42 27 30 23 26 17 Z M26 18 C34 21 40 29 34 33 C28 35 26 25 26 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="it butterfly bf-2" style="left:22%;top:56%;width:30px;height:24px;">
+    <svg viewBox="0 0 48 36">
+      <ellipse cx="24" cy="18" rx="2" ry="7" fill="var(--sea-ink-deep)"/>
+      <path d="M23 11 Q20 5 17 6 M25 11 Q28 5 31 6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <g class="wing-l">
+        <path d="M22 16 C12 5 2 9 4 19 C6 27 18 23 22 17 Z M22 18 C14 21 8 29 14 33 C20 35 22 25 22 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+      <g class="wing-r">
+        <path d="M26 16 C36 5 46 9 44 19 C42 27 30 23 26 17 Z M26 18 C34 21 40 29 34 33 C28 35 26 25 26 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<div class="sea sea-r" aria-hidden="true">
+  <i class="rays"></i>
+  <i class="dust" style="left:82%;--s:5px;--t:26s;--dl:-11s"></i>
+  <i class="dust" style="left:28%;--s:3px;--t:28s;--dl:-14s"></i>
+  <i class="dust" style="left:65%;--s:4px;--t:22s;--dl:-5s"></i>
+  <i class="dust" style="left:18%;--s:5px;--t:23s;--dl:-27s"></i>
+  <i class="dust" style="left:45%;--s:6px;--t:24s;--dl:-3s"></i>
+  <i class="dust" style="left:76%;--s:4px;--t:17s;--dl:-22s"></i>
+  <i class="dust" style="left:38%;--s:6px;--t:21s;--dl:-7s"></i>
+  <i class="dust" style="left:12%;--s:4px;--t:25s;--dl:-19s"></i>
+
+  <div class="it cloud c-1" style="left:24%;top:11%;width:115px;">
+    <svg viewBox="0 0 80 36">
+      <ellipse cx="40" cy="24" rx="28" ry="10"/>
+      <circle cx="26" cy="18" r="10"/>
+      <circle cx="42" cy="12" r="14"/>
+      <circle cx="58" cy="19" r="10"/>
+    </svg>
+  </div>
+  <div class="it cloud c-2" style="left:64%;top:20%;width:82px;">
+    <svg viewBox="0 0 80 36">
+      <ellipse cx="40" cy="24" rx="28" ry="10"/>
+      <circle cx="26" cy="18" r="10"/>
+      <circle cx="42" cy="12" r="14"/>
+      <circle cx="58" cy="19" r="10"/>
+    </svg>
+  </div>
+
+  <div class="it mtn">
+    <svg viewBox="0 0 360 180" preserveAspectRatio="none" transform="scale(-1, 1) translate(-360, 0)">
+      <path d="M0 180 L0 100 L50 62 L105 108 L160 48 L220 95 L285 38 L335 88 L360 66 L360 180 Z" fill="url(#gMtnFar)"/>
+      <path d="M0 180 L0 126 L65 92 L125 138 L190 82 L260 132 L315 88 L360 122 L360 180 Z" fill="url(#gMtnNear)"/>
+    </svg>
+  </div>
+
+  <div class="it hill hill-b">
+    <svg viewBox="0 0 360 160" preserveAspectRatio="none" transform="scale(-1, 1) translate(-360, 0)">
+      <path d="M-20 160 Q60 75 160 110 T340 85 T400 125 L400 160 L-20 160 Z" fill="url(#gHillFar)"/>
+    </svg>
+  </div>
+  <div class="it hill hill-a">
+    <svg viewBox="0 0 360 140" preserveAspectRatio="none" transform="scale(-1, 1) translate(-360, 0)">
+      <path d="M-20 140 Q80 55 190 90 T380 70 L400 140 L-20 140 Z" fill="url(#gHillNear)"/>
+    </svg>
+  </div>
+
+  <div class="it val-tree tree-main" style="left:34%;bottom:38px;width:195px;height:250px;">
+    <svg viewBox="0 0 160 220">
+      <path class="tree-trunk" d="M72 220 C76 185 75 150 71 116 L89 116 C88 150 92 185 98 220 Z" fill="url(#gTrunk)"/>
+      <g class="limbs" stroke="url(#gTrunk)" stroke-linecap="round" fill="none">
+        <path d="M78 128 Q60 110 46 88 M82 122 Q104 104 118 80 M79 116 Q74 94 76 70" stroke-width="5"/>
+        <path d="M56 100 Q48 94 40 92 M106 94 Q118 90 128 92" stroke-width="2.5"/>
+      </g>
+      <g class="tree-crown">
+        <g class="canopy-full">
+          <circle cx="46" cy="82" r="22" fill="url(#gCanopy)"/>
+          <circle cx="66" cy="58" r="26" fill="url(#gCanopy)"/>
+          <circle cx="94" cy="54" r="25" fill="url(#gCanopy)"/>
+          <circle cx="118" cy="74" r="21" fill="url(#gCanopy)"/>
+          <circle cx="78" cy="82" r="28" fill="url(#gCanopy)"/>
+          <circle cx="48" cy="108" r="16" fill="url(#gCanopy)"/>
+          <circle cx="122" cy="100" r="17" fill="url(#gCanopy)"/>
+          <circle cx="96" cy="98" r="22" fill="url(#gCanopy)"/>
+          <circle cx="68" cy="104" r="18" fill="url(#gCanopy)"/>
+          <circle cx="82" cy="38" r="18" fill="url(#gCanopy)"/>
+        </g>
+        <g class="canopy-highlights" fill="#fff" opacity=".22">
+          <circle cx="62" cy="54" r="8"/>
+          <circle cx="90" cy="50" r="9"/>
+          <circle cx="114" cy="70" r="7"/>
+          <circle cx="74" cy="76" r="10"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="it val-tree tree-sub" style="left:68%;bottom:60px;width:125px;height:175px;">
+    <svg viewBox="0 0 160 220">
+      <path class="tree-trunk" d="M74 220 C77 190 76 160 73 130 L87 130 C86 160 89 190 95 220 Z" fill="url(#gTrunk)"/>
+      <g class="tree-crown">
+        <circle cx="60" cy="98" r="24" fill="url(#gCanopy)"/>
+        <circle cx="80" cy="72" r="30" fill="url(#gCanopy)"/>
+        <circle cx="104" cy="90" r="25" fill="url(#gCanopy)"/>
+        <circle cx="70" cy="115" r="22" fill="url(#gCanopy)"/>
+        <circle cx="95" cy="112" r="22" fill="url(#gCanopy)"/>
+        <circle cx="78" cy="50" r="18" fill="url(#gCanopy)"/>
+        <circle cx="76" cy="68" r="10" fill="#fff" opacity=".18"/>
+        <circle cx="98" cy="85" r="8" fill="#fff" opacity=".18"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="it wildflowers" style="left:12%;bottom:6px;width:250px;height:95px;">
+    <svg viewBox="0 0 250 95">
+      <path class="tuft t0" d="M18 95 Q12 62 6 45 M18 95 Q20 55 22 38 M18 95 Q26 62 32 48" stroke="url(#gHillNear)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t1" d="M55 95 Q49 60 43 42 M55 95 Q57 50 60 32 M55 95 Q65 58 71 44" stroke="url(#gHillNear)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t2" d="M105 95 Q99 65 93 48 M105 95 Q107 55 110 36 M105 95 Q115 62 121 50" stroke="url(#gHillNear)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t0" d="M160 95 Q153 62 147 46 M160 95 Q163 52 167 35 M160 95 Q171 60 177 48" stroke="url(#gHillNear)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path class="tuft t1" d="M210 95 Q203 65 197 50 M210 95 Q213 56 215 38 M210 95 Q221 62 227 52" stroke="url(#gHillNear)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+      <g class="flower-stem">
+        <path d="M38 95 Q36 68 34 52" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="34" cy="50" r="4" fill="url(#gFlowerPink)"/>
+        <circle cx="34" cy="50" r="1.7" fill="#fef08a"/>
+      </g>
+      <g class="flower-stem">
+        <path d="M82 95 Q84 65 86 46" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="86" cy="44" r="3.4" fill="#fff"/>
+        <circle cx="86" cy="44" r="1.6" fill="#facc15"/>
+      </g>
+      <g class="flower-stem">
+        <path d="M135 95 Q133 68 131 50" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="131" cy="48" r="4.2" fill="url(#gFlowerBlue)"/>
+        <circle cx="131" cy="48" r="1.8" fill="#fef08a"/>
+      </g>
+      <g class="flower-stem">
+        <path d="M185 95 Q187 64 189 45" stroke="url(#gHillNear)" stroke-width="1.8" fill="none"/>
+        <circle cx="189" cy="43" r="3.4" fill="#fff"/>
+        <circle cx="189" cy="43" r="1.6" fill="#facc15"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="it butterfly bf-1" style="left:26%;top:42%;width:36px;height:28px;">
+    <svg viewBox="0 0 48 36">
+      <ellipse cx="24" cy="18" rx="2" ry="7" fill="var(--sea-ink-deep)"/>
+      <path d="M23 11 Q20 5 17 6 M25 11 Q28 5 31 6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <g class="wing-l">
+        <path d="M22 16 C12 5 2 9 4 19 C6 27 18 23 22 17 Z M22 18 C14 21 8 29 14 33 C20 35 22 25 22 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+      <g class="wing-r">
+        <path d="M26 16 C36 5 46 9 44 19 C42 27 30 23 26 17 Z M26 18 C34 21 40 29 34 33 C28 35 26 25 26 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="it butterfly bf-2" style="left:58%;top:28%;width:28px;height:22px;">
+    <svg viewBox="0 0 48 36">
+      <ellipse cx="24" cy="18" rx="2" ry="7" fill="var(--sea-ink-deep)"/>
+      <path d="M23 11 Q20 5 17 6 M25 11 Q28 5 31 6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <g class="wing-l">
+        <path d="M22 16 C12 5 2 9 4 19 C6 27 18 23 22 17 Z M22 18 C14 21 8 29 14 33 C20 35 22 25 22 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+      <g class="wing-r">
+        <path d="M26 16 C36 5 46 9 44 19 C42 27 30 23 26 17 Z M26 18 C34 21 40 29 34 33 C28 35 26 25 26 20 Z" fill="url(#gButterflyWing)"/>
+      </g>
+    </svg>
+  </div>
+</div>
   <header class="top">
     <div>
-      <div class="ttl">
-        <a class="tmt" id="tmtBadge" href="https://namuwu.pages.dev/" target="_blank" rel="noopener" aria-label="Mở Namuwu trong tab mới" data-tip="Namuwu 🍅">
-          <img src="tomato.png?v=2" alt="" width="32" height="32" decoding="async">
-          <i class="tmt-tw" aria-hidden="true"></i>
-        </a>
-        <h1 id="appTitle">Sổ chi tiêu</h1>
-      </div>
+      <h1 id="appTitle">Sổ chi tiêu</h1>
       <select id="periodSel" class="psel hidden" aria-label="Chọn kỳ chi tiêu"></select>
     </div>
     <nav class="mainTabs seg hidden" id="mainTabs" aria-label="Chọn mục"><button type="button" data-view="money" class="on">Sổ chi tiêu</button><button type="button" data-view="work">Công việc</button></nav>
@@ -1559,8 +1713,8 @@ html[data-theme="dark"] .bub {
             <g class="cloud cloud-two"><g transform="translate(272 22) scale(0.8)"><ellipse cx="0" cy="0" rx="19" ry="6"/><circle cx="-10" cy="-4" r="6.5"/><circle cx="0" cy="-9" r="9.5"/><circle cx="11" cy="-3.5" r="6.5"/></g></g>
             <g class="cloud cloud-three"><g transform="translate(160 68) scale(0.62)"><ellipse cx="0" cy="0" rx="19" ry="6"/><circle cx="-10" cy="-4" r="6.5"/><circle cx="0" cy="-9" r="9.5"/><circle cx="11" cy="-3.5" r="6.5"/></g></g>
           </g>
-          <path d="M-420 170 Q-330 150 -240 168 T-60 166 Q0 150 60 156 Q100 162 130 170 T270 164 T440 152 V210 H-420Z" class="hill-a" fill="currentColor" opacity=".14"/>
-          <path d="M-420 186 Q-330 178 -240 188 T-60 184 Q0 180 90 176 Q135 180 180 187 T360 183 T440 180 V210 H-420Z" class="hill-b" fill="currentColor" opacity=".28"/>
+          <path d="M-420 170 Q-330 150 -240 168 T-60 166 Q0 150 60 156 Q100 162 130 170 T270 164 T440 152 V210 H-420Z" fill="currentColor" opacity=".14"/>
+          <path d="M-420 186 Q-330 178 -240 188 T-60 184 Q0 180 90 176 Q135 180 180 187 T360 183 T440 180 V210 H-420Z" fill="currentColor" opacity=".28"/>
           <g class="tufts" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none" opacity=".55">
             <path class="tuft t0" d="M-400 192 q-2.3 -6.8 -5.7 -10.2 M-400 192 q1.1 -9.1 1.1 -13.7 M-400 192 q3.4 -5.7 6.8 -9.1"/>
             <path class="tuft t1" d="M-374 192 q-1.6 -4.8 -4.0 -7.2 M-374 192 q0.8 -6.4 0.8 -9.6 M-374 192 q2.4 -4.0 4.8 -6.4"/>
@@ -1600,20 +1754,13 @@ html[data-theme="dark"] .bub {
             <path d="M58 192V183M152 194V185M412 192V183" stroke="currentColor" stroke-width="1.3" fill="none"/>
             <circle cx="58" cy="181" r="2.4"/><circle cx="152" cy="183" r="2.4"/><circle cx="412" cy="181" r="2.4"/>
           </g>
-          <path d="M-420 202 Q-300 196 -180 201 T60 199 Q140 195 220 201 T440 198 V210 H-420Z" class="ground" fill="currentColor" opacity=".40"/>
+          <path d="M-420 202 Q-300 196 -180 201 T60 199 Q140 195 220 201 T440 198 V210 H-420Z" fill="currentColor" opacity=".40"/>
           <g class="tree" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M343 196 C347 170 346 143 342 116 L357 116 C356 143 360 172 367 196 Z" stroke="none" opacity=".88"/>
             <g class="limbs" fill="none" opacity=".88">
               <path d="M349 128 Q330 110 316 88 M352 122 Q374 104 388 80 M349 116 Q344 94 346 70 M356 152 Q378 142 394 124 M346 150 Q328 142 312 130" stroke-width="6"/>
               <path d="M326 100 Q318 94 310 92 M322 94 Q320 84 322 76 M376 94 Q388 90 398 92 M382 86 Q392 74 392 66 M346 84 Q338 74 334 64 M347 80 Q356 70 362 62 M386 130 Q396 126 402 128 M318 134 Q308 132 302 136" stroke-width="3"/>
             </g>
-            <a class="tree-tmt" href="https://namuwu.pages.dev/" target="_blank" rel="noopener" tabindex="-1">
-              <circle class="tt-hit" cx="402" cy="146" r="16"/>
-              <g class="tt-swing">
-                <path d="M402 128 V137" stroke="currentColor" stroke-width="1.6" fill="none"/>
-                <image href="tomato.png?v=2" x="391" y="135" width="22" height="22"/>
-              </g>
-            </a>
             <g class="crown" stroke="none">
               <g class="canopy-full" opacity=".82"><circle cx="316" cy="82" r="20"/><circle cx="336" cy="60" r="25"/><circle cx="362" cy="56" r="24"/><circle cx="386" cy="74" r="19"/><circle cx="348" cy="82" r="26"/><circle cx="318" cy="108" r="15"/><circle cx="392" cy="100" r="16"/><circle cx="366" cy="98" r="21"/><circle cx="338" cy="104" r="17"/><circle cx="352" cy="40" r="16"/><circle cx="402" cy="118" r="11"/></g>
               <g class="canopy-sparse" opacity=".82"><circle cx="312" cy="92" r="9"/><circle cx="322" cy="76" r="7"/><circle cx="392" cy="68" r="8"/><circle cx="399" cy="93" r="7"/><circle cx="334" cy="62" r="6"/><circle cx="363" cy="60" r="7"/><circle cx="403" cy="128" r="6"/><circle cx="382" cy="90" r="5"/><circle cx="341" cy="112" r="5"/><circle cx="316" cy="138" r="5"/></g>
@@ -1686,7 +1833,7 @@ html[data-theme="dark"] .bub {
       <div class="dow"><span data-f="Thứ 2" data-s="T2"></span><span data-f="Thứ 3" data-s="T3"></span><span data-f="Thứ 4" data-s="T4"></span><span data-f="Thứ 5" data-s="T5"></span><span data-f="Thứ 6" data-s="T6"></span><span data-f="Thứ 7" data-s="T7"></span><span data-f="Chủ nhật" data-s="CN"></span></div>
       <div class="cal" id="list"></div>
     </section>
-    <p class="sub" style="margin:10px 2px">Bấm vào ô ngày để thêm, sửa, xóa khoản chi. Các ngày đã qua theo ngày thực tế sẽ tự động được chốt, tiền dư/lố chia đều cho các ngày sau.</p>
+    <p class="sub" style="margin:10px 2px">Bấm vào ô ngày để thêm, sửa, xóa khoản chi và đánh dấu đã qua. Ngày đã có khoản chi hoặc đã đánh dấu "đã qua" sẽ được chốt, tiền dư/lố chia đều cho các ngày sau.</p>
   </main>
   <p class="sub" id="ver" style="margin:14px 2px"></p>
 </div>
@@ -1704,6 +1851,7 @@ html[data-theme="dark"] .bub {
   <div class="chips" id="eNoteChips" data-target="eNote"></div>
   <button class="btn primary block" id="eSave" type="button">Thêm khoản chi</button>
   <button class="btn block hidden" id="eCancel" type="button">Hủy sửa</button>
+  <label class="switchrow"><span>Đánh dấu đã qua</span><span class="switch"><input type="checkbox" id="ePass"><i></i></span></label>
   <div class="twin"><button class="btn" id="eClose" type="button">Đóng</button></div>
 </div></div>
 
@@ -1745,51 +1893,6 @@ html[data-theme="dark"] .bub {
 <div class="toast" id="toast"></div>
 <script src="config.js"></script>
 <script src="animations.js?v=9"></script>
-<script src="scene.js?v=1"></script>
-<script src="perf.js?v=1"></script>
-<script>
-/* Cà chua Namuwu: nhún nhẹ, thỉnh thoảng lóe sao; rê chuột/chạm thì bung sao; quả trên cây đung đưa */
-(function () {
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var badge = document.getElementById('tmtBadge');
-  var swing = document.querySelector('.tt-swing');
-  if (!badge || reduce || !badge.animate) return;
-  var img = badge.querySelector('img'), tw = badge.querySelector('.tmt-tw');
-  badge.animate([
-    { transform: 'translateY(0) rotate(0deg)' },
-    { transform: 'translateY(-2px) rotate(-4deg)', offset: 0.5 },
-    { transform: 'translateY(0) rotate(0deg)' }
-  ], { duration: 3200, iterations: Infinity, easing: 'ease-in-out' });
-  tw.animate([
-    { opacity: 0, transform: 'scale(0) rotate(0deg)' },
-    { opacity: 0, transform: 'scale(0) rotate(0deg)', offset: 0.7 },
-    { opacity: 1, transform: 'scale(1.1) rotate(45deg)', offset: 0.82 },
-    { opacity: 0, transform: 'scale(0) rotate(90deg)' }
-  ], { duration: 4200, iterations: Infinity, easing: 'ease-in-out' });
-  if (swing && swing.animate) {
-    swing.animate([
-      { transform: 'rotate(7deg)' }, { transform: 'rotate(-7deg)' }
-    ], { duration: 2600, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
-  }
-  var busy = false;
-  function burst() {
-    if (busy) return; busy = true;
-    for (var k = 0; k < 7; k++) {
-      var sp = document.createElement('i'); sp.className = 'tmt-sp'; badge.appendChild(sp);
-      var ang = (k / 7) * Math.PI * 2 + Math.random() * 0.5, d = 20 + Math.random() * 10;
-      var a = sp.animate([
-        { opacity: 1, transform: 'translate(0,0) scale(.4) rotate(0deg)' },
-        { opacity: 1, transform: 'translate(' + (Math.cos(ang) * d * .6).toFixed(1) + 'px,' + (Math.sin(ang) * d * .6).toFixed(1) + 'px) scale(1.1) rotate(60deg)', offset: 0.45 },
-        { opacity: 0, transform: 'translate(' + (Math.cos(ang) * d).toFixed(1) + 'px,' + (Math.sin(ang) * d).toFixed(1) + 'px) scale(.3) rotate(120deg)' }
-      ], { duration: 650 + Math.random() * 200, easing: 'cubic-bezier(.2,.7,.3,1)' });
-      a.onfinish = (function (el) { return function () { el.remove(); }; })(sp);
-    }
-    setTimeout(function () { busy = false; }, 700);
-  }
-  badge.addEventListener('pointerenter', burst);
-  badge.addEventListener('focus', burst);
-})();
-</script>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/+esm';
@@ -1918,7 +2021,7 @@ async function setView(v) {
   if (v === 'work') {
     show('work');
     try {
-      if (!WORK) { WORK = await import('./work.js?v=10'); WORK.initWork({ sb, getUser: () => S.user, toast, esc, setStatus }); }
+      if (!WORK) { WORK = await import('./work.js?v=8'); WORK.initWork({ sb, getUser: () => S.user, toast, esc, setStatus }); }
       WORK.openWork();
     } catch (e) { toast('Không tải được mục Công việc: ' + (e && e.message ? e.message : e), true); }
   } else {
@@ -1987,13 +2090,12 @@ function compute() {
   S.expenses.forEach((e) => { (by[e.spent_on] = by[e.spent_on] || []).push(e); });
   let carry = 0, total = 0, settledN = 0;
   const days = [];
-  const tdy = todayStr();
   for (let i = 0; i < N; i++) {
     const date = addD(p.start_date, i);
     const list = by[date] || [];
     const spent = list.reduce((a, e) => a + Number(e.amount), 0);
-    const passed = date < tdy;
-    const settled = list.length > 0 || passed;   // ngày đã qua theo ngày thực tế hoặc đã có khoản chi thì chốt
+    const passed = !!S.marks[date];
+    const settled = list.length > 0 || passed;   // ngày có khoản chi hoặc đã đánh dấu "đã qua" thì chốt
     const allowed = base + carry;
     let diff = null, adj = null;
     if (settled) {
@@ -2056,7 +2158,8 @@ function cellHtml(x, tdy, idx, dim) {
     (x.diff === null ? '' : '<div class="c df ' + dcls + '">' + fmtKs(x.diff) + '</div>') +
     (x.note ? '<i class="c dotn">✎</i>' : '');
   return '<div class="' + cls + '" data-date="' + esc(x.date) + '" style="--i:' + idx + '">' +
-    '<div class="top2"><span class="dn">' + dn + '</span></div>' + full + cmp + '</div>';
+    '<div class="top2"><span class="dn">' + dn + '</span><label class="chk"><input type="checkbox" ' + (x.passed ? 'checked' : '') +
+    ' aria-label="Đã qua"><span>✓</span></label></div>' + full + cmp + '</div>';
 }
 
 
@@ -2353,6 +2456,7 @@ function renderDaySheet() {
     '</b><span>' + (e.note ? esc(e.note) : '<i>không ghi chú</i>') + '</span></div>' +
     '<button type="button" class="xdel" data-del="' + esc(e.id) + '" aria-label="Xóa khoản chi">✕</button></div>').join('')
     : '<div class="hint" style="margin:8px 0 0">Ngày này chưa có khoản chi nào.</div>';
+  $('ePass').checked = !!S.marks[EDIT];
   $('eSave').textContent = EDIT_EXP ? 'Cập nhật khoản chi' : 'Thêm khoản chi';
   $('eCancel').classList.toggle('hidden', !EDIT_EXP);
 }
@@ -2474,7 +2578,12 @@ function bind() {
   ['qAmt', 'qNote'].forEach((id) => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') quickSubmit(); }));
 
   // bảng tuần
+  $('list').addEventListener('change', (e) => {
+    const cell = e.target.closest('.day'); if (!cell || e.target.type !== 'checkbox') return;
+    buzz(); setPassed(cell.getAttribute('data-date'), e.target.checked);
+  });
   $('list').addEventListener('click', (e) => {
+    if (e.target.closest('.chk')) return;
     const cell = e.target.closest('.day'); if (!cell || cell.classList.contains('void')) return;
     openDay(cell.getAttribute('data-date'));
   });
@@ -2496,6 +2605,7 @@ function bind() {
     EDIT_EXP = null; $('eAmt').value = ''; $('eNote').value = ''; previewAmt('eAmt', 'ePrev', true); renderDaySheet();
   };
   $('eCancel').onclick = () => { EDIT_EXP = null; $('eAmt').value = ''; $('eNote').value = ''; previewAmt('eAmt', 'ePrev', true); renderDaySheet(); };
+  $('ePass').addEventListener('change', () => { if (EDIT) setPassed(EDIT, $('ePass').checked); });
   $('eClose').onclick = () => closeModal('mDay');
 
   // cài đặt
