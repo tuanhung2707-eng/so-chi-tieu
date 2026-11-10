@@ -32,10 +32,29 @@
 .top h1::after {
   content:"✦";
   display:inline-block;
-  color:#79bce9;
-  font-size:.78em;
+  color:#1a88ff;
+  font-size:.86em;
   transform-origin:center;
-    text-shadow:0 2px 8px rgba(102,174,232,.28);
+  text-shadow:
+    0 0 5px rgba(43, 149, 255, .95),
+    0 0 12px rgba(26, 136, 255, .85),
+    0 0 22px rgba(26, 136, 255, .62),
+    0 0 34px rgba(20, 118, 240, .42);
+  filter:
+    drop-shadow(0 0 4px rgba(26, 136, 255, .85))
+    drop-shadow(0 0 10px rgba(56, 162, 255, .65));
+  will-change:transform, filter, text-shadow, opacity;
+}
+html[data-theme="dark"] .top h1::after {
+  color:#38a4ff;
+  text-shadow:
+    0 0 6px rgba(56, 164, 255, 1),
+    0 0 14px rgba(30, 144, 255, .95),
+    0 0 26px rgba(20, 126, 255, .80),
+    0 0 42px rgba(15, 108, 240, .58);
+  filter:
+    drop-shadow(0 0 5px rgba(56, 164, 255, .95))
+    drop-shadow(0 0 13px rgba(30, 144, 255, .78));
 }
 .hero {
   background-image:
@@ -353,21 +372,18 @@ body {
    Cả cảnh dùng MỘT màu (--sea-ink) với độ đậm nhạt khác nhau; mọi kích thước tính theo bề rộng chỗ trống (--gw). */
 
 /* =========================================================
-   10. MEADOW VALLEY — THUNG LŨNG ĐỒNG CỎ & ĐOM ĐÓM HAI BÊN TRANG
-   Phong cách: Lush Meadow, Rolling Hills & Fireflies
+   10. UNDER THE SEA — ĐẠI DƯƠNG HAI BÊN TRANG
+   Phong cách: Minimal Ocean / Monochrome Blue
    ========================================================= */
 
 :root, html, body, .sea, .sea-defs {
-  --sea-ink: #3f9c63;
-  --sea-ink-light: #6bc28c;
-  --sea-ink-soft: #53b077;
-  --sea-ink-deep: #287a49;
-  --val-hill-far: #9bd2af;
-  --val-hill-near: #68bc86;
-  --val-canopy: #5fb87e;
-  --val-canopy-deep: #3f9c63;
-  --val-trunk: #7a593d;
-  --val-butterfly: #fbbf24;
+  --sea-ink: #66b3e8;
+  --sea-ink-light: #93cff8;
+  --sea-ink-soft: #7cc0f0;
+  --sea-ink-deep: #529ed6;
+  --sea-light: rgba(102, 179, 232, .10);
+  --sea-mid: rgba(102, 179, 232, .24);
+  --sea-deep: rgba(102, 179, 232, .45);
 }
 
 /* SVG definitions */
@@ -384,7 +400,7 @@ body {
 
 @media (min-width: 1140px) {
 
-  /* ---------- KHUNG CẢNH HAI BÊN ---------- */
+  /* ---------- KHUNG CẢNH ---------- */
 
   .sea {
     --gw: calc((100vw - 980px) / 2);
@@ -402,19 +418,20 @@ body {
 
     background:
       radial-gradient(
-        ellipse at 50% 12%,
-        rgba(255, 255, 255, .82) 0%,
+        ellipse at 50% 15%,
+        rgba(255,255,255,.7),
         transparent 65%
       ),
       linear-gradient(
         180deg,
-        rgba(235, 248, 255, .45) 0%,
-        rgba(238, 253, 244, .60) 50%,
-        rgba(215, 247, 228, .75) 100%
+        rgba(116,192,242,.04) 0%,
+        rgba(116,192,242,.08) 55%,
+        rgba(102,179,232,.15) 100%
       );
   }
 
   .sea-l { left: 0; }
+
   .sea-r { right: 0; }
 
   .sea svg {
@@ -434,13 +451,13 @@ body {
     -webkit-mask-image: linear-gradient(
       90deg,
       #000 0%,
-      #000 70%,
+      #000 68%,
       transparent 100%
     );
     mask-image: linear-gradient(
       90deg,
       #000 0%,
-      #000 70%,
+      #000 68%,
       transparent 100%
     );
   }
@@ -449,310 +466,700 @@ body {
     -webkit-mask-image: linear-gradient(
       270deg,
       #000 0%,
-      #000 70%,
+      #000 68%,
       transparent 100%
     );
     mask-image: linear-gradient(
       270deg,
       #000 0%,
-      #000 70%,
+      #000 68%,
       transparent 100%
     );
   }
 
-  /* Vệt nắng mai xuyên qua thung lũng */
-  .sea .rays {
-    position: absolute;
-    inset: -30% -30% 0 -30%;
-    pointer-events: none;
-    opacity: .45;
-    background:
-      radial-gradient(ellipse at 35% 0%, rgba(255, 255, 255, .85) 0%, transparent 55%),
-      repeating-linear-gradient(
-        -32deg,
-        transparent 0,
-        transparent 38px,
-        rgba(255, 255, 255, .18) 38px,
-        rgba(255, 255, 255, .18) 72px
-      );
-    mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+  /* Ánh sáng mặt nước chuyển động rất chậm */
+.bg::before {
+  content: "";
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  min-width: 420px;
+  min-height: 420px;
+  top: -35vw;
+  left: -15vw;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(116, 205, 245, .15) 0%,
+    rgba(164, 224, 249, .07) 42%,
+    transparent 70%
+  );
+
   }
 
-  .sea-r .rays {
-    background:
-      radial-gradient(ellipse at 65% 0%, rgba(255, 255, 255, .85) 0%, transparent 55%),
-      repeating-linear-gradient(
-        32deg,
-        transparent 0,
-        transparent 38px,
-        rgba(255, 255, 255, .18) 38px,
-        rgba(255, 255, 255, .18) 72px
-      );
+.bg::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  min-width: 360px;
+  min-height: 360px;
+  right: -25vw;
+  bottom: -35vw;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(92, 184, 232, .12) 0%,
+    rgba(155, 220, 248, .06) 45%,
+    transparent 72%
+  );
+
   }
 
-  /* Hạt phấn hoa vàng óng bay trong nắng */
+/* ---------- BỤI NƯỚC / BỌT KHÍ ---------- */
+
   .sea .dust {
     position: absolute;
-    bottom: -20px;
-    width: var(--s);
-    height: var(--s);
+    bottom: -15px;
+    width: var(--s, 4px);
+    height: var(--s, 4px);
     border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle at 35% 35%, #fff 0%, #fde047 60%, rgba(245, 158, 11, .5) 100%);
-    box-shadow: 0 0 6px rgba(250, 204, 21, .6), 0 0 12px rgba(251, 191, 36, .3);
+
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(102,179,232,.28);
+    box-shadow: 0 0 8px rgba(255,255,255,.8);
+
     opacity: 0;
+      }
+
+  /* ---------- ĐÁY BIỂN ---------- */
+
+  .sea::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: -15%;
+    right: -15%;
+    bottom: -20px;
+    height: 115px;
+
+    border-radius: 50% 50% 0 0 / 25% 25% 0 0;
+
+    background:
+      repeating-linear-gradient(
+        170deg,
+        rgba(255,255,255,.16) 0 2px,
+        transparent 2px 13px
+      ),
+      linear-gradient(
+        180deg,
+        rgba(118,194,244,.18),
+        rgba(102,179,232,.34)
+      );
   }
 
-  /* Dãy núi phía xa */
-  .sea .mtn {
-    bottom: 110px;
-    left: -5%;
-    width: 115%;
-    pointer-events: none;
-    opacity: .75;
-    filter: drop-shadow(0 4px 12px rgba(100, 160, 130, .12));
+ /* ---------- MỎM ĐÁ MỞ RỘNG ---------- */
+
+.rock-b {
+  left: -12%;
+  bottom: -5px;
+  width: clamp(85px, calc(var(--gw) * .72), 165px);
+  opacity: .62;
+}
+
+.rock-a {
+  left: 12%;
+  bottom: -5px;
+  width: clamp(100px, calc(var(--gw) * .88), 195px);
+  opacity: .72;
+}
+
+/* Đảo chiều bên phải */
+.sea-r .rock-b {
+  left: auto;
+  right: -12%;
+  transform: scaleX(-1);
+}
+
+.sea-r .rock-a {
+  left: auto;
+  right: 12%;
+  transform: scaleX(-1);
+}
+
+/* Sỏi đá */
+.pebbles {
+  bottom: 3px;
+  width: clamp(60px, calc(var(--gw) * .42), 95px);
+  opacity: .72;
+}
+
+  /* ---------- RONG BIỂN ---------- */
+
+  .kelp {
+    bottom: -5px;
+    width: clamp(18px, calc(var(--gw) * .13), 34px);
+
+    transform-origin: 50% 100%;
+      }
+
+  .kelp svg {
+    transform: scaleY(var(--h, 1));
+    transform-origin: 50% 100%;
   }
 
-  /* Đồi thoải nhấp nhô */
-  .sea .hill-b {
-    bottom: 50px;
-    left: -10%;
-    width: 125%;
-    opacity: .88;
+  .kelp.far {
+    width: clamp(20px, calc(var(--gw) * .15), 38px);
+    opacity: .28;
   }
 
-  .sea .hill-a {
-    bottom: 0;
-    left: -10%;
-    width: 125%;
+  .kelp.mid {
+    opacity: .55;
   }
 
-  /* Cây xanh đồng cỏ */
-  .sea .val-tree {
-    bottom: 35px;
-    transform-origin: bottom center;
-  }
+  .grass {
+    bottom: -3px;
+    width: clamp(14px, calc(var(--gw) * .09), 24px);
+    opacity: .65;
+    transform-origin: 50% 100%;
+      }
 
-  .sea .val-tree .tree-trunk {
-    transform-origin: bottom center;
-  }
+  /* ---------- SAO BIỂN ---------- */
 
-  .sea .val-tree .tree-crown {
-    transform-origin: 50% 60%;
-  }
-
-  /* Bụi cỏ & hoa dại */
-  .sea .wildflowers {
-    bottom: 0;
-    pointer-events: none;
-  }
-
-  .sea .tuft {
-    transform-origin: bottom center;
-  }
-
-  .sea .flower-stem {
-    transform-origin: bottom center;
-  }
-
-  /* Mây trôi */
-  .sea .cloud {
-    top: 8%;
-    pointer-events: none;
-    opacity: .78;
-    color: #fff;
-    filter: drop-shadow(0 2px 6px rgba(100, 150, 130, .10));
-  }
-
-  /* Bướm lượn dập dờn */
-  .sea .butterfly {
-    pointer-events: none;
+  .star {
+    bottom: 7px;
     transform-origin: center;
-    perspective: 400px;
-    filter: drop-shadow(0 2px 4px rgba(60, 120, 80, .18));
+      }
+
+  .star.s1 {
+    width: clamp(18px, calc(var(--gw) * .11), 28px);
+    opacity: .7;
+    transform: rotate(-15deg);
   }
 
-  .sea .butterfly .wing-l {
-    transform-origin: right center;
-    will-change: transform;
+  .star.s2 {
+    width: clamp(13px, calc(var(--gw) * .075), 21px);
+    bottom: 12px;
+    opacity: .5;
+      }
+
+  /* ---------- CÁ BƠI ---------- */
+
+  .fish {
+    left: 7px;
+
+    --wd: clamp(17px, calc(var(--gw) * var(--f, .15)), 43px);
+    --sx: max(0px, calc(var(--gw) - var(--wd) - 14px));
+
+    width: var(--wd);
+    opacity: .7;
+
+      }
+
+  .fish.small {
+    opacity: .48;
   }
 
-  .sea .butterfly .wing-r {
-    transform-origin: left center;
-    will-change: transform;
+  .fish .tail {
+    transform-origin: 24px 25px;
+      }
+
+  .fish.slim .tail {
+    transform-origin: 28px 18px;
+  }
+
+  .fish.small .tail {
+    transform-origin: 14px 12px;
+      }
+
+  /* ---------- CUA BÒ ---------- */
+
+  .crab {
+    left: 6%;
+    bottom: 7px;
+
+    --cw: clamp(45px, calc(var(--gw) * .34), 82px);
+    --walk: max(0px, calc(var(--gw) - var(--cw) - 35px));
+
+    width: var(--cw);
+    opacity: .7;
+
+      }
+
+  .crab.small {
+    --cw: clamp(34px, calc(var(--gw) * .21), 58px);
+    left: auto;
+    right: 12%;
+    opacity: .48;
+      }
+
+  .crab .claw {
+    transform-box: view-box;
+  }
+
+  .crab .cl-l,
+  .crab .cl-r {
+    transform-origin: 12px 30px;
+      }
+
+  .crab .jaw {
+    transform-box: view-box;
+    transform-origin: 12px 24px;
+      }
+
+  .crab .legs {
+    transform-box: view-box;
+    transform-origin: 64px 60px;
+      }
+
+  /* ---------- RÙA BIỂN ---------- */
+
+  .turtle {
+    left: 7px;
+
+    --wd: clamp(75px, calc(var(--gw) * .57), 135px);
+    --sx: max(0px, calc(var(--gw) - var(--wd) - 14px));
+
+    width: var(--wd);
+    opacity: .7;
+
+      }
+
+  .turtle .fl {
+    transform-box: view-box;
+      }
+
+  .turtle .fl-n {
+    transform-origin: 88px 58px;
+  }
+
+  .turtle .fl-b {
+    transform-origin: 98px 52px;
+      }
+
+  .turtle .fl-r {
+    transform-origin: 36px 52px;
+      }
+
+  }
+
+/* ---------- TÔN TRỌNG GIẢM CHUYỂN ĐỘNG ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sea *,
+  .sea *::before,
+  .sea *::after {
+            transition-duration: .01ms !important;
   }
 }
 
-
 /* =====================================================================
-   CHẾ ĐỘ TỐI (DARK MODE — THUNG LŨNG ĐỒNG CỎ ĐÊM & ĐOM ĐÓM)
+   CHẾ ĐỘ TỐI (DARK MODE — ĐẠI DƯƠNG ĐÊM PASTEL)
    Kích hoạt khi <html data-theme="dark">
    ===================================================================== */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0d1e22;
-  --card: #132a2f;
-  --text: #e6f6f1;
-  --muted: #7ca89d;
-  --line: #1c3b42;
-  --accent: #4ecdc4;
-  --accent2: #72e4db;
-  --accent-deep: #7de8e0;
+  --bg: #0b1522;
+  --card: #132235;
+  --text: #e6f1fc;
+  --muted: #8ca8c6;
+  --line: #213752;
+  --accent: #68b5f0;
+  --accent2: #89ccf9;
+  --accent-deep: #93cefa;
   --ok: #46c3a4;
   --bad: #f08297;
-  --past: #102429;
-  --today: #17383e;
-  --chip: #163238;
-  --shadow: 0 4px 12px rgba(0, 0, 0, .32), 0 12px 30px rgba(0, 0, 0, .38);
-  --shadow-hover: 0 8px 22px rgba(0, 0, 0, .44), 0 18px 38px rgba(0, 0, 0, .48);
-  --focus: 0 0 0 3px rgba(78, 205, 196, .28);
-  --sea-ink: #4fae79;
-  --sea-ink-light: #79ce9f;
-  --sea-ink-soft: #60be89;
-  --sea-ink-deep: #328657;
-  --val-hill-far: #224d40;
-  --val-hill-near: #2e6654;
-  --val-canopy: #387c66;
-  --val-canopy-deep: #215143;
-  --val-trunk: #4a3828;
-  --val-butterfly: #bef264;
+  --past: #0f1c2d;
+  --today: #182e47;
+  --chip: #182b42;
+  --shadow: 0 4px 12px rgba(0, 0, 0, .30), 0 12px 30px rgba(0, 0, 0, .35);
+  --shadow-hover: 0 8px 22px rgba(0, 0, 0, .42), 0 18px 38px rgba(0, 0, 0, .46);
+  --focus: 0 0 0 3px rgba(104, 181, 240, .28);
+  --sea-ink: #7ec6f9;
+  --sea-ink-light: #a6dcff;
+  --sea-ink-soft: #88ccf9;
+  --sea-ink-deep: #5ca8e2;
+  --sea-light: rgba(126, 198, 249, .12);
+  --sea-mid: rgba(126, 198, 249, .26);
+  --sea-deep: rgba(126, 198, 249, .48);
 }
 
 html[data-theme="dark"] body {
   background:
-    radial-gradient(ellipse at 15% 18%, rgba(52, 136, 102, .18), transparent 45%),
-    radial-gradient(ellipse at 85% 72%, rgba(36, 104, 98, .16), transparent 48%),
-    linear-gradient(180deg, #09181b 0%, #0e2227 55%, #132c32 100%);
+    radial-gradient(ellipse at 12% 15%, rgba(102, 181, 238, .15), transparent 40%),
+    radial-gradient(ellipse at 88% 72%, rgba(84, 158, 220, .12), transparent 44%),
+    linear-gradient(180deg, #091320 0%, #0d1b2d 55%, #102136 100%);
   background-attachment: fixed;
   color: var(--text);
 }
 
+/* Thanh tiêu đề & nút công cụ */
 html[data-theme="dark"] .top {
-  background: rgba(13, 30, 34, .86);
-  border-bottom-color: rgba(28, 59, 66, .85);
+  background: rgba(11, 21, 34, .84);
+  border-bottom-color: rgba(35, 59, 88, .85);
+}
+html[data-theme="dark"] .pill,
+html[data-theme="dark"] .ibtn {
+  background: #15263b;
+  border-color: var(--line);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+html[data-theme="dark"] .ibtn:hover {
+  background: #1d334f;
+  border-color: #2f4f75;
 }
 
-html[data-theme="dark"] .bg .b1 { background: radial-gradient(circle, rgba(56, 142, 110, .25) 0%, transparent 70%); }
-html[data-theme="dark"] .bg .b2 { background: radial-gradient(circle, rgba(46, 128, 120, .22) 0%, transparent 70%); }
-html[data-theme="dark"] .bg .b3 { background: radial-gradient(circle, rgba(78, 205, 196, .18) 0%, transparent 70%); }
+/* Thẻ ngân sách chính & đồng cỏ */
+html[data-theme="dark"] .hero {
+  --scene-ink: rgba(182, 226, 255, .68);
+  background-image:
+    radial-gradient(circle at 12% 22%, rgba(255,255,255,.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 27% 76%, rgba(255,255,255,.14) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 33%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+    linear-gradient(135deg, #1d5585 0%, #266ca3 55%, #3583be 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .38);
+}
+html[data-theme="dark"] .hero.over {
+  --scene-ink: rgba(255, 192, 206, .72);
+  background: linear-gradient(135deg, #7c3346 0%, #984157 58%, #b05269 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .38);
+}
 
-/* Đom đóm trong Dark Mode */
+/* Các thẻ, ô nhập liệu, nút bấm, chip */
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .row,
+html[data-theme="dark"] .sheet,
+html[data-theme="dark"] .wm-card {
+  background: var(--card);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .card h2 {
+  text-decoration-color: rgba(104, 181, 240, .25);
+}
+html[data-theme="dark"] .seg {
+  background: #0e1a29;
+  border-color: #1d314a;
+}
+html[data-theme="dark"] .seg button.on {
+  background: #1c324d;
+  color: #9cd3fc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .wm-search input {
+  background: #0e1a29;
+  color: var(--text);
+  border-color: var(--line);
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #5c7896;
+}
+html[data-theme="dark"] input:hover,
+html[data-theme="dark"] textarea:hover,
+html[data-theme="dark"] select:hover {
+  border-color: #315278;
+}
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] select:focus {
+  background: #122133;
+  border-color: var(--accent);
+}
+html[data-theme="dark"] select.psel option {
+  background: #132235;
+  color: var(--text);
+}
+html[data-theme="dark"] .chip {
+  background: #172a40;
+  border-color: #243e5c;
+  color: #9acbf2;
+}
+html[data-theme="dark"] .chip:hover {
+  background: #1f3754;
+  border-color: #32557d;
+  color: #bce0ff;
+}
+html[data-theme="dark"] .btn {
+  background: #172a40;
+  border-color: var(--line);
+  color: var(--text);
+}
+html[data-theme="dark"] .btn:hover {
+  background: #1f3754;
+  border-color: #32557d;
+}
+html[data-theme="dark"] .btn.primary {
+  background: linear-gradient(135deg, #3c86c4, #58a3df);
+  border-color: transparent;
+  color: #fff;
+}
+html[data-theme="dark"] .btn.danger {
+  background: #2c1822;
+  border-color: #4d2635;
+  color: #f48ea2;
+}
+html[data-theme="dark"] .btn.danger:hover {
+  background: #3b1e2b;
+  border-color: #633043;
+}
+
+/* Bảng tuần & ô ngày trong kỳ */
+html[data-theme="dark"] #calWrap {
+  border-color: var(--line);
+  background:
+    radial-gradient(circle, rgba(104, 181, 240, .18) 1.1px, transparent 1.7px) 0 0 / 16px 16px,
+    linear-gradient(180deg, rgba(19, 34, 53, .75), rgba(14, 26, 42, .55));
+}
+html[data-theme="dark"] .wk {
+  background: rgba(19, 34, 53, .82);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .wk.now {
+  border-color: #386593;
+  box-shadow: 0 0 0 1px rgba(104, 181, 240, .2), var(--shadow);
+}
+html[data-theme="dark"] .wk .day:not(.void) {
+  background: linear-gradient(145deg, #15263b 0%, #172940 52%, #1b2842 100%);
+  border-color: #233b57;
+}
+html[data-theme="dark"] .wk .day:not(.void):nth-child(4n + 2),
+html[data-theme="dark"] .wk .day:not(.void):nth-child(4n + 3) {
+  background: linear-gradient(145deg, #17263d 0%, #1a2742 48%, #162940 100%);
+  border-color: #273c59;
+}
+html[data-theme="dark"] .wk .day.past:not(.void),
+html[data-theme="dark"] .row.past {
+  background: linear-gradient(145deg, #101d2e 0%, #122033 55%, #142036 100%);
+  border-color: #1c2f47;
+}
+html[data-theme="dark"] .wk .day.today:not(.void),
+html[data-theme="dark"] .row.today {
+  background: linear-gradient(145deg, #1b3654 0%, #213759 100%);
+  border-color: #467eb5;
+}
+html[data-theme="dark"] .day.void {
+  background: transparent;
+  border-color: #1c2f47;
+}
+html[data-theme="dark"] .day:hover,
+html[data-theme="dark"] .row:hover {
+  border-color: #3c6794;
+}
+html[data-theme="dark"] .chk span {
+  background: #0e1a29;
+  border-color: #2b4766;
+}
+html[data-theme="dark"] .badge {
+  background: #1d3958;
+  color: #93cefa;
+}
+html[data-theme="dark"] .banner {
+  background: linear-gradient(100deg, #162b44, #132338);
+  border-color: #315880;
+}
+html[data-theme="dark"] .switch i {
+  background: #253d59;
+}
+html[data-theme="dark"] .xi {
+  background: #172a40;
+}
+html[data-theme="dark"] .xi:hover {
+  background: #1e3550;
+}
+html[data-theme="dark"] .xi.on {
+  background: #1f3a58;
+  border-color: var(--accent);
+}
+html[data-theme="dark"] .xdel:hover {
+  background: #331c26;
+}
+html[data-theme="dark"] .floaty {
+  background: #182d46;
+  color: #9ad2fc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .4);
+}
+html[data-theme="dark"] .sk {
+  background: linear-gradient(90deg, #132235 25%, #1c314b 37%, #132235 63%);
+  background-size: 400% 100%;
+}
+
+/* Mục Công việc (work.css) trong Dark Mode */
+html[data-theme="dark"] .wm-empty {
+  background: rgba(19, 34, 53, .6);
+  border-color: #284463;
+}
+html[data-theme="dark"] .wm-ib {
+  background: #182b42;
+  color: #93c6ed;
+}
+html[data-theme="dark"] .wm-ib:hover {
+  background: #213a57;
+}
+html[data-theme="dark"] .wm-ib.bad {
+  background: #2e1923;
+  color: var(--bad);
+}
+html[data-theme="dark"] .wm-ib.bad:hover {
+  background: #3d202e;
+}
+html[data-theme="dark"] .wm-grp {
+  background: #1b3450;
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-code {
+  color: #8ab8de;
+}
+html[data-theme="dark"] .wm-cover,
+html[data-theme="dark"] .wm-gal button,
+html[data-theme="dark"] .wm-ph {
+  background: linear-gradient(135deg, #16283d, #112030);
+}
+html[data-theme="dark"] .wm-count {
+  background: rgba(19, 34, 53, .92);
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-addph {
+  background: #142438;
+  border-color: #2b496b;
+  color: #9ad2fc;
+}
+html[data-theme="dark"] .wm-addph:hover {
+  background: #1a2f48;
+}
+html[data-theme="dark"] .wm-pwc {
+  background: #16283d;
+  border-color: #264363;
+  color: #a8d8ff;
+}
+html[data-theme="dark"] .wm-pwc:hover {
+  background: #1d344f;
+  border-color: #365d87;
+}
+html[data-theme="dark"] .wm-pastebox,
+html[data-theme="dark"] .wm-quick,
+html[data-theme="dark"] .wm-ck {
+  background: #15263a;
+  border-color: #243e5c;
+}
+html[data-theme="dark"] .wm-ck.ok {
+  background: #122b29;
+}
+html[data-theme="dark"] .wm-ck.bad,
+html[data-theme="dark"] .wm-err:not(:empty),
+html[data-theme="dark"] .wm-banner {
+  background: #2c1822;
+  border-color: #522738;
+  color: #f799ab;
+}
+html[data-theme="dark"] .wm-mon {
+  background: rgba(19, 34, 53, .9);
+  border-color: var(--line);
+}
+html[data-theme="dark"] .wm-mon.now {
+  border-color: #3d6c9c;
+}
+html[data-theme="dark"] .wm-d:hover,
+html[data-theme="dark"] .wm-ui:hover {
+  background: #1b314b;
+}
+html[data-theme="dark"] .wm-ui {
+  border-bottom-color: #1c2f47;
+}
+html[data-theme="dark"] .wm-modal .sheet > .twin:last-child {
+  background: linear-gradient(180deg, rgba(19, 34, 53, 0), #132235 30%);
+}
+html[data-theme="dark"] .wm-cact button {
+  background: rgba(19, 34, 53, .94);
+  color: #9ad2fc;
+}
+
+/* Đại dương & bong bóng nền trong Dark Mode */
+html[data-theme="dark"] .bg .b1 { background: radial-gradient(circle, rgba(82, 162, 230, .26) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b2 { background: radial-gradient(circle, rgba(70, 148, 218, .22) 0%, transparent 70%); }
+html[data-theme="dark"] .bg .b3 { background: radial-gradient(circle, rgba(100, 180, 242, .20) 0%, transparent 70%); }
 html[data-theme="dark"] .bub {
-  width: calc(var(--s) * 0.75);
-  height: calc(var(--s) * 0.75);
-  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d9f99d 40%, #84cc16 75%, rgba(101, 163, 13, .3) 100%);
-  border: 1px solid rgba(217, 249, 157, .85);
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      rgba(215, 240, 255, .75) 0%,
+      rgba(145, 208, 252, .28) 22%,
+      rgba(95, 175, 235, .14) 58%,
+      rgba(65, 145, 210, .08) 100%
+    );
+  border-color: rgba(175, 224, 255, .48);
   box-shadow:
-    0 0 10px #bef264,
-    0 0 22px rgba(163, 230, 53, .75),
-    0 0 36px rgba(132, 204, 22, .45);
+    inset -4px -6px 14px rgba(110, 190, 245, .15),
+    0 0 14px rgba(110, 190, 245, .14);
 }
-
 @media (min-width: 1140px) {
   html[data-theme="dark"] .sea {
     background:
-      radial-gradient(
-        ellipse at 50% 15%,
-        rgba(78, 205, 196, .12) 0%,
-        transparent 65%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(10, 24, 27, .75) 0%,
-        rgba(14, 34, 38, .85) 55%,
-        rgba(18, 44, 49, .95) 100%
-      );
+      radial-gradient(ellipse at 50% 15%, rgba(110, 188, 245, .12), transparent 65%),
+      linear-gradient(180deg, rgba(20, 44, 72, .25) 0%, rgba(16, 36, 60, .45) 55%, rgba(12, 28, 48, .7) 100%);
   }
-
-  html[data-theme="dark"] .sea .rays {
-    opacity: .25;
+  html[data-theme="dark"] .sea::after {
     background:
-      radial-gradient(ellipse at 35% 0%, rgba(132, 225, 200, .4) 0%, transparent 55%),
-      repeating-linear-gradient(
-        -32deg,
-        transparent 0,
-        transparent 38px,
-        rgba(100, 220, 180, .08) 38px,
-        rgba(100, 220, 180, .08) 72px
-      );
-  }
-
-  html[data-theme="dark"] .sea-r .rays {
-    background:
-      radial-gradient(ellipse at 65% 0%, rgba(132, 225, 200, .4) 0%, transparent 55%),
-      repeating-linear-gradient(
-        32deg,
-        transparent 0,
-        transparent 38px,
-        rgba(100, 220, 180, .08) 38px,
-        rgba(100, 220, 180, .08) 72px
-      );
-  }
-
-  html[data-theme="dark"] .sea .dust {
-    background: radial-gradient(circle at 35% 35%, #fff 0%, #d9f99d 50%, #84cc16 85%);
-    box-shadow: 0 0 8px #bef264, 0 0 16px rgba(163, 230, 53, .8);
+      repeating-linear-gradient(170deg, rgba(145, 208, 252, .08) 0 2px, transparent 2px 13px),
+      linear-gradient(180deg, rgba(58, 132, 196, .18), rgba(42, 104, 162, .34));
   }
 }
+
 `;
 
-    function applyValleyPalette(isDark) {
+  function applyPastelBlueDefs(isDark) {
     if (typeof isDark !== 'boolean') {
       isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     }
     const root = document.documentElement;
     if (root && root.style) {
-      root.style.setProperty('--sea-ink', isDark ? '#4fae79' : '#3f9c63');
-      root.style.setProperty('--sea-ink-light', isDark ? '#79ce9f' : '#6bc28c');
-      root.style.setProperty('--sea-ink-soft', isDark ? '#60be89' : '#53b077');
-      root.style.setProperty('--sea-ink-deep', isDark ? '#328657' : '#287a49');
-      root.style.setProperty('--val-hill-far', isDark ? '#224d40' : '#9bd2af');
-      root.style.setProperty('--val-hill-near', isDark ? '#2e6654' : '#68bc86');
-      root.style.setProperty('--val-canopy', isDark ? '#387c66' : '#5fb87e');
-      root.style.setProperty('--val-canopy-deep', isDark ? '#215143' : '#3f9c63');
-      root.style.setProperty('--val-trunk', isDark ? '#4a3828' : '#7a593d');
+      root.style.setProperty('--sea-ink', isDark ? '#7ec6f9' : '#66b3e8');
+      root.style.setProperty('--sea-ink-light', isDark ? '#a6dcff' : '#93cff8');
+      root.style.setProperty('--sea-ink-soft', isDark ? '#88ccf9' : '#7cc0f0');
+      root.style.setProperty('--sea-ink-deep', isDark ? '#5ca8e2' : '#529ed6');
     }
     const defs = document.querySelector('.sea-defs defs');
     if (defs) {
-      if (isDark) {
-        defs.innerHTML = `
-          <linearGradient id="gMtnFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#1c3e38;stop-opacity:.65"/><stop offset="1" style="stop-color:#142d28;stop-opacity:.25"/></linearGradient>
-          <linearGradient id="gMtnNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#265449;stop-opacity:.78"/><stop offset="1" style="stop-color:#1a3c34;stop-opacity:.35"/></linearGradient>
-          <linearGradient id="gHillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#2e6454;stop-opacity:.92"/><stop offset="1" style="stop-color:#1a3c33;stop-opacity:.60"/></linearGradient>
-          <linearGradient id="gHillNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#387864;stop-opacity:.95"/><stop offset="1" style="stop-color:#224c40;stop-opacity:.75"/></linearGradient>
-          <linearGradient id="gTrunk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:#382b20;stop-opacity:.95"/><stop offset="1" style="stop-color:#523e2d;stop-opacity:.95"/></linearGradient>
-          <linearGradient id="gCanopy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#48997a;stop-opacity:.95"/><stop offset="1" style="stop-color:#2c634f;stop-opacity:.85"/></linearGradient>
-          <linearGradient id="gButterflyWing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:#fef08a;stop-opacity:.95"/><stop offset="1" style="stop-color:#a3e635;stop-opacity:.90"/></linearGradient>
-          <linearGradient id="gFlowerPink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#f472b6;stop-opacity:.92"/><stop offset="1" style="stop-color:#db2777;stop-opacity:.85"/></linearGradient>
-          <linearGradient id="gFlowerBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#38bdf8;stop-opacity:.92"/><stop offset="1" style="stop-color:#0284c7;stop-opacity:.85"/></linearGradient>
-          <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#48997a;stop-opacity:.95"/><stop offset="1" style="stop-color:#2c634f;stop-opacity:.85"/></linearGradient>
-          <linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#387864;stop-opacity:.85"/><stop offset="1" style="stop-color:#1c3e38;stop-opacity:.50"/></linearGradient>
-          <linearGradient id="gRock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#265449;stop-opacity:.85"/><stop offset="1" style="stop-color:#1a3c34;stop-opacity:.45"/></linearGradient>
-          <linearGradient id="gKelp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#48997a;stop-opacity:.85"/><stop offset="1" style="stop-color:#224c40;stop-opacity:.50"/></linearGradient>
-          <linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#1a3c34;stop-opacity:.30"/><stop offset="1" style="stop-color:#142d28;stop-opacity:.10"/></linearGradient>
-        `;
-      } else {
-        defs.innerHTML = `
-          <linearGradient id="gMtnFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#a8ddc2;stop-opacity:.70"/><stop offset="1" style="stop-color:#c2eed6;stop-opacity:.25"/></linearGradient>
-          <linearGradient id="gMtnNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#84cca5;stop-opacity:.85"/><stop offset="1" style="stop-color:#ace3c6;stop-opacity:.40"/></linearGradient>
-          <linearGradient id="gHillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#a2dfb8;stop-opacity:.92"/><stop offset="1" style="stop-color:#7bc996;stop-opacity:.70"/></linearGradient>
-          <linearGradient id="gHillNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#7fd49b;stop-opacity:.96"/><stop offset="1" style="stop-color:#53b274;stop-opacity:.80"/></linearGradient>
-          <linearGradient id="gTrunk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:#6e4f35;stop-opacity:.95"/><stop offset="1" style="stop-color:#8e6646;stop-opacity:.95"/></linearGradient>
-          <linearGradient id="gCanopy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#76d695;stop-opacity:.95"/><stop offset="1" style="stop-color:#48ab69;stop-opacity:.88"/></linearGradient>
-          <linearGradient id="gButterflyWing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:#fde047;stop-opacity:.96"/><stop offset="1" style="stop-color:#f97316;stop-opacity:.92"/></linearGradient>
-          <linearGradient id="gFlowerPink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#fbcfe8;stop-opacity:.95"/><stop offset="1" style="stop-color:#f472b6;stop-opacity:.90"/></linearGradient>
-          <linearGradient id="gFlowerBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#bae6fd;stop-opacity:.95"/><stop offset="1" style="stop-color:#38bdf8;stop-opacity:.90"/></linearGradient>
-          <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#76d695;stop-opacity:.95"/><stop offset="1" style="stop-color:#48ab69;stop-opacity:.88"/></linearGradient>
-          <linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#a2dfb8;stop-opacity:.85"/><stop offset="1" style="stop-color:#7bc996;stop-opacity:.50"/></linearGradient>
-          <linearGradient id="gRock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#84cca5;stop-opacity:.85"/><stop offset="1" style="stop-color:#ace3c6;stop-opacity:.45"/></linearGradient>
-          <linearGradient id="gKelp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#7fd49b;stop-opacity:.85"/><stop offset="1" style="stop-color:#53b274;stop-opacity:.50"/></linearGradient>
-          <linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#bbf7d0;stop-opacity:.35"/><stop offset="1" style="stop-color:#dcfce7;stop-opacity:.12"/></linearGradient>
-        `;
-      }
+      const cTop = isDark ? '#92d2fc' : '#7ec4f4';
+      const cBot = isDark ? '#66b2ea' : '#5ba6de';
+      const sTop = isDark ? '#aee0ff' : '#98d3f9';
+      const sBot = isDark ? '#7ac0f4' : '#6eb8ec';
+      const rTop = isDark ? '#8ecdf8' : '#87c7f2';
+      const rMid = isDark ? '#6eb8ec' : '#6bb3e6';
+      const rBot = isDark ? '#549cd6' : '#559dd4';
+      const kBot = isDark ? '#68b2e8' : '#5ca7df';
+      const kTop = isDark ? '#9cd7fd' : '#8accf7';
+      defs.innerHTML = `
+        <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:${cTop};stop-opacity:.95"/>
+          <stop offset="1" style="stop-color:${cBot};stop-opacity:.68"/>
+        </linearGradient>
+        <linearGradient id="gSoft" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:${sTop};stop-opacity:.85"/>
+          <stop offset="1" style="stop-color:${sBot};stop-opacity:.48"/>
+        </linearGradient>
+        <linearGradient id="gRock" x1="0" y1="0" x2=".35" y2="1">
+          <stop offset="0" style="stop-color:${rTop};stop-opacity:.82"/>
+          <stop offset=".6" style="stop-color:${rMid};stop-opacity:.58"/>
+          <stop offset="1" style="stop-color:${rBot};stop-opacity:.40"/>
+        </linearGradient>
+        <linearGradient id="gKelp" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" style="stop-color:${kBot};stop-opacity:.55"/>
+          <stop offset="1" style="stop-color:${kTop};stop-opacity:.94"/>
+        </linearGradient>
+        <linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:#8acaf5;stop-opacity:.34"/>
+          <stop offset="1" style="stop-color:#8acaf5;stop-opacity:.12"/>
+        </linearGradient>
+      `;
     }
   }
-  const applyPastelBlueDefs = applyValleyPalette;
 
   function ensureBaseLayoutCss() {
     let style = document.getElementById('app-animations-base-layout');
@@ -793,6 +1200,7 @@ html[data-theme="dark"] .bub {
 
     // Cập nhật dải màu SVG sinh vật biển phù hợp với nền Sáng / Tối
     applyPastelBlueDefs(isDark);
+    if (DayGlow && DayGlow.start) setTimeout(() => DayGlow.start(), 0);
 
     // Cập nhật biểu tượng nút #btnTheme
     const btn = document.getElementById('btnTheme');
@@ -852,6 +1260,7 @@ html[data-theme="dark"] .bub {
       meadow: true,           // Cây đu đưa, mây trôi, ngọn cỏ lay, lá rơi trong thẻ ngân sách
       sea: true,              // Cảnh đại dương hai bên trang (cá, rùa, cua, rong biển, sao biển, bụi nước)
       daisy: true,            // Hoa cúc Daisy pastel nhiều kích cỡ, nổi lơ lửng chậm xung quanh bảng các ngày trong kỳ
+      dayGlow: true,          // Phát sáng nhẹ màu xanh dương mờ (dương tiền) & đỏ mờ (âm tiền) cho các ngày trong kỳ
       ui: true                // Nháy hàng vừa sửa, rung lắc khi tiêu lố, pháo hoa sao, chữ bay lên, thẻ hiện ra
     }
   };
@@ -898,11 +1307,11 @@ html[data-theme="dark"] .bub {
   const KEYFRAMES = {
     // 2.1. Chi tiết trang trí nhẹ
     sparkleTurn: [
-      { transform: 'rotate(0deg) scale(1)', opacity: 0.85, offset: 0 },
-      { transform: 'rotate(0deg) scale(1)', opacity: 0.85, offset: 0.75 },
-      { transform: 'rotate(22deg) scale(1.22)', opacity: 1, offset: 0.82 },
-      { transform: 'rotate(-12deg) scale(1.08)', offset: 0.90 },
-      { transform: 'rotate(0deg) scale(1)', opacity: 0.85, offset: 1 }
+      { transform: 'rotate(0deg) scale(0.96)', opacity: 0.9, offset: 0 },
+      { transform: 'rotate(12deg) scale(1.16)', opacity: 1, offset: 0.35 },
+      { transform: 'rotate(-8deg) scale(1.04)', opacity: 0.94, offset: 0.65 },
+      { transform: 'rotate(24deg) scale(1.26)', opacity: 1, offset: 0.84 },
+      { transform: 'rotate(0deg) scale(0.96)', opacity: 0.9, offset: 1 }
     ],
     sparklePulse: [
       { opacity: 0.72, transform: 'scale(1)', offset: 0 },
@@ -1031,30 +1440,6 @@ html[data-theme="dark"] .bub {
       { transform: 'scale(0.96)', offset: 0.28 },
       { transform: 'scale(1.035)', offset: 0.62 },
       { transform: 'scale(1)', offset: 1 }
-    ],
-
-    // 2.6. Thung lũng đồng cỏ & Đom đóm (Valley & Meadow Wings)
-    butterflyFlapL: [
-      { transform: 'rotateY(0deg) scaleX(1)', offset: 0 },
-      { transform: 'rotateY(68deg) scaleX(0.28)', offset: 0.5 },
-      { transform: 'rotateY(0deg) scaleX(1)', offset: 1 }
-    ],
-    butterflyFlapR: [
-      { transform: 'rotateY(0deg) scaleX(1)', offset: 0 },
-      { transform: 'rotateY(-68deg) scaleX(0.28)', offset: 0.5 },
-      { transform: 'rotateY(0deg) scaleX(1)', offset: 1 }
-    ],
-    butterflyFlight: [
-      { transform: 'translate(0, 0) rotate(2deg)', offset: 0 },
-      { transform: 'translate(16px, -22px) rotate(8deg)', offset: 0.25 },
-      { transform: 'translate(4px, -48px) rotate(-6deg)', offset: 0.5 },
-      { transform: 'translate(22px, -74px) rotate(10deg)', offset: 0.75 },
-      { transform: 'translate(8px, -98px) rotate(0deg)', offset: 1 }
-    ],
-    fireflyPulse: [
-      { opacity: 0.25, transform: 'scale(0.85)', offset: 0 },
-      { opacity: 1, transform: 'scale(1.22)', offset: 0.5 },
-      { opacity: 0.25, transform: 'scale(0.85)', offset: 1 }
     ],
 
     // 2.6. Biển cả hai bên trang (Under the Sea)
@@ -1203,7 +1588,8 @@ html[data-theme="dark"] .bub {
     dynamicStyleEl.textContent = `
       /* Hoạt ảnh pseudo-elements & trạng thái liên tục do JS điều khiển */
       ${ambientOn ? `
-      .top h1::after { animation: jsSparkleTurn ${4.5 / sp}s ease-in-out infinite !important; }
+      .top h1::after { animation: jsSparkleTurn ${3.2 / sp}s ease-in-out infinite !important; }
+      html[data-theme="dark"] .top h1::after { animation: jsSparkleTurnDark ${3.2 / sp}s ease-in-out infinite !important; }
       .hero:before { animation: jsFloatDecor ${8 / sp}s ease-in-out infinite !important; }
       .hero:after { animation: jsFloatDecor ${7 / sp}s ease-in-out infinite reverse !important; }
       .hero .lbl::before { animation: jsSparklePulse ${2.8 / sp}s ease-in-out infinite !important; }
@@ -1224,9 +1610,96 @@ html[data-theme="dark"] .bub {
       ` : ''}
 
       @keyframes jsSparkleTurn {
-        0%,75%,100% { transform:rotate(0) scale(1); opacity:.85; }
-        82% { transform:rotate(22deg) scale(1.22); opacity:1; }
-        90% { transform:rotate(-12deg) scale(1.08); }
+        0%, 100% {
+          transform: rotate(0deg) scale(0.96);
+          opacity: 0.92;
+          color: #167ef2;
+          text-shadow:
+            0 0 4px rgba(45, 152, 255, .90),
+            0 0 10px rgba(26, 136, 255, .78),
+            0 0 18px rgba(20, 118, 240, .52),
+            0 0 28px rgba(20, 118, 240, .30);
+          filter:
+            drop-shadow(0 0 3px rgba(26, 136, 255, .75))
+            drop-shadow(0 0 8px rgba(56, 162, 255, .50));
+        }
+        45% {
+          transform: rotate(14deg) scale(1.18);
+          opacity: 1;
+          color: #2f9cff;
+          text-shadow:
+            0 0 6px rgba(68, 172, 255, 1),
+            0 0 14px rgba(32, 144, 255, .98),
+            0 0 26px rgba(18, 122, 245, .88),
+            0 0 38px rgba(18, 122, 245, .62);
+          filter:
+            drop-shadow(0 0 6px rgba(32, 144, 255, .95))
+            drop-shadow(0 0 13px rgba(68, 172, 255, .80));
+        }
+        75% {
+          transform: rotate(-10deg) scale(1.05);
+          opacity: 0.95;
+          color: #1d88f8;
+        }
+        88% {
+          transform: rotate(24deg) scale(1.26);
+          opacity: 1;
+          color: #3da8ff;
+          text-shadow:
+            0 0 7px rgba(82, 182, 255, 1),
+            0 0 16px rgba(36, 148, 255, 1),
+            0 0 28px rgba(18, 122, 245, .92),
+            0 0 42px rgba(18, 122, 245, .68);
+          filter:
+            drop-shadow(0 0 7px rgba(36, 148, 255, 1))
+            drop-shadow(0 0 15px rgba(75, 178, 255, .85));
+        }
+      }
+      @keyframes jsSparkleTurnDark {
+        0%, 100% {
+          transform: rotate(0deg) scale(0.96);
+          opacity: 0.92;
+          color: #2f9bff;
+          text-shadow:
+            0 0 5px rgba(64, 168, 255, .95),
+            0 0 12px rgba(30, 144, 255, .88),
+            0 0 24px rgba(20, 124, 245, .68),
+            0 0 38px rgba(15, 105, 235, .45);
+          filter:
+            drop-shadow(0 0 4px rgba(45, 155, 255, .85))
+            drop-shadow(0 0 10px rgba(25, 135, 250, .65));
+        }
+        45% {
+          transform: rotate(14deg) scale(1.18);
+          opacity: 1;
+          color: #52b4ff;
+          text-shadow:
+            0 0 7px rgba(88, 188, 255, 1),
+            0 0 16px rgba(45, 158, 255, 1),
+            0 0 30px rgba(24, 132, 250, .92),
+            0 0 46px rgba(15, 110, 240, .72);
+          filter:
+            drop-shadow(0 0 7px rgba(68, 175, 255, 1))
+            drop-shadow(0 0 16px rgba(36, 148, 255, .88));
+        }
+        75% {
+          transform: rotate(-10deg) scale(1.05);
+          opacity: 0.96;
+          color: #38a4ff;
+        }
+        88% {
+          transform: rotate(24deg) scale(1.26);
+          opacity: 1;
+          color: #5ebcff;
+          text-shadow:
+            0 0 8px rgba(100, 195, 255, 1),
+            0 0 18px rgba(52, 164, 255, 1),
+            0 0 34px rgba(26, 138, 255, .95),
+            0 0 50px rgba(16, 115, 245, .78);
+          filter:
+            drop-shadow(0 0 8px rgba(78, 182, 255, 1))
+            drop-shadow(0 0 18px rgba(42, 152, 255, .92));
+        }
       }
       @keyframes jsSparklePulse {
         0%,100% { opacity:.72; transform:scale(1); }
@@ -1708,6 +2181,129 @@ html[data-theme="dark"] .bub {
     }
   };
 
+  // ========== 7.6. HIỆU ỨNG PHÁT SÁNG NHẸ Ô NGÀY DƯƠNG TIỀN (XANH DƯƠNG MỜ) & ÂM TIỀN (ĐỎ MỜ) ==========
+  function ensureDayGlowStyles() {
+    if (document.getElementById('dayGlowStyles')) return;
+    const st = document.createElement('style');
+    st.id = 'dayGlowStyles';
+    st.textContent = `
+      /* Ô ngày đã chốt DƯƠNG TIỀN (.pos): màu xanh dương mờ & phát sáng nhẹ */
+      #calWrap .wk .day.pos:not(.void) {
+        background: linear-gradient(145deg, rgba(158, 216, 255, .54) 0%, rgba(194, 231, 255, .42) 55%, rgba(216, 240, 255, .50) 100%) !important;
+        border-color: rgba(82, 168, 238, .78) !important;
+        box-shadow: 0 0 9px rgba(82, 170, 242, .25), inset 0 0 12px rgba(120, 195, 255, .20);
+      }
+      #calWrap .wk .day.pos:not(.void)::after {
+        background: linear-gradient(90deg, #4da3eb, #7cc4fa) !important;
+        box-shadow: 0 0 6px rgba(77, 163, 235, .65);
+      }
+      #calWrap .wk .day.pos:not(.void) .f.df,
+      #calWrap .wk .day.pos:not(.void) .c.df {
+        color: #1f6fb2 !important;
+      }
+
+      /* Ô ngày đã chốt ÂM TIỀN (.neg): màu đỏ mờ & phát sáng nhẹ */
+      #calWrap .wk .day.neg:not(.void) {
+        background: linear-gradient(145deg, rgba(255, 176, 192, .54) 0%, rgba(255, 202, 214, .42) 55%, rgba(255, 218, 226, .50) 100%) !important;
+        border-color: rgba(235, 100, 126, .78) !important;
+        box-shadow: 0 0 9px rgba(235, 95, 122, .25), inset 0 0 12px rgba(245, 120, 142, .18);
+      }
+      #calWrap .wk .day.neg:not(.void)::after {
+        background: linear-gradient(90deg, #e55c78, #f28a9f) !important;
+        box-shadow: 0 0 6px rgba(229, 92, 120, .65);
+      }
+      #calWrap .wk .day.neg:not(.void) .f.df,
+      #calWrap .wk .day.neg:not(.void) .c.df {
+        color: #c83e5b !important;
+      }
+
+      /* Chế độ Tối (Dark Mode) cho ô ngày Dương tiền & Âm tiền */
+      html[data-theme="dark"] #calWrap .wk .day.pos:not(.void) {
+        background: linear-gradient(145deg, rgba(34, 104, 172, .46) 0%, rgba(26, 82, 138, .36) 55%, rgba(22, 68, 120, .42) 100%) !important;
+        border-color: rgba(92, 182, 252, .75) !important;
+        box-shadow: 0 0 10px rgba(82, 175, 250, .30), inset 0 0 14px rgba(82, 175, 250, .20);
+      }
+      html[data-theme="dark"] #calWrap .wk .day.pos:not(.void) .f.df,
+      html[data-theme="dark"] #calWrap .wk .day.pos:not(.void) .c.df {
+        color: #82c8ff !important;
+      }
+
+      html[data-theme="dark"] #calWrap .wk .day.neg:not(.void) {
+        background: linear-gradient(145deg, rgba(158, 42, 68, .46) 0%, rgba(124, 32, 54, .36) 55%, rgba(102, 26, 46, .42) 100%) !important;
+        border-color: rgba(245, 110, 136, .75) !important;
+        box-shadow: 0 0 10px rgba(242, 102, 128, .30), inset 0 0 14px rgba(242, 102, 128, .20);
+      }
+      html[data-theme="dark"] #calWrap .wk .day.neg:not(.void) .f.df,
+      html[data-theme="dark"] #calWrap .wk .day.neg:not(.void) .c.df {
+        color: #ff99ae !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  var DayGlow = {
+    anims: [],
+    start() {
+      this.stop();
+      ensureDayGlowStyles();
+      if (!CONFIG.enabled || CONFIG.reducedMotion || CONFIG.categories.dayGlow === false) return;
+
+      const calWrap = document.getElementById('calWrap');
+      if (!calWrap) return;
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+      // Khung hình phát sáng nhịp thở cho ngày dương tiền (xanh dương mờ)
+      const posFrames = isDark
+        ? [
+            { boxShadow: '0 0 8px rgba(82, 175, 250, .24), inset 0 0 10px rgba(82, 175, 250, .15)' },
+            { boxShadow: '0 0 16px rgba(98, 190, 255, .52), inset 0 0 18px rgba(98, 190, 255, .30)' }
+          ]
+        : [
+            { boxShadow: '0 0 7px rgba(82, 170, 242, .20), inset 0 0 10px rgba(120, 195, 255, .15)' },
+            { boxShadow: '0 0 15px rgba(72, 165, 245, .44), inset 0 0 16px rgba(120, 195, 255, .30)' }
+          ];
+
+      // Khung hình phát sáng nhịp thở cho ngày âm tiền (đỏ mờ)
+      const negFrames = isDark
+        ? [
+            { boxShadow: '0 0 8px rgba(242, 102, 128, .24), inset 0 0 10px rgba(242, 102, 128, .15)' },
+            { boxShadow: '0 0 16px rgba(252, 116, 142, .52), inset 0 0 18px rgba(252, 116, 142, .30)' }
+          ]
+        : [
+            { boxShadow: '0 0 7px rgba(235, 95, 122, .20), inset 0 0 10px rgba(245, 120, 142, .14)' },
+            { boxShadow: '0 0 15px rgba(235, 86, 114, .44), inset 0 0 16px rgba(245, 120, 142, .28)' }
+          ];
+
+      calWrap.querySelectorAll('.wk .day.pos:not(.void)').forEach((el, idx) => {
+        const a = runAnimation(el, posFrames, {
+          duration: 3200,
+          delay: -(idx * 310),
+          iterations: Infinity,
+          direction: 'alternate',
+          easing: 'ease-in-out'
+        }, 'dayGlow');
+        if (a) this.anims.push(a);
+      });
+
+      calWrap.querySelectorAll('.wk .day.neg:not(.void)').forEach((el, idx) => {
+        const a = runAnimation(el, negFrames, {
+          duration: 3200,
+          delay: -(idx * 310),
+          iterations: Infinity,
+          direction: 'alternate',
+          easing: 'ease-in-out'
+        }, 'dayGlow');
+        if (a) this.anims.push(a);
+      });
+    },
+
+    stop() {
+      this.anims.forEach((a) => a.cancel());
+      this.anims = [];
+    }
+  };
+
 
   // ========== 6. CẢNH ĐỒNG CỎ THẺ NGÂN SÁCH (HERO MEADOW) ==========
   const Meadow = {
@@ -1821,85 +2417,157 @@ html[data-theme="dark"] .bub {
     }
   };
 
-  // ========== 7. THUNG LŨNG ĐỒNG CỎ HAI BÊN TRANG (MEADOW VALLEY WINGS) ==========
-  const Valley = {
+  // ========== 7. BIỂN CẢ HAI BÊN TRANG (UNDER THE SEA CREATURES) ==========
+  const Sea = {
     anims: [],
     start() {
       this.stop();
-      if (!CONFIG.enabled || CONFIG.reducedMotion || (!CONFIG.categories.sea && !CONFIG.categories.valley)) return;
+      if (!CONFIG.enabled || CONFIG.reducedMotion || !CONFIG.categories.sea) return;
 
       const seaContainers = document.querySelectorAll('.sea-l, .sea-r');
       if (!seaContainers.length) return;
 
-      // 7.1. Hạt phấn hoa vàng óng / Đom đóm đêm bay lên
+      // 7.1. Bụi nước / bọt khí nhỏ
       document.querySelectorAll('.sea .dust').forEach((d) => {
-        const t = parseCssSec(d.style.getPropertyValue('--t'), 18);
+        const t = parseCssSec(d.style.getPropertyValue('--t'), 16);
         const dl = parseCssSec(d.style.getPropertyValue('--dl'), 0);
         const a = runAnimation(d, KEYFRAMES.dustUp, { duration: t, delay: dl, iterations: Infinity, easing: 'linear' }, 'sea');
         if (a) this.anims.push(a);
       });
 
-      // 7.2. Cây lớn & tán cây đồng cỏ đung đưa
-      document.querySelectorAll('.sea .val-tree').forEach((tr) => {
-        const trunk = tr.querySelector('.tree-trunk');
-        const crown = tr.querySelector('.tree-crown');
-        const dur = tr.classList.contains('tree-sub') ? 6200 : 7400;
-        if (trunk) {
-          const a1 = runAnimation(trunk, KEYFRAMES.treeSway, { duration: dur, iterations: Infinity, easing: 'ease-in-out' }, 'sea');
-          if (a1) this.anims.push(a1);
-        }
-        if (crown) {
-          const a2 = runAnimation(crown, KEYFRAMES.crownSway, { duration: dur - 1600, iterations: Infinity, easing: 'ease-in-out' }, 'sea');
-          if (a2) this.anims.push(a2);
-        }
-      });
-
-      // 7.3. Bụi cỏ & hoa dại đung đưa
-      document.querySelectorAll('.sea .tuft, .sea .flower-stem').forEach((tf) => {
-        const dur = 5000 + Math.random() * 2500;
-        const dl = -Math.random() * 3000;
-        const a = runAnimation(tf, KEYFRAMES.tuftSway, { duration: dur, delay: dl, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+      // 7.2. Rong biển đung đưa (kelp)
+      document.querySelectorAll('.sea .kelp').forEach((k) => {
+        const t = parseCssSec(k.style.getPropertyValue('--t'), 9);
+        const dl = parseCssSec(k.style.getPropertyValue('--dl'), 0);
+        const a = runAnimation(k, KEYFRAMES.kelpSway, { duration: t, delay: dl, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
         if (a) this.anims.push(a);
       });
 
-      // 7.4. Mây trôi lững lờ trên bầu trời
-      document.querySelectorAll('.sea .cloud').forEach((c) => {
-        const isC2 = c.classList.contains('c-2');
-        const dur = isC2 ? 34000 : 28000;
-        const a = runAnimation(c, KEYFRAMES.cloudDrift, {
-          duration: dur,
-          iterations: Infinity,
-          direction: isC2 ? 'alternate-reverse' : 'alternate',
-          easing: 'ease-in-out'
-        }, 'sea');
+      // 7.3. Cỏ biển lay nhẹ (grass)
+      document.querySelectorAll('.sea .grass').forEach((g) => {
+        const t = parseCssSec(g.style.getPropertyValue('--t'), 6);
+        const dl = parseCssSec(g.style.getPropertyValue('--dl'), 0);
+        const a = runAnimation(g, KEYFRAMES.grassSway, { duration: t, delay: dl, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
         if (a) this.anims.push(a);
       });
 
-      // 7.5. Bướm vỗ cánh & lượn dập dờn quanh hoa lá
-      document.querySelectorAll('.sea .butterfly').forEach((bf) => {
-        const wl = bf.querySelector('.wing-l');
-        const wr = bf.querySelector('.wing-r');
-        const flapDur = 280 + Math.random() * 80;
-        if (wl) {
-          const a1 = runAnimation(wl, KEYFRAMES.butterflyFlapL, { duration: flapDur, iterations: Infinity, easing: 'ease-in-out' }, 'sea');
-          if (a1) this.anims.push(a1);
-        }
-        if (wr) {
-          const a2 = runAnimation(wr, KEYFRAMES.butterflyFlapR, { duration: flapDur, iterations: Infinity, easing: 'ease-in-out' }, 'sea');
+      // 7.4. Sao biển thở (star) — giữ nguyên góc xoay -15deg của .s1
+      document.querySelectorAll('.sea .star').forEach((s) => {
+        const dl = s.classList.contains('s2') ? -3000 : 0;
+        const isS1 = s.classList.contains('s1');
+        const frames = isS1
+          ? [{ transform: 'rotate(-15deg) scale(1)', offset: 0 }, { transform: 'rotate(-15deg) scale(1.08)', offset: 1 }]
+          : KEYFRAMES.starBreath;
+        const a = runAnimation(s, frames, { duration: 7000, delay: dl, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+        if (a) this.anims.push(a);
+      });
+
+      // 7.5. Cá bơi ngang, nhấp nhô & vẫy đuôi
+      document.querySelectorAll('.sea .fish').forEach((f) => {
+        const t = parseCssSec(f.style.getPropertyValue('--t'), 32);
+        const dl = parseCssSec(f.style.getPropertyValue('--dl'), 0);
+
+        const gw = getSeaGw(f);
+        const fRatio = parseFloat(f.style.getPropertyValue('--f')) || 0.18;
+        const fishW = f.clientWidth || clamp(14, gw * fRatio, 78);
+        const sx = Math.max(0, gw - fishW - 14);
+
+        const a1 = runAnimation(f, makeSwimKeyframes(sx), { duration: t, delay: dl, iterations: Infinity, easing: 'linear' }, 'sea');
+        if (a1) this.anims.push(a1);
+
+        const svg = f.querySelector('svg');
+        if (svg) {
+          const a2 = runAnimation(svg, KEYFRAMES.fishBob, { duration: 4000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
           if (a2) this.anims.push(a2);
         }
 
-        const isBf2 = bf.classList.contains('bf-2');
-        const flightDur = isBf2 ? 14000 : 18000;
-        const flightDl = isBf2 ? -6000 : -2000;
-        const a3 = runAnimation(bf, KEYFRAMES.butterflyFlight, {
-          duration: flightDur,
-          delay: flightDl,
+        const tail = f.querySelector('.tail');
+        if (tail) {
+          const tailDur = f.classList.contains('small') ? 700 : 1000;
+          const a3 = runAnimation(tail, KEYFRAMES.tailWag, { duration: tailDur, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a3) this.anims.push(a3);
+        }
+      });
+
+      // 7.6. Cua bò, giơ càng, chớp kẹp, ngoe nguẩy chân
+      document.querySelectorAll('.sea .crab').forEach((c) => {
+        const t = parseCssSec(c.style.getPropertyValue('--t'), 35);
+        const dl = parseCssSec(c.style.getPropertyValue('--dl'), 0);
+        const isSmall = c.classList.contains('small');
+
+        const gw = getSeaGw(c);
+        const crabW = c.clientWidth || (isSmall ? clamp(34, gw * 0.21, 58) : clamp(45, gw * 0.34, 82));
+        const walk = Math.max(0, gw - crabW - 35);
+
+        const a1 = runAnimation(c, makeCrabWalkKeyframes(walk), {
+          duration: t,
+          delay: dl,
           iterations: Infinity,
-          direction: 'alternate',
+          direction: isSmall ? 'alternate-reverse' : 'alternate',
           easing: 'ease-in-out'
         }, 'sea');
-        if (a3) this.anims.push(a3);
+        if (a1) this.anims.push(a1);
+
+        const svg = c.querySelector('svg');
+        if (svg) {
+          const a2 = runAnimation(svg, KEYFRAMES.crabBob, { duration: 1000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a2) this.anims.push(a2);
+        }
+
+        const clL = c.querySelector('.cl-l');
+        if (clL) {
+          const a3 = runAnimation(clL, KEYFRAMES.clawLift, { duration: 3000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a3) this.anims.push(a3);
+        }
+        const clR = c.querySelector('.cl-r');
+        if (clR) {
+          const a4 = runAnimation(clR, KEYFRAMES.clawLift, { duration: 3000, delay: -1500, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a4) this.anims.push(a4);
+        }
+
+        const jaw = c.querySelector('.jaw');
+        if (jaw) {
+          const a5 = runAnimation(jaw, KEYFRAMES.jawSnap, { duration: 2500, iterations: Infinity, easing: 'ease-in-out' }, 'sea');
+          if (a5) this.anims.push(a5);
+        }
+
+        const legs = c.querySelector('.legs');
+        if (legs) {
+          const a6 = runAnimation(legs, KEYFRAMES.legsScuttle, { duration: 600, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a6) this.anims.push(a6);
+        }
+      });
+
+      // 7.7. Rùa biển bơi & đập vây
+      document.querySelectorAll('.sea .turtle').forEach((turtle) => {
+        const gw = getSeaGw(turtle);
+        const turtleW = turtle.clientWidth || clamp(70, gw * 0.46, 132);
+        const sx = Math.max(0, gw - turtleW - 14);
+
+        const a1 = runAnimation(turtle, makeSwimKeyframes(sx), { duration: 90000, delay: -22000, iterations: Infinity, easing: 'linear' }, 'sea');
+        if (a1) this.anims.push(a1);
+
+        const svg = turtle.querySelector('svg');
+        if (svg) {
+          const a2 = runAnimation(svg, KEYFRAMES.turtleBob, { duration: 7000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a2) this.anims.push(a2);
+        }
+
+        const flN = turtle.querySelector('.fl-n');
+        if (flN) {
+          const a3 = runAnimation(flN, KEYFRAMES.flipper, { duration: 3000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a3) this.anims.push(a3);
+        }
+        const flB = turtle.querySelector('.fl-b');
+        if (flB) {
+          const a4 = runAnimation(flB, KEYFRAMES.flipper, { duration: 3000, delay: -1500, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a4) this.anims.push(a4);
+        }
+        const flR = turtle.querySelector('.fl-r');
+        if (flR) {
+          const a5 = runAnimation(flR, KEYFRAMES.flipper, { duration: 3000, delay: -750, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }, 'sea');
+          if (a5) this.anims.push(a5);
+        }
       });
     },
 
@@ -1908,8 +2576,6 @@ html[data-theme="dark"] .bub {
       this.anims = [];
     }
   };
-
-  const Sea = Valley;
 
   // ========== 8. TỰ ĐỘNG QUAN SÁT THAY ĐỔI DOM & SỰ KIỆN ==========
   let observer = null;
@@ -1929,7 +2595,18 @@ html[data-theme="dark"] .bub {
 
     if (observer || typeof MutationObserver === 'undefined') return;
 
+    let calGlowTimer = null;
+    function scheduleCalRefresh() {
+      clearTimeout(calGlowTimer);
+      calGlowTimer = setTimeout(() => {
+        const cw = document.getElementById('calWrap');
+        if (cw && !cw.querySelector('.daisy-field')) Daisy.start();
+        DayGlow.start();
+      }, 30);
+    }
+
     observer = new MutationObserver((mutations) => {
+      let needCal = false;
       for (const m of mutations) {
         if (m.type === 'attributes' && m.attributeName === 'class') {
           const target = m.target;
@@ -1957,7 +2634,7 @@ html[data-theme="dark"] .bub {
             Meadow.checkOverState();
           }
           if (target.id === 'list' || target.id === 'calWrap') {
-            Daisy.start();
+            needCal = true;
           }
         } else if (m.type === 'childList' && m.addedNodes.length) {
           const target = m.target;
@@ -1966,8 +2643,12 @@ html[data-theme="dark"] .bub {
               UI.popIn(chip, Math.min(idx, 7) * 30);
             });
           }
+          if (target && (target.id === 'list' || target.id === 'calWrap')) {
+            needCal = true;
+          }
         }
       }
+      if (needCal) scheduleCalRefresh();
     });
 
     observer.observe(document.body, {
@@ -2013,9 +2694,9 @@ html[data-theme="dark"] .bub {
     // Phân hệ hoạt cảnh nền
     ocean: Ocean,
     meadow: Meadow,
-    sea: Valley,
-    valley: Valley,
+    sea: Sea,
     daisy: Daisy,
+    dayGlow: DayGlow,
 
     // Khởi động toàn bộ hoạt ảnh
     // Điều khiển Chế độ Sáng / Tối
@@ -2032,7 +2713,7 @@ html[data-theme="dark"] .bub {
       Meadow.start();
       Sea.start();
       Daisy.start();
-      Daisy.start();
+      DayGlow.start();
       setupObserver();
 
       // Cập nhật lại khoảng cách bơi khi co giãn kích thước màn hình
@@ -2052,6 +2733,8 @@ html[data-theme="dark"] .bub {
       Ocean.start();
       Meadow.start();
       Sea.start();
+      Daisy.start();
+      DayGlow.start();
     },
 
     // Tạm dừng toàn bộ hoạt ảnh
@@ -2090,6 +2773,7 @@ html[data-theme="dark"] .bub {
         if (category === 'meadow') isEnabled ? Meadow.start() : Meadow.stop();
         if (category === 'sea') isEnabled ? Sea.start() : Sea.stop();
         if (category === 'daisy') isEnabled ? Daisy.start() : Daisy.stop();
+        if (category === 'dayGlow') isEnabled ? DayGlow.start() : DayGlow.stop();
         updatePseudoStyles();
       }
     }
