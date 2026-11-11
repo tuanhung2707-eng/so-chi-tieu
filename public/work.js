@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v10 · 08/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v11 · 11/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -1155,6 +1155,27 @@ function initCal() {
         max-width: 460px;
         margin: 0 auto 16px;
       }
+      /* Máy tính: lịch bên trái (to hơn), ghi chú bên phải, ngang hàng nhau */
+      @media (min-width: 860px) {
+        .wm-calrow {
+          display: grid;
+          grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+          gap: 18px;
+          align-items: start;
+        }
+        .wm-calrow #kMonths {
+          max-width: none;
+          margin: 0;
+        }
+        .wm-calrow #kMonths .wm-mon { padding: 20px 20px 18px; }
+        .wm-calrow #kMonths .wm-mon h4 { font-size: 17px; }
+        .wm-calrow #kMonths .wm-d { font-size: 15.5px; }
+        .wm-calrow #kList {
+          margin-top: 0;
+          max-height: 560px;
+          overflow-y: auto;
+        }
+      }
       #kMonths .wm-mon {
         padding: 16px 16px 15px;
         border-radius: 22px;
@@ -1609,7 +1630,7 @@ function initCal() {
       MONTH_NAMES.map((name, i) => '<button type="button" class="chip" data-m="' + i + '">' + name + '</button>').join('') +
     '</div>' +
     '<div class="wm-legend" id="kLegend">' + MARKS.map((m) => '<span>' + markDotHtml(m[0]) + m[1] + '</span>').join('') + '<em>Bấm vào một ngày để đánh dấu và ghi chú</em></div>' +
-    '<div class="wm-months" id="kMonths"></div><div class="card wm-up" id="kList"></div>';
+    '<div class="wm-calrow"><div class="wm-months" id="kMonths"></div><div class="card wm-up" id="kList"></div></div>';
 
   // rê chuột vào ô có nhãn thì bật hiệu ứng đầy đủ, rời chuột thì trở về dạng tĩnh
   $('kMonths').addEventListener('pointerover', (e) => {

@@ -35,15 +35,15 @@ html[data-theme="dark"] .mbg {
 .mbg-sky { inset: 0; background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 32%, var(--sky-3) 62%, var(--sky-4) 100%); }
 
 /* mặt trời (sáng) */
-.mbg-sun { top: 7vh; right: 11vw; width: 96px; height: 96px; border-radius: 50%;
+.mbg-sun { top: calc(96px + 4vh); right: 11vw; width: 96px; height: 96px; border-radius: 50%;
   background: radial-gradient(circle, #fffef4 0 30%, #fff3b8 46%, rgba(255, 236, 160, .55) 58%, rgba(255, 236, 160, 0) 72%);
   box-shadow: 0 0 80px 40px rgba(255, 240, 180, .45); }
-.mbg-halo { top: calc(7vh - 90px); right: calc(11vw - 90px); width: 276px; height: 276px; border-radius: 50%;
+.mbg-halo { top: calc(6px + 4vh); right: calc(11vw - 90px); width: 276px; height: 276px; border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 248, 210, .5) 0%, rgba(255, 248, 210, 0) 65%); }
 /* trăng & sao (tối) */
-.mbg-moon { top: 8vh; right: 12vw; width: 64px; height: 64px; border-radius: 50%; background: transparent;
+.mbg-moon { top: calc(108px + 4vh); right: 12vw; width: 64px; height: 64px; border-radius: 50%; background: transparent;
   box-shadow: 16px -10px 0 0 #f5f1d6; filter: drop-shadow(0 0 14px rgba(245, 240, 200, .55)); }
-.mbg-moonglow { top: calc(8vh - 70px); right: calc(12vw - 80px); width: 220px; height: 220px; border-radius: 50%;
+.mbg-moonglow { top: calc(28px + 4vh); right: calc(12vw - 80px); width: 220px; height: 220px; border-radius: 50%;
   background: radial-gradient(circle, rgba(200, 210, 255, .22) 0%, rgba(200, 210, 255, 0) 65%); }
 .mbg-stars { inset: 0 0 35% 0; }
 .mbg-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 4px 1px rgba(255, 255, 255, .7); opacity: .8; }
@@ -95,9 +95,9 @@ html:not([data-theme="dark"]) .mbg-ff { display: none; }
 /* điện thoại: chỉ bụi sáng & hạt bồ công anh chuyển động; lá & đom đóm ẩn */
 @media (max-width: 700px) {
   .mbg-leaf, .mbg-ff { display: none; }
-  .mbg-sun { width: 64px; height: 64px; right: 8vw; }
+  .mbg-sun { width: 64px; height: 64px; right: 8vw; top: calc(78px + 3vh); }
   .mbg-halo { display: none; }
-  .mbg-moon { width: 46px; height: 46px; right: 9vw; box-shadow: 12px -7px 0 0 #f5f1d6; }
+  .mbg-moon { width: 46px; height: 46px; right: 9vw; top: calc(86px + 3vh); box-shadow: 12px -7px 0 0 #f5f1d6; }
   .mbg-moonglow { display: none; }
 }
 

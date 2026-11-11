@@ -1477,7 +1477,7 @@ html[data-theme="dark"] .bub {
 </style>
 <link rel="stylesheet" href="work.css?v=5">
 <link rel="stylesheet" href="scene.css?v=2">
-<link rel="stylesheet" href="meadow-bg.css?v=2">
+<link rel="stylesheet" href="meadow-bg.css?v=3">
 </head>
 <body>
   <header class="top">
@@ -1910,7 +1910,7 @@ async function setView(v) {
   if (v === 'work') {
     show('work');
     try {
-      if (!WORK) { WORK = await import('./work.js?v=10'); WORK.initWork({ sb, getUser: () => S.user, toast, esc, setStatus }); }
+      if (!WORK) { WORK = await import('./work.js?v=11'); WORK.initWork({ sb, getUser: () => S.user, toast, esc, setStatus }); }
       WORK.openWork();
     } catch (e) { toast('Không tải được mục Công việc: ' + (e && e.message ? e.message : e), true); }
   } else {
