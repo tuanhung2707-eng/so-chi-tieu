@@ -86,7 +86,7 @@ html[data-theme="dark"] #hero[data-phase] { box-shadow: 0 12px 30px rgba(0, 0, 0
   box-shadow: 0 0 34px 14px var(--sun-glow); }
 .sc-moon { width: 30px; height: 30px; margin: -15px 0 0 -15px; background: transparent;
   box-shadow: 9px -6px 0 0 #f4f1d8; filter: drop-shadow(0 0 8px rgba(240, 236, 200, .55)); }
-#hero[data-phase="night"] .sc-sun, #hero:not([data-phase="night"]) .sc-moon { opacity: 0; }
+#hero[data-phase="night"] .sc-sun, #hero:not([data-phase="night"]) .sc-moon { opacity: 0 !important; }
 
 /* sao đêm */
 .sc-star { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px rgba(255, 255, 255, .9); opacity: 0; }

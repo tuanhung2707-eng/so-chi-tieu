@@ -1,9 +1,9 @@
 /* =====================================================================
    scene.js – Cảnh "Hôm nay còn được tiêu" sinh động
-   1. Bầu trời & màu cảnh theo nút sáng/tối: ban ngày (mặt trời, chim, bướm) · ban đêm (trăng, sao, đom đóm)
+   1. Bầu trời & màu cảnh đổi theo giờ thật: sáng (5–8h) · trưa (8–17h) · chiều (17–19h) · tối (19–5h)
       mặt trời / mặt trăng đi theo giờ, sao đêm, đom đóm, chim bay, bướm, thỏ ló đầu.
    2. Cảnh phản ứng theo số tiền hôm nay: còn nhiều → hoa nở; sắp hết → trời âm u, hoa khép;
-      tiêu lố → mưa, cà chua héo xanh; ban ngày mà mới tiêu dưới 50% → cầu vồng.
+      tiêu lố → mưa, cà chua héo xanh; trời còn sáng (8–19h) mà mới tiêu dưới 50% → cầu vồng.
    4. Parallax: các lớp cảnh lệch nhau theo chuột (máy tính) hoặc khi nghiêng điện thoại.
    Mọi hoạt ảnh chỉ dùng transform/opacity và tự dừng khi thẻ không hiện trên màn hình.
    ===================================================================== */
@@ -189,22 +189,28 @@
     if (!bunnyMove.animate || REDUCE) bunnyMove.setAttribute('transform', 'translate(0 20)');
   }
 
-  /* ---------- 3. Sáng / tối theo nút chuyển giao diện (nền trang là meadow-bg.js) ---------- */
+  /* ---------- 3. Cảnh trong thẻ đổi theo GIỜ THẬT (nền trang thì theo nút sáng/tối – meadow-bg.js) ---------- */
+  function phaseOf(h) {
+    if (h >= 5 && h < 8) return 'dawn';
+    if (h >= 8 && h < 17) return 'day';
+    if (h >= 17 && h < 19) return 'dusk';
+    return 'night';
+  }
   function placeBody(node, t) {
     // t: 0 → 1 dọc theo cung trời; né góc trái phía trên (nơi có chữ)
     var x = 40 + t * 46, y = 12 + (1 - Math.sin(Math.PI * t)) * 30;
     node.style.left = x.toFixed(1) + '%';
     node.style.top = y.toFixed(1) + '%';
   }
-  placeBody(sun, .62);
-  placeBody(moon, .66);
-  function updateTheme() {
-    var ph = document.documentElement.getAttribute('data-theme') === 'dark' ? 'night' : 'day';
+  function updateTime() {
+    var now = new Date(), h = now.getHours() + now.getMinutes() / 60, ph = phaseOf(now.getHours());
+    // mặt trời đi từ 5h đến 19h, mặt trăng từ 19h đến 5h sáng hôm sau
+    placeBody(sun, Math.min(1, Math.max(0, (h - 5) / 14)));
+    placeBody(moon, Math.min(1, Math.max(0, h >= 19 ? (h - 19) / 10 : (h + 5) / 10)));
     if (hero.getAttribute('data-phase') === ph) return;
     hero.setAttribute('data-phase', ph);
     updateMood();
   }
-  new MutationObserver(updateTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   /* ---------- 5. Tâm trạng của cảnh theo số tiền hôm nay ---------- */
   var bar = document.getElementById('hBar');
@@ -214,13 +220,15 @@
     var mood = over ? 'over' : pct >= 80 ? 'low' : pct >= 50 ? 'normal' : 'lush';
     if (hero.getAttribute('data-mood') !== mood) hero.setAttribute('data-mood', mood);
     setRain(mood === 'over');
-    var rb = !over && pct < 50 && hero.getAttribute('data-phase') === 'day' ? '1' : '0';
+    var phNow = hero.getAttribute('data-phase');
+    var rb = !over && pct < 50 && (phNow === 'day' || phNow === 'dusk') ? '1' : '0';
     if (hero.getAttribute('data-rainbow') !== rb) hero.setAttribute('data-rainbow', rb);
   }
   new MutationObserver(updateMood).observe(hero, { attributes: true, attributeFilter: ['class'] });
   if (bar) new MutationObserver(updateMood).observe(bar, { attributes: true, attributeFilter: ['style'] });
 
-  updateTheme();
+  updateTime();
+  setInterval(updateTime, 60000);
   updateMood();
   flyBirds();
   var rz = null;
