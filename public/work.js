@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v11 · 11/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v12 · 16/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -588,9 +588,42 @@ function syncCurrentMonth() {
 }
 
 // Chuẩn hóa dữ liệu đọc từ Supabase (hỗ trợ cả trường hợp DB giới hạn cột mark bằng CHECK constraint)
+// Lặp lại hàng tháng / hàng năm: lưu bằng nhãn ẩn ở đầu ghi chú (không cần thêm cột trong Supabase)
+const REP_TAG = { month: '[Lặp:tháng] ', year: '[Lặp:năm] ' };
+const REP_LABEL = { month: 'Hàng tháng', year: 'Hàng năm' };
+function encodeCalNote(note, repeat, her) {
+  return (repeat && REP_TAG[repeat] ? REP_TAG[repeat] : '') + (her ? HER_TAG : '') + (note || '');
+}
+// Các lần lặp của những ghi chú lặp lại rơi vào tháng (y, m); ngày gốc tự hiện bằng dữ liệu thật
+function repeatsIn(y, m) {
+  const out = {}, dim = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(), idx = y * 12 + m;
+  (K.reps || []).forEach((r) => {
+    const p = r.day.split('-').map(Number), start = p[0] * 12 + (p[1] - 1);
+    if (idx <= start) return;                                   // chỉ lặp từ sau tháng gốc trở đi
+    if (r.repeat === 'year' && (p[1] - 1) !== m) return;
+    const key = y + '-' + pad2(m + 1) + '-' + pad2(Math.min(p[2], dim));   // 31 → ngày cuối tháng nếu tháng ngắn hơn
+    if (!out[key]) out[key] = Object.assign({}, r, { day: key, origin: r.day, virtual: true });
+  });
+  return out;
+}
+function calView() {
+  const prefix = K.year + '-' + pad2(K.month + 1) + '-';
+  const v = repeatsIn(K.year, K.month);
+  Object.keys(K.days).forEach((k) => { if (k.startsWith(prefix)) v[k] = K.days[k]; });   // ngày có dữ liệu thật được ưu tiên
+  return v;
+}
+function syncRep(row, removedDay) {
+  K.reps = (K.reps || []).filter((r) => r.day !== removedDay && (!row || r.day !== row.day));
+  if (row && row.repeat) K.reps.push(row);
+}
+
 function normalizeCalRow(r) {
   if (!r) return r;
   const copy = Object.assign({}, r);
+  copy.repeat = '';
+  Object.keys(REP_TAG).forEach((k) => {
+    if (!copy.repeat && copy.note && copy.note.indexOf(REP_TAG[k]) === 0) { copy.repeat = k; copy.note = copy.note.slice(REP_TAG[k].length); }
+  });
   if (copy.note && copy.note.indexOf(HER_TAG) === 0) {
     copy.mark = 'her';
     copy.note = copy.note.slice(HER_TAG.length);
@@ -1713,6 +1746,11 @@ async function loadCal(force) {
   if (K.loadedYm === ym && !force) { renderCal(); return; }
   K.days = {}; renderCal();
   try {
+    if (!K.repsLoaded || force) {
+      const reps = must(await C.sb.from('cal_days').select('*').like('note', '[Lặp:%').order('day'));
+      K.reps = reps.map(normalizeCalRow).filter((r) => r.repeat);
+      K.repsLoaded = true;
+    }
     const rows = must(await C.sb.from('cal_days').select('*').gte('day', ym + '-01').lte('day', ym + '-' + pad2(dim)).order('day'));
     K.days = {}; rows.forEach((r) => { K.days[r.day] = normalizeCalRow(r); });
     K.loadedYm = ym; renderCal();
@@ -1725,14 +1763,15 @@ function renderCal() {
   const today = todayStr(), now = new Date();
   const first = (new Date(Date.UTC(K.year, m, 1)).getUTCDay() + 6) % 7, dim = new Date(Date.UTC(K.year, m + 1, 0)).getUTCDate();
   let cells = '';
+  const V = calView();
   for (let i = 0; i < first; i++) cells += '<i class="wm-dv"></i>';
   for (let d = 1; d <= dim; d++) {
-    const key = ym + '-' + pad2(d), x = K.days[key];
+    const key = ym + '-' + pad2(d), x = V[key];
     const mark = x && x.mark ? x.mark : '';
     const icon = MARK_ICON[mark] ? '<i class="wm-ic' + (mark === 'her' ? ' her' : '') + '" aria-hidden="true">' + MARK_ICON[mark]() + '</i>' : '';
     cells += '<button type="button" class="wm-d' + (key === today ? ' today' : '') + (mark ? ' m-' + mark : '') + ((first + d - 1) % 7 === 6 ? ' sun' : '') +
       '" data-day="' + key + '"' + (icon ? ' data-mk="' + mark + '"' : '') + (x && x.note ? ' title="' + esc(x.note) + '"' : '') + '>' +
-      '<span class="wm-n">' + d + '</span>' + icon + '</button>';
+      '<span class="wm-n">' + d + '</span>' + icon + (x && x.repeat ? '<i class="wm-rp" title="Lặp lại ' + REP_LABEL[x.repeat].toLowerCase() + '" aria-hidden="true">↻</i>' : '') + '</button>';
   }
   const isCurrentMonth = (K.year === now.getFullYear() && m === now.getMonth());
   $('kMonths').innerHTML = '<section class="wm-mon' + (isCurrentMonth ? ' now' : '') + '"><h4>' + MONTH_NAMES[m] + ' năm ' + K.year + '</h4><div class="wm-wd"><i>T2</i><i>T3</i><i>T4</i><i>T5</i><i>T6</i><i>T7</i><i class="sun">CN</i></div><div class="wm-dg">' + cells + '</div></section>';
@@ -1759,23 +1798,32 @@ function renderCal() {
   }
 
   const prefix = ym + '-';
-  const list = Object.keys(K.days).filter((k) => k.startsWith(prefix)).sort().map((k) => K.days[k]).filter((x) => x.note || x.mark);
+  const list = Object.keys(V).filter((k) => k.startsWith(prefix)).sort().map((k) => V[k]).filter((x) => x.note || x.mark);
   $('kList').innerHTML = '<h4>Ghi chú và đánh dấu ' + MONTH_NAMES[m].toLowerCase() + '/' + K.year + ' <span>' + list.length + '</span></h4>' + (list.length ? list.map((x) =>
-    '<button type="button" class="wm-ui" data-day="' + x.day + '">' + markDotHtml(x.mark || 'none') + '<span class="wm-ud">' + dmy(x.day).slice(0, 5) + ' · ' + DOW_LONG[new Date(x.day + 'T00:00:00').getDay()] + '</span><span class="wm-ut">' +
+    '<button type="button" class="wm-ui" data-day="' + x.day + '">' + markDotHtml(x.mark || 'none') + '<span class="wm-ud">' + dmy(x.day).slice(0, 5) + ' · ' + DOW_LONG[new Date(x.day + 'T00:00:00').getDay()] + '</span><span class="wm-ut">' + (x.repeat ? '<span class="wm-urp">↻ ' + REP_LABEL[x.repeat] + '</span>' : '') +
     (x.note ? esc(x.note.split('\n')[0]) : '<i>' + esc(MARK_LABEL[x.mark] || '') + '</i>') + '</span></button>').join('') :
     '<div class="wm-empty" style="padding:8px 0">Chưa có ngày nào trong ' + MONTH_NAMES[m].toLowerCase() + ' được đánh dấu hoặc ghi chú.</div>');
 }
 function openDay(day) {
-  const dt = new Date(day + 'T00:00:00'), cur = K.days[day] || { mark: '', note: '' };
-  let mark = cur.mark || '';
+  const V = calView();
+  const dt = new Date(day + 'T00:00:00'), cur = K.days[day] || V[day] || { mark: '', note: '' };
+  // Ô là một lần lặp: sửa / xóa áp dụng cho ghi chú gốc (cả chuỗi)
+  const target = cur.virtual ? cur.origin : day;
+  const exists = !!(K.days[day] || cur.virtual);
+  let mark = cur.mark || '', repeat = cur.repeat || '';
+  const REPS = [['', 'Không lặp'], ['month', 'Hàng tháng'], ['year', 'Hàng năm']];
   openDlg('<h2>' + DOW_LONG[dt.getDay()] + ', ' + dmy(day) + '</h2>' +
+    (cur.virtual ? '<p class="wm-rpinfo">↻ Lặp lại ' + REP_LABEL[cur.repeat].toLowerCase() + ' từ ngày ' + dmy(cur.origin) + '. Sửa hoặc xóa ở đây sẽ áp dụng cho cả chuỗi.</p>' : '') +
     '<div class="field"><label>Đánh dấu</label><div class="wm-cols" id="kCols">' + MARKS.map((m) => '<button type="button" class="c-' + m[0] + (mark === m[0] ? ' on' : '') + '" data-col="' + m[0] + '">' + markDotHtml(m[0]) + m[1] + '</button>').join('') + '</div></div>' +
     '<div class="field"><label for="kNote">Ghi chú</label><textarea id="kNote" rows="5" data-autofocus placeholder="Việc cần làm, cuộc hẹn, nhắc nhở…"></textarea></div>' +
-    '<div class="prev bad wm-err"></div><div class="twin">' + (K.days[day] ? '<button class="btn danger" data-k="del" type="button">Xóa</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
+    '<div class="field"><label>Lặp lại</label><div class="wm-reps" id="kRep">' + REPS.map((r) => '<button type="button" class="chip' + (repeat === r[0] ? ' on' : '') + '" data-rep="' + r[0] + '">' + (r[0] ? '↻ ' : '') + r[1] + '</button>').join('') + '</div></div>' +
+    '<div class="prev bad wm-err"></div><div class="twin">' + (exists ? '<button class="btn danger" data-k="del" type="button">' + (cur.virtual || cur.repeat ? 'Xóa cả chuỗi' : 'Xóa') + '</button>' : '') + '<button class="btn" data-k="cancel" type="button">Hủy</button><button class="btn primary" data-k="save" type="button">Lưu</button></div>');
   $('kNote').value = cur.note || '';
   $('wmDlg').querySelector('.sheet').onclick = async (e) => {
     const col = e.target.closest('[data-col]');
     if (col) { mark = mark === col.getAttribute('data-col') ? '' : col.getAttribute('data-col'); Array.prototype.forEach.call($('kCols').children, (x) => x.classList.toggle('on', x.getAttribute('data-col') === mark)); return; }
+    const rp = e.target.closest('[data-rep]');
+    if (rp) { repeat = rp.getAttribute('data-rep'); Array.prototype.forEach.call($('kRep').children, (x) => x.classList.toggle('on', x.getAttribute('data-rep') === repeat)); return; }
     const b = e.target.closest('[data-k]'); if (!b) return;
     const a = b.getAttribute('data-k');
     if (a === 'cancel') { closeDlg(); return; }
@@ -1783,21 +1831,24 @@ function openDay(day) {
     try {
       const note = $('kNote').value.trim();
       if (a === 'del' || (!mark && !note)) {
-        if (K.days[day]) await track(async () => gotRows(must(await C.sb.from('cal_days').delete().eq('day', day).select('day'))));
-        delete K.days[day];
+        if (exists) await track(async () => gotRows(must(await C.sb.from('cal_days').delete().eq('day', target).select('day'))));
+        delete K.days[target];
+        syncRep(null, target);
       } else {
         let saved;
         try {
-          saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark, note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
+          saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day: target, mark, note: encodeCalNote(note, repeat, false), updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
         } catch (dbErr) {
           // Nếu bảng cal_days trên Supabase có ràng buộc CHECK chỉ cho phép 5 màu cũ, tự động lưu kèm tiền tố [Her]
           if (mark === 'her' && /check constraint|cal_days_mark_check/i.test(String(dbErr && dbErr.message || dbErr))) {
-            saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day, mark: 'purple', note: HER_TAG + note, updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
+            saved = must(await track(async () => C.sb.from('cal_days').upsert({ user_id: user().id, day: target, mark: 'purple', note: encodeCalNote(note, repeat, true), updated_at: new Date().toISOString() }, { onConflict: 'user_id,day' }).select().single()));
           } else {
             throw dbErr;
           }
         }
-        K.days[day] = normalizeCalRow(saved);
+        const row = normalizeCalRow(saved);
+        if (target.slice(0, 7) === K.year + '-' + pad2(K.month + 1)) K.days[target] = row;
+        syncRep(row, target);
       }
       closeDlg(); renderCal(); C.toast('Đã lưu');
     } catch (er) { fail(er); b.disabled = false; }
