@@ -21,7 +21,7 @@
   function isVisible(el, cache) {
     if (cache.has(el)) return cache.get(el);
     var v = el.isConnected;
-    if (v && el.checkVisibility) v = el.checkVisibility();
+    if (v && el.checkVisibility) v = el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true, opacityProperty: true, visibilityProperty: true });
     if (v) {
       var r = el.getBoundingClientRect(), m = 80;
       v = (r.width > 0 || r.height > 0) &&

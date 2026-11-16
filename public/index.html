@@ -43,8 +43,7 @@
   .top {
     --edge:clamp(16px,4vw,48px);
     position:sticky; top:0; z-index:4; display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:16px var(--edge); margin:0 0 18px; background:rgba(241,248,255,.86);
-    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    padding:16px var(--edge); margin:0 0 18px; background:rgba(241,248,255,.95);
     border-bottom:1px solid rgba(220,234,246,.75);
   }
   .top h1 { font-size:21px; font-weight:800; letter-spacing:-.45px; margin:0; }
@@ -159,8 +158,8 @@
   .empty { text-align:center; color:var(--muted); padding:32px 0; font-size:14px; }
 
   /* Modal and bottom sheet */
-  .modal { position:fixed; inset:0; background:rgba(36,66,91,.34); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); display:flex; align-items:flex-end; justify-content:center; z-index:10; opacity:0; pointer-events:none; transition:opacity .22s; }
-  .modal.on { opacity:1; pointer-events:auto; }
+  .modal { position:fixed; inset:0; background:rgba(36,66,91,.34); display:flex; align-items:flex-end; justify-content:center; z-index:10; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .modal.on { opacity:1; pointer-events:auto; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
   .sheet { background:var(--card); border:1px solid rgba(220,234,246,.9); width:100%; max-width:560px; border-radius:25px 25px 0 0; padding:22px 20px calc(22px + env(safe-area-inset-bottom)); transform:translateY(30px); transition:transform .28s cubic-bezier(.2,.8,.2,1); max-height:92vh; overflow:auto; box-shadow:0 -12px 40px rgba(44,91,127,.13); }
   .sheet h2 { margin:0; font-size:18px; font-weight:800; letter-spacing:-.3px; }
   .twin { display:flex; gap:9px; margin-top:12px; } .twin .btn { flex:1; margin:0; }
@@ -1117,7 +1116,7 @@ html[data-theme="dark"] body {
 
 /* Thanh tiêu đề & nút công cụ */
 html[data-theme="dark"] .top {
-  background: rgba(11, 21, 34, .84);
+  background: rgba(11, 21, 34, .95);
   border-bottom-color: rgba(35, 59, 88, .85);
 }
 html[data-theme="dark"] .pill,
@@ -1477,7 +1476,7 @@ html[data-theme="dark"] .bub {
 </style>
 <link rel="stylesheet" href="work.css?v=6">
 <link rel="stylesheet" href="scene.css?v=2">
-<link rel="stylesheet" href="meadow-bg.css?v=6">
+<link rel="stylesheet" href="meadow-bg.css?v=7">
 </head>
 <body>
   <header class="top">
@@ -1736,9 +1735,9 @@ html[data-theme="dark"] .bub {
 <div class="toast" id="toast"></div>
 <script src="config.js"></script>
 <script src="animations.js?v=10"></script>
-<script src="meadow-bg.js?v=5"></script>
+<script src="meadow-bg.js?v=6"></script>
 <script src="scene.js?v=3"></script>
-<script src="perf.js?v=2"></script>
+<script src="perf.js?v=3"></script>
 <script>
 /* Cà chua Namuwu: nhún nhẹ, thỉnh thoảng lóe sao; rê chuột/chạm thì bung sao; quả trên cây đung đưa */
 (function () {

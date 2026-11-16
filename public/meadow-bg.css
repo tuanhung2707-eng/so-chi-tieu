@@ -61,7 +61,9 @@ html:not([data-theme="dark"]) .mbg-moon, html:not([data-theme="dark"]) .mbg-moon
 html[data-theme="dark"] .mbg-sun, html[data-theme="dark"] .mbg-halo { display: none; }
 
 /* mây */
-.mbg-cloud { left: 0; opacity: var(--cl-op); filter: drop-shadow(0 8px 14px rgba(110, 160, 210, .14)); }
+.mbg-cloud { left: 0; opacity: var(--cl-op); will-change: transform; }
+.mbg-cloud .sh { fill: rgba(110, 160, 210, .13); }
+html[data-theme="dark"] .mbg-cloud .sh { display: none; }
 html[data-theme="dark"] .mbg-cloud { filter: none; }
 .mbg-cloud svg { width: 100%; height: auto; display: block; overflow: visible; }
 
@@ -136,3 +138,19 @@ html:not([data-theme="dark"]) .mbg-land .fl { opacity: .8; }
 @media (max-width: 700px) {
   .mbg-mist { background: linear-gradient(180deg, transparent 0%, var(--mist) 22%, var(--mist) 100%); opacity: .75; }
 }
+
+/* ---------- Tối ưu cho mượt ----------
+   Ngôi sao ✦ cạnh tiêu đề: chỉ xoay + đổi độ mờ (trước đổi màu, bóng chữ, bộ lọc mỗi khung hình) */
+html body .top h1::after {
+  color: #1f86f2 !important;
+  text-shadow: 0 0 6px rgba(45, 152, 255, .85), 0 0 14px rgba(26, 136, 255, .45) !important;
+  filter: none !important;
+  animation: mbgSparkleLite 3.2s ease-in-out infinite !important;
+}
+html[data-theme="dark"] body .top h1::after { color: #3aa2ff !important; animation: mbgSparkleLite 3.2s ease-in-out infinite !important; }
+@keyframes mbgSparkleLite {
+  0%, 100% { transform: rotate(0deg) scale(.96); opacity: .9; }
+  45% { transform: rotate(90deg) scale(1.12); opacity: 1; }
+  70% { transform: rotate(150deg) scale(1); opacity: .95; }
+}
+@media (prefers-reduced-motion: reduce) { html body .top h1::after { animation: none !important; } }

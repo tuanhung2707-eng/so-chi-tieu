@@ -81,17 +81,17 @@
   add('mbg-defs', defs, 'width:0;height:0');
   var CLOUD = [
     // đám mây tròn đầy
-    '<svg viewBox="0 0 240 100"><g fill="url(#mbgCloud)">' +
+    '<svg viewBox="0 0 240 100"><ellipse class="sh" cx="122" cy="86" rx="104" ry="10"/><g fill="url(#mbgCloud)">' +
       '<ellipse cx="120" cy="74" rx="108" ry="22"/><circle cx="64" cy="60" r="30"/><circle cx="108" cy="44" r="40"/>' +
       '<circle cx="156" cy="50" r="34"/><circle cx="194" cy="64" r="24"/><circle cx="34" cy="70" r="20"/></g>' +
       '<g class="hl" fill="#fff" opacity=".3"><circle cx="100" cy="36" r="18"/><circle cx="150" cy="42" r="13"/><circle cx="60" cy="52" r="11"/></g></svg>',
     // đám mây dài, dẹt
-    '<svg viewBox="0 0 300 80"><g fill="url(#mbgCloud)">' +
+    '<svg viewBox="0 0 300 80"><ellipse class="sh" cx="152" cy="70" rx="134" ry="8"/><g fill="url(#mbgCloud)">' +
       '<ellipse cx="150" cy="60" rx="140" ry="16"/><circle cx="70" cy="50" r="22"/><circle cx="118" cy="38" r="30"/>' +
       '<circle cx="170" cy="42" r="26"/><circle cx="215" cy="50" r="20"/><circle cx="252" cy="56" r="14"/></g>' +
       '<g class="hl" fill="#fff" opacity=".3"><circle cx="112" cy="32" r="14"/><circle cx="166" cy="36" r="10"/></g></svg>',
     // cụm mây nhỏ
-    '<svg viewBox="0 0 160 80"><g fill="url(#mbgCloud)">' +
+    '<svg viewBox="0 0 160 80"><ellipse class="sh" cx="82" cy="70" rx="66" ry="8"/><g fill="url(#mbgCloud)">' +
       '<ellipse cx="80" cy="60" rx="70" ry="16"/><circle cx="52" cy="48" r="22"/><circle cx="88" cy="38" r="28"/><circle cx="120" cy="52" r="18"/></g>' +
       '<g class="hl" fill="#fff" opacity=".3"><circle cx="84" cy="30" r="12"/></g></svg>'
   ];
@@ -280,8 +280,7 @@
     if (lite) return;
 
     // Mặt trời thở nhẹ
-    anim(halo, [{ transform: 'scale(1)', opacity: .8 }, { transform: 'scale(1.12)', opacity: 1 }], { duration: 5200, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
-    anim(sun, [{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }], { duration: 5200, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    anim(halo, [{ opacity: .75 }, { opacity: 1 }], { duration: 5200, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
 
     // Mây trôi chậm từ trái sang phải, lớp gần trôi nhanh hơn lớp xa
     cloudEls.forEach(function (e) {
@@ -294,8 +293,10 @@
     });
 
     // Rừng thông đung đưa rất nhẹ (cây gần lắc nhiều hơn cây xa)
+    // chỉ hàng gần đung đưa (hàng xa ở xa nên gần như không thấy lắc) => nhẹ máy hơn nhiều
     pineEls.forEach(function (e, i) {
-      var row = e.classList.contains('row2') ? 2 : e.classList.contains('row1') ? 1 : 0, a = [.6, 1, 1.5][row];
+      if (!e.classList.contains('row2')) return;
+      var a = 1.5;
       anim(e, [{ transform: 'rotate(' + (-a) + 'deg)' }, { transform: 'rotate(' + a + 'deg)' }],
         { duration: rnd(4200, 6800), delay: -rnd(0, 6000), iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
     });
