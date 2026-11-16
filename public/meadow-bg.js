@@ -29,7 +29,32 @@
   /* ---------- Bầu trời, mặt trời, trăng, sao ---------- */
   add('mbg-sky');
   var halo = add('mbg-halo'), sun = add('mbg-sun');
-  add('mbg-moonglow'); add('mbg-moon');
+  var moonGlow = add('mbg-moonglow');
+  add('mbg-moonring');
+  var moonEl = add('mbg-moon',
+    '<svg viewBox="0 0 120 120"><defs>' +
+      '<radialGradient id="mbgMoonG" cx=".36" cy=".34" r=".75"><stop offset="0" stop-color="#fffef6"/><stop offset=".5" stop-color="#f7f0d2"/><stop offset="1" stop-color="#dccf9f"/></radialGradient>' +
+      '<radialGradient id="mbgMoonCr" cx=".45" cy=".4" r=".6"><stop offset="0" stop-color="#cdbf8f"/><stop offset="1" stop-color="#e6dbb2"/></radialGradient>' +
+      '<clipPath id="mbgMoonClip"><circle cx="60" cy="60" r="46"/></clipPath>' +
+      '<filter id="mbgMoonBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>' +
+    '</defs>' +
+    '<circle cx="60" cy="60" r="46" fill="url(#mbgMoonG)"/>' +
+    '<g clip-path="url(#mbgMoonClip)">' +
+      // vùng "biển" tối mềm trên mặt trăng
+      '<path d="M30 46 C38 34 54 36 58 46 C62 56 50 62 42 60 C34 58 26 54 30 46 Z" fill="#d8cb9c" opacity=".55"/>' +
+      '<path d="M56 70 C64 62 78 66 80 76 C82 86 70 90 62 86 C55 82 52 76 56 70 Z" fill="#d8cb9c" opacity=".5"/>' +
+      '<path d="M66 32 C72 28 82 32 82 40 C82 46 74 48 70 44 C66 41 63 36 66 32 Z" fill="#dccfa2" opacity=".45"/>' +
+      // miệng hố: lòng tối, viền sáng
+      '<g fill="url(#mbgMoonCr)" stroke="#fffbe8" stroke-opacity=".55" stroke-width=".9">' +
+        '<circle cx="44" cy="72" r="6"/><circle cx="72" cy="52" r="4.2"/><circle cx="36" cy="38" r="3.4"/>' +
+        '<circle cx="54" cy="88" r="3"/><circle cx="82" cy="72" r="2.6"/><circle cx="60" cy="24" r="2.4"/><circle cx="26" cy="60" r="2.2"/>' +
+      '</g>' +
+      '<g fill="#cbbd8c" opacity=".6"><circle cx="48" cy="54" r="1.3"/><circle cx="66" cy="66" r="1.1"/><circle cx="40" cy="84" r="1.2"/><circle cx="76" cy="38" r="1"/><circle cx="30" cy="50" r="1"/></g>' +
+      // phần tối (trăng khuyết lồi, sáng bên trái), mép mềm
+      '<circle cx="106" cy="52" r="46" fill="#0c1534" opacity=".8" filter="url(#mbgMoonBlur)"/>' +
+    '</g>' +
+    '<circle cx="60" cy="60" r="46" fill="none" stroke="#fffbe6" stroke-opacity=".55" stroke-width="1.2"/>' +
+    '</svg>');
   var stars = add('mbg-stars'), starEls = [];
   for (var i = 0; i < 46; i++) {
     var st = document.createElement('i');
@@ -103,11 +128,10 @@
   }
   var land = '<svg viewBox="0 0 1440 280" preserveAspectRatio="xMidYMax slice">' +
     '<path class="far" d="M0 120 C160 70 300 90 440 104 C600 120 700 64 860 76 C1020 88 1120 120 1260 96 C1340 82 1400 86 1440 92 V280 H0Z"/>' +
-    tree(70, 132, .7, 'pine') + tree(1385, 128, .75, 'pine') + tree(1265, 134, .55, 'round') +
     '<path class="mid" d="M0 168 C140 136 260 146 400 160 C560 176 680 132 840 140 C1000 148 1120 174 1280 158 C1360 150 1410 148 1440 152 V280 H0Z"/>' +
-    tree(190, 176, .95, 'round') + tree(1180, 170, 1, 'round') + bush(300, 172, .9) + bush(1060, 168, .8) +
+    bush(300, 172, .9) + bush(1060, 168, .8) +
     '<path class="near" d="M0 214 C180 192 320 200 480 210 C660 222 800 194 980 200 C1140 206 1280 222 1440 206 V280 H0Z"/>' +
-    tree(118, 222, 1.25, 'round') + tree(1322, 218, 1.3, 'round') + bush(36, 224, 1.1) + bush(1410, 218, 1.15) +
+    bush(420, 222, 1.1) + bush(1010, 218, 1.15) +
     '<path class="front" d="M0 252 C220 238 420 246 640 250 C860 254 1060 240 1260 244 C1350 246 1410 250 1440 248 V280 H0Z"/>';
   // hoa rải trên các lớp đồi
   var fl = '';
@@ -124,6 +148,33 @@
   }
   land += fl + '<path class="grass" d="' + gr + '"/></svg>';
   add('mbg-land', land);
+
+  /* ---------- Rừng thông hai bên: 3 hàng (xa – giữa – gần), cây cao thấp xen kẽ, đung đưa nhẹ ---------- */
+  var PINE = '<svg viewBox="0 0 60 122" preserveAspectRatio="xMidYMax meet">' +
+    '<rect class="pt" x="27" y="104" width="6" height="18" rx="1.5"/>' +
+    '<path class="pl" d="M30 2 L42 32 L36 31 L48 56 L40 55 L53 82 L44 81 L58 112 L2 112 L16 81 L7 82 L20 55 L12 56 L24 31 L18 32 Z"/>' +
+    '<path d="M30 2 L42 32 L36 31 L48 56 L40 55 L53 82 L44 81 L58 112 L30 112 Z" fill="#000" opacity=".14"/>' +
+    '<path d="M30 2 L18 32 L24 31 L12 56 L20 55 L7 82 L16 81 L2 112 L12 112 L22 84 L16 85 L26 58 L20 59 L30 30 Z" fill="#fff" opacity=".1"/>' +
+    '</svg>';
+  // [x % trong khung rừng, chiều cao (phần của khung), hàng 0 xa / 1 giữa / 2 gần]
+  var FOREST = [
+    [4, .5, 0], [20, .62, 0], [36, .46, 0], [52, .58, 0], [70, .44, 0],
+    [-4, .72, 1], [12, .58, 1], [28, .8, 1], [46, .62, 1], [62, .5, 1],
+    [-8, .98, 2], [8, .78, 2], [22, 1, 2], [40, .7, 2], [56, .56, 2]
+  ];
+  var pineEls = [];
+  ['l', 'r'].forEach(function (side) {
+    var box = add('mbg-forest ' + side);
+    FOREST.forEach(function (t) {
+      var e = document.createElement('div');
+      e.className = 'mbg-pine row' + t[2];
+      e.style.left = t[0] + '%';
+      e.style.height = (t[1] * 100) + '%';
+      e.innerHTML = PINE;
+      box.appendChild(e);
+      pineEls.push(e);
+    });
+  });
 
   /* ---------- Bồ công anh trên đồng cỏ ---------- */
   function dandelionSvg() {
@@ -219,6 +270,17 @@
       ], { duration: c[4] * 1000 * (W / 1400 + .4), delay: -c[5] * c[4] * 1000 * (W / 1400 + .4), iterations: Infinity, easing: 'linear' });
       void dist;
     });
+
+    // Rừng thông đung đưa rất nhẹ (cây gần lắc nhiều hơn cây xa)
+    pineEls.forEach(function (e, i) {
+      var row = e.classList.contains('row2') ? 2 : e.classList.contains('row1') ? 1 : 0, a = [.6, 1, 1.5][row];
+      anim(e, [{ transform: 'rotate(' + (-a) + 'deg)' }, { transform: 'rotate(' + a + 'deg)' }],
+        { duration: rnd(4200, 6800), delay: -rnd(0, 6000), iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    });
+
+    // Mặt trăng: quầng sáng thở chậm
+    anim(moonGlow, [{ opacity: .7, transform: 'scale(1)' }, { opacity: 1, transform: 'scale(1.08)' }],
+      { duration: 6000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
 
     // Bồ công anh đung đưa qua lại
     danEls.forEach(function (e, i) {

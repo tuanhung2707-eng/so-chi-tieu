@@ -15,6 +15,8 @@
   --h-far: #b9e0b4; --h-mid: #93cf8c; --h-near: #6dba68; --h-front: #58a956;
   --trunk: #8a6446; --tree-1: #5fae5c; --tree-2: #4a9a4c; --tree-3: #7cc277;
   --bush: #5aa957; --grass: #3f8f43;
+  --pine-0: #8cc3a0; --pine-1: #5c9f72; --pine-2: #3f7f58;
+  --land-h: max(150px, min(calc(100vw * 280 / 1440), 40vh));
   --dan-stem: #6aa865; --dan-seed: #ffffff;
   --leaf-1: #8cc96f; --leaf-2: #e8c25a; --leaf-3: #6fb86a;
   --mote: 255, 250, 225;
@@ -25,6 +27,7 @@ html[data-theme="dark"] .mbg {
   --h-far: #1e3a4a; --h-mid: #193342; --h-near: #142b37; --h-front: #10232d;
   --trunk: #2d2430; --tree-1: #1d3d3a; --tree-2: #173331; --tree-3: #24493f;
   --bush: #1a3836; --grass: #234a3f;
+  --pine-0: #23404c; --pine-1: #1a3340; --pine-2: #122733;
   --dan-stem: #3d6a58; --dan-seed: #dfe7ff;
   --leaf-1: #4f7f5c; --leaf-2: #8c7a4a; --leaf-3: #3f6e55;
   --mote: 210, 225, 255;
@@ -41,15 +44,17 @@ html[data-theme="dark"] .mbg {
 .mbg-halo { top: calc(6px + 4vh); right: calc(11vw - 90px); width: 276px; height: 276px; border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 248, 210, .5) 0%, rgba(255, 248, 210, 0) 65%); }
 /* trăng & sao (tối) */
-.mbg-moon { top: calc(108px + 4vh); right: 12vw; width: 64px; height: 64px; border-radius: 50%; background: transparent;
-  box-shadow: 16px -10px 0 0 #f5f1d6; filter: drop-shadow(0 0 14px rgba(245, 240, 200, .55)); }
-.mbg-moonglow { top: calc(28px + 4vh); right: calc(12vw - 80px); width: 220px; height: 220px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(200, 210, 255, .22) 0%, rgba(200, 210, 255, 0) 65%); }
+.mbg-moon { top: calc(100px + 4vh); right: 12vw; width: 88px; height: 88px; filter: drop-shadow(0 0 12px rgba(255, 248, 215, .55)); }
+.mbg-moon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.mbg-moonglow { top: calc(100px + 4vh - 76px); right: calc(12vw - 76px); width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 246, 210, .30) 0%, rgba(210, 220, 255, .14) 38%, rgba(200, 210, 255, 0) 68%); }
+.mbg-moonring { top: calc(100px + 4vh - 26px); right: calc(12vw - 26px); width: 140px; height: 140px; border-radius: 50%;
+  border: 1px solid rgba(255, 248, 220, .12); box-shadow: 0 0 0 14px rgba(255, 248, 220, .04), 0 0 0 30px rgba(255, 248, 220, .025); }
 .mbg-stars { inset: 0 0 35% 0; }
 .mbg-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 4px 1px rgba(255, 255, 255, .7); opacity: .8; }
 .mbg-star.big { width: 9px; height: 9px; border-radius: 0; box-shadow: none; background: #fff;
   clip-path: polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%); }
-html:not([data-theme="dark"]) .mbg-moon, html:not([data-theme="dark"]) .mbg-moonglow, html:not([data-theme="dark"]) .mbg-stars,
+html:not([data-theme="dark"]) .mbg-moon, html:not([data-theme="dark"]) .mbg-moonglow, html:not([data-theme="dark"]) .mbg-moonring, html:not([data-theme="dark"]) .mbg-stars,
 html[data-theme="dark"] .mbg-sun, html[data-theme="dark"] .mbg-halo { display: none; }
 
 /* mây */
@@ -58,7 +63,20 @@ html[data-theme="dark"] .mbg-cloud { filter: none; }
 .mbg-cloud svg { width: 100%; height: auto; display: block; overflow: visible; }
 
 /* đồng cỏ phía dưới */
-.mbg-land { left: 0; bottom: 0; width: 100%; height: max(150px, min(calc(100vw * 280 / 1440), 40vh)); }
+.mbg-land { left: 0; bottom: 0; width: 100%; height: var(--land-h); }
+
+/* rừng thông hai bên */
+.mbg-forest { bottom: 0; width: clamp(108px, 27vw, 440px); height: calc(var(--land-h) * 1.6); }
+.mbg-forest.l { left: -1vw; }
+.mbg-forest.r { right: -1vw; transform: scaleX(-1); }
+.mbg-pine { position: absolute; aspect-ratio: 60 / 122; transform-origin: 50% 100%; }
+.mbg-pine svg { width: 100%; height: 100%; display: block; }
+.mbg-pine.row0 { bottom: calc(var(--land-h) * .34); }
+.mbg-pine.row1 { bottom: calc(var(--land-h) * .2); }
+.mbg-pine.row2 { bottom: calc(var(--land-h) * .04); }
+.mbg-pine.row0 .pl { fill: var(--pine-0); } .mbg-pine.row1 .pl { fill: var(--pine-1); } .mbg-pine.row2 .pl { fill: var(--pine-2); }
+.mbg-pine .pt { fill: var(--trunk); }
+.mbg-pine.row0 { opacity: .9; }
 /* overflow visible: ngọn cây không bị cắt khi khung thấp hơn tỉ lệ ảnh (màn hình rất rộng) */
 .mbg-land svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .mbg-land .far { fill: var(--h-far); } .mbg-land .mid { fill: var(--h-mid); }
@@ -97,8 +115,10 @@ html:not([data-theme="dark"]) .mbg-ff { display: none; }
   .mbg-leaf, .mbg-ff { display: none; }
   .mbg-sun { width: 64px; height: 64px; right: 8vw; top: calc(78px + 3vh); }
   .mbg-halo { display: none; }
-  .mbg-moon { width: 46px; height: 46px; right: 9vw; top: calc(86px + 3vh); box-shadow: 12px -7px 0 0 #f5f1d6; }
-  .mbg-moonglow { display: none; }
+  .mbg-moon { width: 58px; height: 58px; right: 9vw; top: calc(80px + 3vh); }
+  .mbg-moonglow { width: 150px; height: 150px; top: calc(80px + 3vh - 46px); right: calc(9vw - 46px); }
+  .mbg-moonring { display: none; }
+  .mbg-forest .row0 { display: none; }
 }
 
 /* nội dung nằm trên nền */
