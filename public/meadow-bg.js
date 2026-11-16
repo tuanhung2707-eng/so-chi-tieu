@@ -199,6 +199,9 @@
     return add('mbg-dan', dandelionSvg(), 'left:' + d[0] + '%;width:' + (d[1] * 0.36).toFixed(0) + 'px;height:' + d[1] + 'px');
   });
 
+  /* ---------- Sương mờ ở giữa: cho cảnh "lùi ra sau" các bảng thông tin ---------- */
+  add('mbg-mist');
+
   /* ---------- Tầng giữa: hạt bồ công anh, lá, bụi sáng, đom đóm ---------- */
   var SEED = '<svg viewBox="0 0 16 22"><path class="seed" d="M8 22 V9" stroke-width=".9" fill="none"/>' +
     '<path class="seed" d="M8 9 L1 3 M8 9 L4 1 M8 9 L8 0 M8 9 L12 1 M8 9 L15 3 M8 9 L2 7 M8 9 L14 7" stroke-width=".7" fill="none" opacity=".9"/>' +
@@ -226,10 +229,21 @@
     stopAll();
     if (REDUCE) return;
     var W = window.innerWidth, H = window.innerHeight, lite = mqLite.matches;
+    // Hạt bay chỉ ở hai bên lề, không bay ngang qua vùng các bảng (rộng ~1000px ở giữa)
+    var gap = Math.max(0, (W - 1020) / 2), sides = gap >= 70;
+    function sideX(i) {
+      if (!sides) return rnd(0, W);
+      return (i % 2 === 0) ? rnd(0, gap - 10) : rnd(W - gap + 10, W);
+    }
+    function clampSide(x, i) {
+      if (!sides) return x;
+      return (i % 2 === 0) ? Math.max(-10, Math.min(gap - 10, x)) : Math.max(W - gap + 10, Math.min(W + 10, x));
+    }
 
     // Bụi sáng: trôi lững lờ, lấp lánh (cả điện thoại)
-    motes.forEach(function (e) {
-      var x = rnd(0, W), y = rnd(H * .2, H * .82), dx = rnd(-40, 40), dy = rnd(-60, -20), s = rnd(.6, 1.6);
+    motes.forEach(function (e, i) {
+      var x = sideX(i), y = rnd(H * .2, H * .82), dx = rnd(-30, 30), dy = rnd(-60, -20), s = rnd(.6, 1.6);
+      if (sides) { x = clampSide(x, i); dx = (clampSide(x + dx, i) - x); }
       anim(e, [
         { transform: 'translate3d(' + x.toFixed(0) + 'px,' + y.toFixed(0) + 'px,0) scale(' + s.toFixed(2) + ')', opacity: 0 },
         { transform: 'translate3d(' + (x + dx * .4).toFixed(0) + 'px,' + (y + dy * .4).toFixed(0) + 'px,0) scale(' + s.toFixed(2) + ')', opacity: .95, offset: .35 },
@@ -243,6 +257,7 @@
       var fromLeft = i % 2 === 0;
       var x0 = fromLeft ? rnd(0, W * .3) : rnd(W * .7, W), y0 = rnd(H * .72, H * .9);
       var dir = fromLeft ? 1 : -1, span = rnd(W * .25, W * .55), rise = rnd(H * .3, H * .55), wob = rnd(14, 30);
+      if (sides) { x0 = sideX(i); span = rnd(10, Math.max(20, gap * .5)); dir = fromLeft ? 1 : -1; if ((fromLeft && x0 + span > gap - 10) || (!fromLeft && x0 - span < W - gap + 10)) dir = -dir; }
       var pts = [];
       for (var k = 0; k <= 6; k++) {
         var t = k / 6;
@@ -295,8 +310,10 @@
     });
 
     // Lá cây bay chéo qua màn hình
-    leaves.forEach(function (e) {
+    leaves.forEach(function (e, i) {
       var x0 = rnd(W * .55, W * 1.05), y0 = rnd(H * .05, H * .35), dx = -rnd(W * .5, W * .9), dy = rnd(H * .35, H * .6);
+      // lá rơi chéo nhẹ trong dải lề hai bên
+      if (sides) { x0 = sideX(i); dx = (i % 2 === 0 ? 1 : -1) * rnd(10, Math.max(20, gap * .35)); x0 = clampSide(x0, i); if (clampSide(x0 + dx, i) !== x0 + dx) dx = -dx; }
       var pts = [];
       for (var k = 0; k <= 5; k++) {
         var t = k / 5;
@@ -311,7 +328,8 @@
 
     // Đom đóm (chế độ tối – CSS tự ẩn ở chế độ sáng)
     ffs.forEach(function (e) {
-      var x = rnd(W * .03, W * .97), y = rnd(H * .45, H * .9), dx = rnd(-50, 50), dy = rnd(-40, 20);
+      var x = sides ? sideX(ffs.indexOf(e)) : rnd(W * .03, W * .97), y = rnd(H * .45, H * .9), dx = rnd(-30, 30), dy = rnd(-40, 20);
+      if (sides) { x = clampSide(x, ffs.indexOf(e)); dx = clampSide(x + dx, ffs.indexOf(e)) - x; }
       anim(e, [
         { transform: 'translate3d(' + x.toFixed(0) + 'px,' + y.toFixed(0) + 'px,0)', opacity: 0 },
         { transform: 'translate3d(' + (x + dx * .5).toFixed(0) + 'px,' + (y + dy * .5).toFixed(0) + 'px,0)', opacity: 1, offset: .4 },

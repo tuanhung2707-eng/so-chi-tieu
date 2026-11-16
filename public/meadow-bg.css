@@ -12,10 +12,11 @@
   contain: strict;
   --sky-1: #a8d5f4; --sky-2: #c7e5f9; --sky-3: #e6f3fc; --sky-4: #f7fbfe;
   --cl-top: #ffffff; --cl-mid: #f3f8fd; --cl-bot: #d4e7f7; --cl-op: .96;
-  --h-far: #b9e0b4; --h-mid: #93cf8c; --h-near: #6dba68; --h-front: #58a956;
+  --h-far: #d3ecd0; --h-mid: #bde2b7; --h-near: #a4d59d; --h-front: #92ca8b;
   --trunk: #8a6446; --tree-1: #5fae5c; --tree-2: #4a9a4c; --tree-3: #7cc277;
-  --bush: #5aa957; --grass: #3f8f43;
-  --pine-0: #8cc3a0; --pine-1: #5c9f72; --pine-2: #3f7f58;
+  --bush: #98cd91; --grass: #7cb87a;
+  --mist: rgba(242, 249, 255, .62);
+  --pine-0: #b8dcc4; --pine-1: #96c9a6; --pine-2: #7bb68f;
   --land-h: max(150px, min(calc(100vw * 280 / 1440), 40vh));
   --dan-stem: #6aa865; --dan-seed: #ffffff;
   --leaf-1: #8cc96f; --leaf-2: #e8c25a; --leaf-3: #6fb86a;
@@ -25,8 +26,9 @@ html[data-theme="dark"] .mbg {
   --sky-1: #0b1430; --sky-2: #14214a; --sky-3: #1d3060; --sky-4: #24406e;
   --cl-top: #6f7fb3; --cl-mid: #4f5f94; --cl-bot: #34426f; --cl-op: .38;
   --h-far: #1e3a4a; --h-mid: #193342; --h-near: #142b37; --h-front: #10232d;
-  --trunk: #2d2430; --tree-1: #1d3d3a; --tree-2: #173331; --tree-3: #24493f;
+  --trunk: #1b2a30; --tree-1: #1d3d3a; --tree-2: #173331; --tree-3: #24493f;
   --bush: #1a3836; --grass: #234a3f;
+  --mist: rgba(16, 26, 56, .55);
   --pine-0: #23404c; --pine-1: #1a3340; --pine-2: #122733;
   --dan-stem: #3d6a58; --dan-seed: #dfe7ff;
   --leaf-1: #4f7f5c; --leaf-2: #8c7a4a; --leaf-3: #3f6e55;
@@ -125,3 +127,12 @@ html:not([data-theme="dark"]) .mbg-ff { display: none; }
 /* nội dung nằm trên nền */
 .wrap { position: relative; z-index: 1; }
 html[data-theme="dark"] .mbg-cloud .hl { display: none; }
+
+/* Sương mờ vùng giữa (nơi có các bảng): cảnh lùi ra sau, hai mép trang vẫn rõ */
+.mbg-mist { inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--mist) calc(50% - min(44vw, 560px)), var(--mist) calc(50% + min(44vw, 560px)), transparent 100%); }
+html:not([data-theme="dark"]) .mbg-land .fl { opacity: .8; }
+.mbg-pine.row0 { opacity: .75; }
+@media (max-width: 700px) {
+  .mbg-mist { background: linear-gradient(180deg, transparent 0%, var(--mist) 22%, var(--mist) 100%); opacity: .75; }
+}
