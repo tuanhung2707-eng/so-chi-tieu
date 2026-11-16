@@ -36,8 +36,15 @@
       '<radialGradient id="mbgMoonG" cx=".36" cy=".34" r=".75"><stop offset="0" stop-color="#fffef6"/><stop offset=".5" stop-color="#f7f0d2"/><stop offset="1" stop-color="#dccf9f"/></radialGradient>' +
       '<radialGradient id="mbgMoonCr" cx=".45" cy=".4" r=".6"><stop offset="0" stop-color="#cdbf8f"/><stop offset="1" stop-color="#e6dbb2"/></radialGradient>' +
       '<clipPath id="mbgMoonClip"><circle cx="60" cy="60" r="46"/></clipPath>' +
-      '<filter id="mbgMoonBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>' +
+      '<filter id="mbgMoonBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>' +
+      // mặt nạ lưỡi liềm: giữ phần sáng bên trái, phần tối trong suốt (thấy trời đêm phía sau)
+      '<mask id="mbgMoonMask" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">' +
+        '<circle cx="60" cy="60" r="46" fill="#fff"/><circle cx="80" cy="52" r="45" fill="#000" filter="url(#mbgMoonBlur)"/>' +
+      '</mask>' +
     '</defs>' +
+    // ánh đất mờ trên phần tối
+    '<circle cx="60" cy="60" r="46" fill="#9aa6d6" opacity=".035"/>' +
+    '<g mask="url(#mbgMoonMask)">' +
     '<circle cx="60" cy="60" r="46" fill="url(#mbgMoonG)"/>' +
     '<g clip-path="url(#mbgMoonClip)">' +
       // vùng "biển" tối mềm trên mặt trăng
@@ -51,9 +58,9 @@
       '</g>' +
       '<g fill="#cbbd8c" opacity=".6"><circle cx="48" cy="54" r="1.3"/><circle cx="66" cy="66" r="1.1"/><circle cx="40" cy="84" r="1.2"/><circle cx="76" cy="38" r="1"/><circle cx="30" cy="50" r="1"/></g>' +
       // phần tối (trăng khuyết lồi, sáng bên trái), mép mềm
-      '<circle cx="106" cy="52" r="46" fill="#0c1534" opacity=".8" filter="url(#mbgMoonBlur)"/>' +
     '</g>' +
-    '<circle cx="60" cy="60" r="46" fill="none" stroke="#fffbe6" stroke-opacity=".55" stroke-width="1.2"/>' +
+    '</g>' +
+    '<path d="M60 14 A46 46 0 0 0 60 106" fill="none" stroke="#fffbe6" stroke-opacity=".6" stroke-width="1.3" stroke-linecap="round"/>' +
     '</svg>');
   var stars = add('mbg-stars'), starEls = [];
   for (var i = 0; i < 46; i++) {
