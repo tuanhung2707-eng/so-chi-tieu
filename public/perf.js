@@ -38,6 +38,10 @@
     for (var i = 0; i < list.length; i++) {
       var a = list[i], eff = a.effect, t = eff && eff.target;
       if (!t || a.playState === 'idle' || a.playState === 'finished') continue;
+      // chỉ quản lý hoạt ảnh lặp vô hạn (nền, mây, cây…); hiệu ứng chạy một lần (bắn sao, pháo hoa,
+      // chữ bay lên) luôn được để chạy trọn vẹn – chúng thường bắt đầu trong suốt nên dễ bị tưởng là "không thấy"
+      var tm = eff.getComputedTiming ? eff.getComputedTiming() : null;
+      if (!tm || tm.iterations !== Infinity) continue;
       var on = !hidden && isVisible(zoneOf(t), cache);
       try {
         if (!on && a.playState === 'running') { a.pause(); pausedByUs.add(a); }
