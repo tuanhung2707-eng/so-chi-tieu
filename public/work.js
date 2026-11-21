@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v12 · 16/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v13 · 21/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -1791,9 +1791,19 @@ function renderCal() {
     const todayCell = km.querySelector('.wm-d.today[data-mk]');
     if (todayCell) todayCell.classList.add('fx-keep');
     // vừa mở tháng: cho các ô "trình diễn" khoảng 2 giây rồi trở về dạng tĩnh
-    marked.forEach(fxOn);
+    // dựng hiệu ứng lần lượt vài ô mỗi khung hình (không dựng tất cả một lúc => không khựng khi chuyển tháng)
+    const gen = (K.introGen = (K.introGen || 0) + 1);
+    let qi = 0;
+    if (todayCell) fxOn(todayCell);
+    const step = () => {
+      if (gen !== K.introGen) return;                      // đã chuyển sang tháng khác
+      for (let n = 0; n < 2 && qi < marked.length; n++) fxOn(marked[qi++]);
+      if (qi < marked.length) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
     K.introT = setTimeout(() => {
-      marked.forEach((c) => { if (!c.matches(':hover')) fxOff(c); });
+      if (gen !== K.introGen) return;
+      marked.forEach((c, i) => { if (!c.matches(':hover')) setTimeout(() => fxOff(c), Math.floor(i / 2) * 16); });
     }, 2200);
   }
 
