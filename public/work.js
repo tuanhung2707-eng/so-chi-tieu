@@ -8,7 +8,7 @@ const TBL = 'wk_parts';                           // bảng Linh kiện (tạo b
 const MAX_FILE = 50 * 1024 * 1024;                 // 50 MB / file (khớp giới hạn của kho chứa)
 const GROUPS = ['Diode', 'BJT', 'MOSFET', 'Tụ điện', 'Điện trở', 'IC nguồn', 'IC sạc', 'IC điều khiển', 'Bảo vệ', 'Khác'];
 const MARKS = [['red', 'Quan trọng'], ['blue', 'Công việc'], ['amber', 'Hẹn / nhắc'], ['purple', 'Khác'], ['her', 'Her']];
-const WORK_VERSION = 'v13 · 21/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
+const WORK_VERSION = 'v14 · 21/11/2026';             // hiện ở cuối mục Công việc để biết bản mới đã được tải chưa
 const PW_FOLD = 24;                                 // máy có nhiều mật khẩu thì chỉ hiện bấy nhiêu cái, còn lại bấm "Xem thêm"
 
 let C = null;                                       // { sb, getUser, toast, esc, setStatus }
@@ -900,7 +900,10 @@ function cellsIn(container, sel) {
    khi vừa mở tháng (khoảng 2 giây) và ở ô hôm nay. */
 const FX_BUILD = { her: () => buildHerFxHtml(), blue: () => buildWorkFireFxHtml(), red: () => buildRedStarFxHtml(), amber: () => buildAmberButterflyFxHtml(), purple: () => buildPurpleNebulaFxHtml() };
 const FX_NODES = '.her-fx,.work-fx,.red-fx,.amber-fx,.oth-fx,.wm-glow';
+// Lịch chỉ hiện nền pastel + icon nhỏ, không chạy hiệu ứng (đổi thành true nếu muốn bật lại)
+const CAL_FX = false;
 function fxOn(cell) {
+  if (!CAL_FX) return;
   if (!cell) return;
   clearTimeout(cell._fxT);
   cell.classList.remove('fx-out');
@@ -1782,11 +1785,11 @@ function renderCal() {
   const reduceCal = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   // Trái tim "Her" nhấp nháy phát sáng dưới số ngày
   km.querySelectorAll('.wm-ic.her').forEach((ic) => {
-    if (reduceCal) return;
+    if (reduceCal || !CAL_FX) return;
     fxAnim(ic, [{ opacity: 0.4, transform: 'scale(.82)' }, { opacity: 1, transform: 'scale(1.12)' }],
       { duration: 820, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
   });
-  if (!reduceCal) {
+  if (!reduceCal && CAL_FX) {
     const marked = Array.prototype.slice.call(km.querySelectorAll('.wm-d[data-mk]'));
     const todayCell = km.querySelector('.wm-d.today[data-mk]');
     if (todayCell) todayCell.classList.add('fx-keep');
